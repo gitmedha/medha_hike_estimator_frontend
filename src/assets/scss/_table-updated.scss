@@ -1,0 +1,24 @@
+@import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
+@import "react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css";
+@import "react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css";
+
+.react-bootstrap-table-pagination-list {
+  ul {
+    li {
+      border-radius: 0px !important;
+      a {
+        color: $custom-primary;
+        border-radius: 0px !important;
+        &:hover {
+          color: $custom-primary;
+        }
+      }
+    }
+    li.active {
+      a.page-link {
+        border-color: $custom-primary;
+        background-color: $custom-primary;
+      }
+    }
+  }
+}

@@ -1,0 +1,31 @@
+thead,
+tbody,
+tfoot,
+tr,
+td,
+th {
+  border-color: none;
+  border-style: none;
+  border-width: 0;
+  font-family: Latto-Regular;
+}
+
+table {
+  thead {
+    color: $custom-primary;
+    font-family: Latto-Black;
+    background-color: #fff !important;
+    border-bottom: 1.5px solid #bfbfbf;
+    tr {
+      box-sizing: none;
+      border-bottom: none !important;
+    }
+  }
+  tbody {
+    color: $custom-text;
+    tr {
+      padding: 20px !important;
+      border-top: 1px solid #bfbfbf;
+    }
+  }
+}

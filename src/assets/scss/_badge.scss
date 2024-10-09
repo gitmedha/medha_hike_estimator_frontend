@@ -1,0 +1,28 @@
+.badge {
+  font-size: 14px;
+  min-width: 100px;
+  border-radius: 5px;
+  letter-spacing: 0.3px;
+  padding: 6px 20px !important;
+  font-family: Latto-Bold;
+  &-active {
+    color: #238b33 !important;
+    background-color: #bbffc6 !important;
+  }
+  &-inactive {
+    color: #ff3737 !important;
+    background-color: #ffcdcd !important;
+  }
+  &-gov {
+    color: #3d29b6 !important;
+    background-color: #e7e3ff !important;
+  }
+  &-iti {
+    color: #fca600 !important;
+    background-color: #ffeac1 !important;
+  }
+  &-pvt {
+    color: #62636c !important;
+    background-color: #dcdcdc !important;
+  }
+}

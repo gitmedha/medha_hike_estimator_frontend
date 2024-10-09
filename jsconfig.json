@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+      "baseUrl": ".",
+      "paths": {
+        "@/components/*": ["/src/components/*"],
+        "@/assets/*": ["/src/assets/*"],
+        "@/views/*": ["/src/views/*"],
+        "@/utils/*": ["/src/utils/*"],
+        "@/apis/*": ["/src/apis/*"],
+        "@/common/*": ["/src/common/*"],
+        "@/constants/*": ["/src/constants/*"],
+        "@/context/*": ["/src/context/*"],
+        "@/graphql/*": ["/src/graphql/*"],
+        "@/validations/*": ["/src/validations/*"],
+        "@/src/*": ["/src/*"]
+      }
+    }
+  }
+  

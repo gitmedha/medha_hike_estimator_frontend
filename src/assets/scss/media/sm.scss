@@ -1,0 +1,193 @@
+@media screen and (max-width: 431px) {
+    .button_container {
+        display: flex;
+    }
+
+    .action_button_sec {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 5px 12px !important;
+    }
+
+    .collapse_form_buttons {
+        font-size: 0.9rem;
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+    }
+
+    .topnav {
+        display: flex !important;
+        width: 100%;
+    }
+
+    .top_nav_for_other {
+        display: flex !important;
+        width: 100%;
+    }
+
+    .topnav div {
+        font-size: 10px !important;
+    }
+
+    .top_nav_for_other div {
+        font-size: 14px !important;
+        padding: 5px 12px !important;
+    }
+
+    .navbar_sec {
+        flex-direction: column !important;
+    }
+
+    .stundents_nav_tab {
+        flex-direction: column !important;
+    }
+
+    .navbar {
+        display: flex !important;
+        justify-content: space-around !important;
+    }
+
+    .add_button_sec {
+        margin-top: 5px;
+        margin-bottom: 15px;
+    }
+
+    .page-box {
+        margin: auto auto !important;
+        justify-content: center !important;
+        width: 64% !important;
+    }
+
+    .pagination {
+        padding: 0 !important;
+        margin: 0 !important;
+        justify-content: center !important;
+        margin-bottom: 10px !important;
+    }
+
+    .count {
+        justify-content: center;
+    }
+
+    .bulk_add_actions {
+        justify-content: center !important;
+        width: 82% !important;
+    }
+
+    /* Styles for search buttons*/
+    .search_bar_action_sec {
+        padding: 5px 40px !important;
+    }
+
+    .ops_action_button {
+        margin-right: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* styles for mass edit buttons*/
+    .mass_edit_bottons {
+        font-size: 14px;
+    }
+
+
+    .stundents_nav_tab {
+        padding: 0 !important;
+    }
+}
+
+
+
+@media screen and (max-width:376px) {
+    .top_nav_for_other div {
+        font-size: 12px !important;
+    }
+
+    .search_bar_action_sec {
+        padding: 5px 36px !important;
+    }
+
+    .ops_action_button {
+        margin-right: 5px;
+        font-size: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .stundents_nav_tab {
+        padding: 0 !important;
+    }
+
+}
+
+@media screen and (max-width:321px) {
+    .session_attendance_button {
+        font-size: 0.8rem;
+    }
+
+    .topnav {
+        width: 100%;
+    }
+
+    .topnav div {
+        padding: 10px 12px !important;
+    }
+
+    .top_nav_for_other {
+        width: 100%;
+    }
+
+    .top_nav_for_other div {
+        font-size: 10px !important;
+        padding: 5px 12px !important;
+    }
+
+    .search_bar_action_sec {
+        padding: 5px 30px !important;
+    }
+
+    .ops_action_button {
+        margin-right: 5px;
+        font-size: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .stundents_nav_tab {
+        padding: 0 !important;
+    }
+}
+
+.mass_edit_bottons {
+    width: 25%;
+    border-radius: 10px;
+    display: flex;
+    border: 1px solid #bebebe;
+    flex-direction: column;
+    align-items: center;
+    // box-shadow: 23px 23px 66px #bebebe;
+    padding: 10px;
+    font-weight: 800;
+        // -23px -23px 66px #ffffff;
+}
+
+.mass_edit_bottons svg {
+    color: #bebebe;
+    margin-bottom: 10px;
+}
+
+
+.mass_edit_bottons:hover svg {
+    color: #257b69;
+    margin-bottom: 10px;
+}
+
+.mass_edit_bottons:hover {
+    box-shadow: 23px 23px 66px #bebebe;
+    border: 1.5px solid #257b69;
+    color: #257b69;
+}

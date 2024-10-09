@@ -1,0 +1,25 @@
+.user-box {
+  button {
+    img {
+      border-radius: 50%;
+      width: 50px !important;
+      height: 50px !important;
+      border: 2px solid rgba($custom-primary, 0.7);
+    }
+  }
+  .dropdown-menu {
+    border: none;
+    border-radius: 0px !important;
+    box-shadow: 5px 5px 12px 5px rgba(0, 0, 0, 0.2);
+    a.dropdown-item {
+      transition: 0.2s ease-in;
+      padding-top: 10px !important;
+      padding-bottom: 10px !important;
+      color: $custom-primary !important;
+      &:hover {
+        color: white !important;
+        background-color: $custom-primary;
+      }
+    }
+  }
+}

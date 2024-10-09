@@ -1,0 +1,49 @@
+.uploader-container {
+  @extend .my-3;
+  @extend .d-flex;
+  @extend .flex-column;
+  @extend .justify-content-center;
+  label {
+    width: 150px;
+  }
+  .imageUploader {
+    @extend .d-flex;
+    @extend .flex-column;
+    @extend .align-items-center;
+    @extend .justify-content-center;
+    width: 150px;
+    height: 150px;
+    border-radius: 5px;
+    border: 2px dashed rgba(0, 0, 0, 0.3);
+    .uploaderInput {
+      opacity: 0;
+      width: 150px;
+      height: 150px;
+    }
+    .upload-helper-text {
+      width: 80px;
+      height: 80px;
+      @extend .pt-5;
+      @extend .text--sm;
+      position: absolute;
+      @extend .text-center;
+      @extend .latto-regular;
+    }
+    .upload-helper-icon {
+      width: 80px;
+      height: 80px;
+      @extend .pt-2;
+      font-size: 10px;
+      position: absolute;
+      @extend .text-center;
+    }
+  }
+}
+
+.uploaded-img {
+  width: 150px;
+  height: 150px;
+  @extend .mb-3;
+  @extend .img-fluid;
+  @extend .img-thumbnail;
+}

@@ -1,0 +1,386 @@
+@import "../../../node_modules/nprogress/nprogress.css";
+@import "../../../node_modules/bootstrap/scss/bootstrap.scss";
+@import "../../../node_modules/react-datepicker/dist/react-datepicker.min.css";
+
+@import 'react-big-calendar/lib/sass/styles';
+
+// Table
+
+// Table
+
+@import "variables";
+@import "typography";
+@import "badge";
+@import "card";
+@import "accrodian";
+// @import "table";
+@import "utils";
+@import "section";
+@import "tab-picker";
+@import "datepicker";
+@import "avatar";
+@import "buttons";
+@import "progress";
+@import "input";
+@import "grid";
+@import "image_uploader";
+@import "react_select";
+@import "userbox";
+@import "table-updated";
+
+body {
+  font-family: Latto-Regular !important;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app {
+  display: flex;
+  min-height: 100vh;
+  font-family: Latto-Regular !important;
+}
+.izyXuO {
+  overflow-x: hidden !important;
+}
+
+.sidebar-container {
+  .sidebar {
+    z-index: 1;
+    height: 100%;
+    align-self: stretch;
+    background-color: $white;
+    transition: 0.15s ease-in;
+  }
+  &.open {
+    width: 100%;
+  }
+}
+
+.ops_action_button {
+  margin-right: 5px;
+  margin-left: 5px;
+}
+
+/*----------------- search bar styles-----------------*/
+
+.search_bar_action_sec {
+  padding: 5px 36px !important;
+}
+.content {
+  flex: 1;
+  padding: 1rem;
+}
+
+.menu-item-link {
+  border-right: 5px solid transparent;
+  min-height: 70px;
+  font-size: 18px;
+}
+
+.sub-menu {
+  .menu-item-link {
+    border-right: 5px solid transparent;
+    min-height: 40px;
+    font-size: 16px;
+  }
+}
+
+.c-pointer {
+  cursor: pointer;
+}
+.capitalize{
+  text-transform: capitalize !important;
+}
+
+#custom-modal{
+  .custom-modal{
+    width: 100vw !important;
+    height: 100vh;
+  }
+}
+
+.fullscreen-modal .modal-dialog {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: papayawhip;
+}
+
+.fullscreen-modal .modal-content {
+  position: fixed;
+  top: 2%; // Adjust this value for top gap
+  left: 1%; // Adjust this value for left gap
+  right: 1%; // Adjust this value for right gap
+  bottom: 2%; // Adjust this value for bottom gap
+  overflow-y: auto;
+  width: 98% !important;
+  overflow-x: auto;
+  background-color: white; // Change the background color
+}
+
+.left-10 {
+  left: 10px;
+}
+.right-10 {
+  right: 10px;
+}
+.z-10 {
+  z-index: 10;
+}
+.mr-3 {
+  margin-right: 1rem !important;
+}
+.bg-modal {
+  background-color: #f3f4fc;
+}
+.opacity-1 {
+  opacity: 1;
+}
+.leading-24 {
+  line-height: 24px;
+}
+.metabase-icon {
+  width: 24px;
+  filter: grayscale(100%);
+}
+
+#CreateOptsData, #CreateOptsData1{
+  
+  font-family: Latto-Regular !important;;
+  .table-container {
+    overflow-x: auto;
+    height: 68vh;
+  }
+  .between_class{
+    position: absolute;
+    bottom: 1rem;
+    right: 2rem;
+  }
+  
+  table {
+    min-width: 100%;
+  }
+  th{
+    padding-left: 1rem !important;
+  }
+  td{
+    padding:0 9px 0 0  ;
+  }
+  th,
+  td {
+    border: 1px solid #fff;
+    text-align: left;
+    height: 2rem !important;
+    // width: 45rem;
+    // border: #0b0b0b;
+  }
+  
+  th {
+    font-size: 0.8rem !important;
+    background-color: #257b69;
+    color: #fff;
+    height: 2.5rem !important;
+  }
+  
+  .table-input {
+    border: 1px solid #bebfc0 ;
+    width: 12rem !important;
+    padding: 0;
+    margin: 0;
+    background-color: transparent;
+    border-radius: 5px;
+  }
+ 
+  .basic-single{
+    border: none !important;
+  }
+  .date{
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  }
+  .date ,.donor{
+    border: 1px solid #bebfc0 !important;
+    width: 8rem;
+    border-radius: 5px;
+  }
+  .border-red{
+    border: 2px solid #ff0000 !important;
+  }
+  .border-red2{
+    border: 2px solid #ff0000 !important;
+  }
+  
+  
+  .table-input:focus {
+    outline: none;
+  }
+  .adddeletebtn{
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 2rem;
+    margin-bottom: 0.5rem;
+  }
+  .unset {
+    all: unset;
+    cursor: pointer;
+  }
+  .react-datepicker {
+    font-size: 0.8em;
+  }
+  
+  .react-datepicker__header {
+    padding-top: 0.9em;
+  }
+  
+  .react-datepicker__month {
+    margin: 1em 1em;
+  }
+  
+  .react-datepicker__day-name, .react-datepicker__day {
+    width: 2.2em;
+    margin: 0.3em;
+  }
+  
+  .react-datepicker__current-month {
+    font-size: 1em;
+  }
+  
+  .react-datepicker__navigation {
+    overflow: visible;
+  }
+  
+  .react-datepicker__navigation--next--with-time {
+    top: 13px !important;
+    right: 100px;
+  }
+  
+  .react-datepicker__day{
+    padding: 4px;
+  }
+  
+  .react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box ul.react-datepicker__time-list li.react-datepicker__time-list-item--selected ,.react-datepicker__day--selected{
+    background-color: #257b69;
+  }
+  .react-datepicker__navigation-icon{
+    display: none;
+  }
+
+label {
+  color: #787B96;
+}
+
+.datepicker-wrapper {
+position: relative;
+.datepicker-icon {
+  position: absolute;
+  color: hsl(0, 0%, 80%);
+  right: 0;
+  top: 9px;
+  padding: 0 8px;
+  border-left: 1px solid hsl(0, 0%, 80%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50%;
+  z-index: 0;
+}
+}
+
+.required {
+color: red;
+font-size: 16px;
+}
+
+.react-datepicker__day--outside-month {
+color: transparent;
+pointer-events: none;
+}
+
+.react-datepicker__month-read-view--down-arrow{
+border-color: #ccc;
+border-style: solid;
+border-width: 3px 3px 0 0;
+content: "";
+display: block;
+height: 9px;
+position: absolute;
+top: 6px;
+width: 9px;
+margin-right:1px;
+padding:2px;
+}
+
+.react-datepicker__year-read-view{
+border: 1px solid transparent;
+border-radius: .3rem;
+position: relative;
+margin-left: 25px;
+}
+
+.date-picker-ui .react-datepicker__month-option--selected_month {
+color: #257b69;
+}
+
+.react-datepicker__month-dropdown{
+background-color:white;
+}
+
+.react-datepicker__month-option{
+color:black;
+}
+}
+.h-2{
+  height: 2.4rem;
+}
+.mt-4{
+  margin-top: 2rem !important;
+}
+
+.bold{
+  font-weight: 700;
+  color: #000 !important;
+}
+
+body::-webkit-scrollbar {
+	width: 4px;
+}
+
+div::-webkit-scrollbar {
+	background-color: transparent;
+	width: 4px;
+}
+
+div::-webkit-scrollbar-thumb {
+	width: 4px;
+	background-color: rgb(179, 174, 174);
+	border-radius: 4px;
+}
+
+.bottom_right{
+  position: absolute;
+  right: 1;
+}
+
+.form_sec {
+  height: 500px;
+  overflow: scroll;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+}
+
+.downloadLink {
+  margin-bottom: 0 !important;
+}
+
+.view_calendar_form_sec {
+  max-width: 90%;
+  margin: auto auto;
+}
+
+@import './media/lg.scss';
+@import './media/md.scss';
+@import './media/sm.scss';
+
+
+
+

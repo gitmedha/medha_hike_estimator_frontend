@@ -1,0 +1,56 @@
+button {
+  &:active,
+  &:focus {
+    outline: 0 !important;
+  }
+}
+.btn {
+  border-radius: 5px !important;
+  outline: none;
+  border: none;
+  &-regular {
+    font-size: 16px;
+    margin: auto 10px;
+    border-radius: 5px;
+    font-family: Latto-Bold;
+    padding: 5px 50px !important;
+  }
+  outline: 0;
+}
+
+.btn:focus,
+.btn:active:focus,
+.btn.active:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.btn-primary,
+.btn-primary:hover,
+.btn-primary:active,
+.btn-primary:visited {
+  outline: none;
+  word-spacing: 3px;
+  text-transform: uppercase;
+  font-family: Latto-Regular;
+  background-color: $custom-primary !important;
+}
+
+.btn--secondary {
+  @extend.btn;
+  @extend.btn-regular;
+  @extend.btn-secondary;
+  @extend.latto-regular;
+}
+
+.btn--primary {
+  @extend.btn;
+  @extend.btn-primary;
+  @extend.btn-regular;
+  @extend.latto-regular;
+  @extend.text-capitalize;
+}
+
+.no-decoration {
+  text-transform: none !important;
+}

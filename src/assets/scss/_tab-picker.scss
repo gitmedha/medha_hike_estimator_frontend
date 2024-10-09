@@ -1,0 +1,72 @@
+.topnav, .top_nav_for_other, .top_nav_for_ops {
+  border-radius: 23px;
+  display: inline-block;
+  background-color: #fff;
+  border: 2px solid rgba(#bfbfbf, 0.6);
+  div {
+    float: left;
+    font-size: 15px;
+    cursor: pointer;
+    color: #c4c4c4;
+    text-align: center;
+    padding: 10px 20px;
+    border-radius: 23px;
+    text-decoration: none;
+    transition: ease-in 0.2s all;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &:hover {
+      color: black;
+      background-color: #ddd;
+    }
+    &.active {
+      color: white;
+      background-color: $custom-primary;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+}
+
+.few-options {
+  width: auto !important;
+} 
+
+.widget-util-tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  background-color: #fff;
+  border-radius: 8px;
+  border: 1.5px solid rgba(#bfbfbf, 0.6);
+  box-shadow: 0 0 0 1px rgba(#bfbfbf, 0.6);
+  padding: 0 0.5px;
+  div {
+    float: left;
+    font-size: 15px;
+    cursor: pointer;
+    color: #c4c4c4;
+    text-align: center;
+    padding: 5px 10px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: ease-in 0.2s all;
+    &:hover {
+      color: black;
+      background-color: #ddd;
+    }
+    &.active {
+      color: white;
+      background-color: $custom-primary;
+    }
+  }
+}
+
+.widget-tab {
+  .react-datepicker__input-container {
+    display: none !important;
+  }
+}

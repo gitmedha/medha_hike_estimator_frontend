@@ -1,0 +1,52 @@
+@import "../../../node_modules/ag-grid-community/dist/styles/ag-grid.css";
+@import "../../../node_modules/ag-grid-community/dist/styles/ag-theme-alpine.css";
+
+.ag-theme-alpine {
+  .ag-header {
+    @extend .text--md;
+    @extend .latto-bold;
+    color: $custom-primary !important;
+  }
+}
+
+.ag-theme-alpine .ag-icon-pin {
+  font-family: "Font Awesome 5 Free";
+  font-weight: bold;
+}
+
+.ag-header-row,
+.ag-header-column,
+.ag-header-viewport {
+  background-color: #fff;
+}
+
+.ag-header-viewport {
+  border-radius: 5px 5px 5px 5px;
+}
+
+.ag-root {
+  border-radius: 10px;
+}
+
+.ag-header-cell-label {
+  /* Necessary to allow for text to grow vertically */
+  height: 100%;
+  padding: 0 !important;
+  color: $custom-primary;
+  background-color: #fff;
+}
+
+.ag-root-wrapper {
+  border-radius: 5px;
+  border: 5px solid rgba(#ccc, 0.1);
+  box-shadow: 5px 5px 12px 5px rgba(#ccc, 0.5);
+}
+
+.ag-cell-focus,
+.ag-cell-no-focus {
+  border: none !important;
+}
+.ag-cell:focus {
+  outline: none;
+  border: none !important;
+}

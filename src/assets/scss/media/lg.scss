@@ -1,0 +1,17 @@
+@media screen and (max-width: 1024px) {
+    .topnav {
+        width: auto;
+    }
+
+    .top_nav_for_other {
+        width: auto;
+    }
+    
+  }
+
+
+  @media screen and (min-width:1024px) {
+    .search_buttons_container {
+        width: 20% !important;
+    }
+  }

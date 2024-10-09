@@ -1,0 +1,224 @@
+$gray: #787b96;
+$green: #207b69;
+
+@font-face {
+  font-family: Latto-Black;
+  src: url("../fonts/Lato-Black.ttf");
+}
+
+@font-face {
+  font-family: Latto-Black-Italic;
+  src: url("../fonts/Lato-BlackItalic.ttf");
+}
+
+@font-face {
+  font-family: Latto-Bold;
+  src: url("../fonts/Lato-Bold.ttf");
+}
+
+@font-face {
+  font-family: Latto-Bold-Italic;
+  src: url("../fonts/Lato-BoldItalic.ttf");
+}
+
+@font-face {
+  font-family: Latto-Italic;
+  src: url("../fonts/Lato-Italic.ttf");
+}
+
+@font-face {
+  font-family: Latto-Light;
+  src: url("../fonts/Lato-Light.ttf");
+}
+
+@font-face {
+  font-family: Latto-Light-Italic;
+  src: url("../fonts/Lato-LightItalic.ttf");
+}
+
+@font-face {
+  font-family: Latto-Regular;
+  src: url("../fonts/Lato-Regular.ttf");
+}
+
+@font-face {
+  font-family: Latto-Regular;
+  src: url("../fonts/Lato-Regular.ttf");
+}
+
+@font-face {
+  font-family: Latto-Thin;
+  src: url("../fonts/Lato-Thin.ttf");
+}
+
+@font-face {
+  font-family: Latto-Thin-Italic;
+  src: url("../fonts/Lato-ThinItalic.ttf");
+}
+
+/* latin-ext */
+@font-face {
+  font-family: "Bebas";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../fonts/Bebas.woff2") format("woff2");
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB,
+    U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: "Bebas Neue";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../fonts/Bebas-Neue.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
+    U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Bebas Neue Book";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../fonts/BebasNeueBook.woff2") format("woff2");
+}
+
+.bebas- {
+  &normal {
+    font-family: Bebas;
+  }
+  &thick {
+    font-family: Bebas Neue;
+  }
+  &book{
+    font-family: Bebas Neue Book;
+  }
+}
+
+.latto- {
+  &black {
+    font-family: Latto-Black !important;
+    &-italic {
+      font-family: Latto-Black-Italic !important;
+    }
+  }
+
+  &bold {
+    font-family: Latto-Bold !important;
+    &-italic {
+      font-family: Latto-Bold-Italic !important;
+    }
+  }
+
+  &light {
+    font-family: Latto-Light !important;
+    &-italic {
+      font-family: Latto-Light-Italic !important;
+    }
+  }
+
+  &regular {
+    font-family: Latto-Regular !important;
+    &-italic {
+      font-family: Latto-Regular-Italic !important;
+    }
+  }
+
+  &thin {
+    font-family: Latto-Thin !important;
+    &-italic {
+      font-family: Latto-Thin-Italic !important;
+    }
+  }
+}
+
+.text-- {
+  &primary {
+    color: $custom-primary;
+  }
+  &danger {
+    color: $custom-danger;
+  }
+  &warning {
+    color: $custom-warning;
+  }
+  &info {
+    color: $custom-info;
+  }
+  &success {
+    color: $custom-success;
+  }
+  &light {
+    color: $custom-light;
+  }
+  &dark {
+    color: $custom-dark;
+  }
+  &sm {
+    font-size: 12px;
+  }
+  &md {
+    font-size: 14px;
+  }
+  &lg {
+    font-size: 18px;
+  }
+  &xl {
+    font-size: 24px;
+  }
+  &simple {
+    color: $custom-simple-text;
+  }
+}
+
+.info-card-caption {
+  padding: 1px 10px;
+  border-radius: 5px;
+}
+
+.text-heading {
+  margin-bottom: 0;
+  @extend .text--md;
+  @extend .latto-bold;
+  @extend .text--primary;
+}
+
+.text-label {
+  margin-bottom: 0;
+  color: $gray;
+  @extend .text--md;
+  @extend .latto-bold;
+}
+
+.error--text {
+  @extend .mt-1;
+  @extend.text--md;
+  @extend .latto-bold;
+  @extend .text-danger;
+}
+
+.text-detail-title {
+  @extend.pb-0;
+  @extend.mb-0;
+  @extend.latto-bold;
+  @extend.text--primary;
+}
+
+a.menu-item-link {
+  display: flex;
+  color: #808080;
+  font-size: 16px;
+  align-items: center;
+  text-decoration: none;
+  justify-content: center;
+  transition: 0.2s ease-in;
+  font-family: Latto-Regular;
+}
+
+a.sidebar-link-active {
+  color: $custom-primary;
+  font-family: Latto-Bold;
+}

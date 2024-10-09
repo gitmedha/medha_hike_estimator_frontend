@@ -1,0 +1,7 @@
+#nprogress .bar {
+  background: $custom-primary;
+  height: 5px;
+}
+#nprogress .peg {
+  box-shadow: 0 0 10px $custom-primary, 0 0 5px $custom-primary;
+}

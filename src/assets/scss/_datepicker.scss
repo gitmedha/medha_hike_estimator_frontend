@@ -1,0 +1,155 @@
+.date-picker-ui {
+  .react-datepicker-wrapper {
+    @extend .w-100;
+  }
+
+  .react-datepicker {
+    color: #000;
+    font-size: 1rem;
+    border-radius: 0;
+    position: relative;
+    display: inline-block;
+    background-color: #fff;
+    font-family: Latto-Regular;
+    border: 1px solid #dcdce4 !important;
+    box-shadow: 5px 5px 12px 5px rgba(0, 0, 0, 0.1);
+  }
+  .react-datepicker-popper[data-placement^="top"] .react-datepicker__triangle,
+  .react-datepicker__year-read-view--down-arrow,
+  .react-datepicker__month-read-view--down-arrow,
+  .react-datepicker__month-year-read-view--down-arrow {
+    bottom: 0;
+    margin-bottom: -5px;
+  }
+  .react-datepicker__header {
+    padding-top: 15px;
+    text-align: center;
+    position: relative;
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+    background-color: $custom-success;
+    border-bottom: 1px solid #dcdce4 !important;
+  }
+  .react-datepicker__day--keyboard-selected,
+  .react-datepicker__month-text--keyboard-selected,
+  .react-datepicker__quarter-text--keyboard-selected,
+  .react-datepicker__year-text--keyboard-selected {
+    color: #fff;
+    border-radius: 0.3rem;
+    font-family: Latto-Regular;
+    background-color: $custom-success;
+  }
+  .react-datepicker__day-name,
+  .react-datepicker__day,
+  .react-datepicker__time-name {
+    width: 3rem;
+    padding: 10px;
+    color: #000;
+    margin: 0.166rem;
+    text-align: center;
+    line-height: 1.7rem;
+    display: inline-block;
+
+    &.react-datepicker__day--keyboard-selected {
+      color: white;
+    }
+  }
+  .react-datepicker__current-month,
+  .react-datepicker-time__header,
+  .react-datepicker-year-header {
+    margin-top: 0;
+    color: #fff;
+    font-size: 1 rem;
+    font-weight: bold;
+    border-radius: 0px !important;
+  }
+  .react-datepicker__day--selected,
+  .react-datepicker__day--in-selecting-range,
+  .react-datepicker__day--in-range,
+  .react-datepicker__month-text--selected,
+  .react-datepicker__month-text--in-selecting-range,
+  .react-datepicker__month-text--in-range,
+  .react-datepicker__quarter-text--selected,
+  .react-datepicker__quarter-text--in-selecting-range,
+  .react-datepicker__quarter-text--in-range,
+  .react-datepicker__year-text--selected,
+  .react-datepicker__year-text--in-selecting-range,
+  .react-datepicker__year-text--in-range {
+    color: #fff;
+    border-radius: 0;
+    background-color: $custom-success;
+  }
+  .react-datepicker__navigation {
+    top: 15px;
+  }
+  .react-datepicker__navigation--previous {
+    left: 10px;
+    border-right-color: #fff !important;
+  }
+  .react-datepicker__navigation--next {
+    right: 10px;
+    border-left-color: #fff !important;
+  }
+  .react-datepicker__day-name {
+    color: white;
+  }
+  .react-datepicker__day--today {
+    color: #257b69;
+
+    &.react-datepicker__day--keyboard-selected {
+      color: white;
+    }
+
+    &.react-datepicker__day--selected {
+      color: white;
+    }
+  }
+  .react-datepicker__header__dropdown {
+    color: white;
+  }
+  .react-datepicker__year-read-view--down-arrow {
+    top: 5px;
+  }
+  .react-datepicker__year-dropdown {
+    background-color: white;
+    color: black;
+  }
+  .react-datepicker__year-option--selected_year {
+    color: #257b69;
+  }
+  .react-datepicker__navigation--years {
+    text-indent: 0;
+    text-decoration: none;
+    color: black;
+    top: 0;
+
+    &.react-datepicker__navigation--years-upcoming {
+
+      &:before {
+        content: "\25BE";
+        transform: rotate(180deg);
+        font-size: 14px;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+
+    &.react-datepicker__navigation--years-previous {
+
+      &:before {
+        content: "\25BE";
+        font-size: 14px;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+}
+
+.react-datepicker__input-container {
+  @extend .input-group, .w-100;
+}

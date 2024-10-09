@@ -1,0 +1,35 @@
+@media screen and (min-width: 768px) {
+  .sidebar-container {
+    border-right: 2px solid $custom-concrete;
+    width: 80px;
+
+    &.open {
+      width: 275px;
+    }
+  }
+  .position-md-relative {
+    position: relative !important;
+  }
+  .left-md-0 {
+    left: 0;
+  }
+}
+
+@media screen and (max-width:768px){
+  
+  .topnav {
+    width: auto;
+  }
+
+  .topnav div {
+    width: 100%;
+  }
+
+  .top_nav_for_other  {
+    width: auto;
+  }
+
+  .top_nav_for_other div {
+    width: 100%;
+  }
+}

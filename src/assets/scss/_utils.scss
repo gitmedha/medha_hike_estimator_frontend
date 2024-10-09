@@ -1,0 +1,63 @@
+.no-border {
+  border: none !important;
+}
+
+.bordered-bottom {
+  border-bottom: 1px solid #000;
+}
+
+.bg-- {
+  &light {
+    background-color: #f2f2f2;
+  }
+  &danger {
+    background-color: $custom-danger;
+  }
+  &warning {
+    background-color: $custom-warning;
+  }
+  &info {
+    background-color: $custom-info;
+  }
+  &success {
+    background-color: $custom-success;
+  }
+}
+
+.icon-container {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+}
+
+.info-card-caption {
+  @extend .d-flex;
+  @extend .d-flex;
+  @extend .text--sm;
+  @extend .bg-white;
+  margin-bottom: 13px;
+  @extend .latto-regular;
+  @extend .align-self-end;
+  @extend .align-items-center;
+  @extend .justify-content-center;
+}
+
+.flex-row-centered {
+  @extend .d-flex;
+  @extend .align-items-center;
+  @extend .justify-content-center;
+}
+
+.flex-col-centered {
+  @extend .d-flex;
+  @extend .flex-column;
+  @extend .align-items-center;
+  @extend .justify-content-center;
+}
+
+.wrapped {
+  flex-wrap: wrap;
+}
