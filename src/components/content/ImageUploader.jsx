@@ -1,9 +1,7 @@
-import api from "../../apis";
 import { useState } from "react";
 import { urlPath } from "../../constants";
 import { FaFileImage } from "react-icons/fa";
 import { ProgressBar } from "react-bootstrap";
-import { FILE_UPLOAD } from "../../graphql";
 
 const ImageUploader = ({
   handler,
@@ -21,46 +19,6 @@ const ImageUploader = ({
     setProgress(progress);
   };
 
-  const handleChange = async (e) => {
-    try {
-      setUploading(true);
-      let formdata = new FormData();
-      const queryString = {
-        query: FILE_UPLOAD,
-        variables: {
-          file: null,
-        },
-      };
-
-      formdata.append("operations", JSON.stringify(queryString));
-      formdata.append(
-        "map",
-        JSON.stringify({
-          0: ["variables.file"],
-        })
-      );
-
-      formdata.append("0", e.target.files[0], e.target.files[0].name);
-
-      let { data } = await api.post("/graphql", formdata, {
-        onUploadProgress,
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      await setImageUrl(urlPath(data.data.upload.url.substring(0)));
-      await setImageId(Number(data.data.upload.id));
-
-      handler({
-        id: imageId || Number(data.data.upload.id),
-        path: imageUrl || urlPath(data.data.upload.url.substring(1)),
-      });
-    } catch (err) {
-      
-    } finally {
-      setUploading(false);
-    }
-  };
-
   return (
     <div>
       {!isUploading && !imageUrl && (
@@ -75,7 +33,6 @@ const ImageUploader = ({
               type="file"
               multiple={false}
               name="file-uploader"
-              onChange={handleChange}
               className="uploaderInput"
             />
           </div>

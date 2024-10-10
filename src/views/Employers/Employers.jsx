@@ -1,25 +1,12 @@
 import nProgress from "nprogress";
-import { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import { useState,useMemo, useCallback, useRef } from "react";
 import Table from "../../components/content/Table";
 import { useHistory } from "react-router-dom";
-import TabPicker from "../../components/content/TabPicker";
 import api from "../../apis";
-import { GET_USER_EMPLOYERS } from "../../graphql";
-import Avatar from "../../components/content/Avatar";
-import {
-  createEmployer,
-  getEmployersPickList,
-} from "./EmployerComponents/employerAction";
-import {
-  TableRowDetailLink,
-  Badge,
-  Anchor,
-} from "../../components/content/Utils";
+
 import { setAlert } from "../../store/reducers/Notifications/actions";
-import EmployerForm from "./EmployerComponents/EmployerForm";
 import { connect } from "react-redux";
 import Collapse from "../../components/content/CollapsiblePanels";
-import EmployerSearchBar from "./EmployerComponents/EmployerSearchBar";
 
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
@@ -354,38 +341,6 @@ const Employers = (props) => {
         return Promise.reject(error);
     }
   };
-  // useEffect(() => {
-  //   getEmployersPickList().then((data) => setPickList(data));
-  // }, []);
-
-  // useEffect(() => {
-  //   let data = employers;
-  //   data = data.map((employer, index) => {
-  //     return {
-  //       ...employer,
-  //       assignedTo: (
-  //         <Anchor
-  //           text={employer.assigned_to.username}
-  //           href={"/user/" + employer.assigned_to.id}
-  //         />
-  //       ),
-  //       avatar: (
-  //         <Avatar
-  //           name={employer.name}
-  //           logo={employer.logo}
-  //           style={{ width: "35px", height: "35px" }}
-  //           icon="employer"
-  //         />
-  //       ),
-  //       industry: (
-  //         <Badge value={employer.industry} pickList={pickList.industry || []} />
-  //       ),
-  //       link: <TableRowDetailLink value={employer.id} to={"employer"} />,
-  //       href: `/employer/${employer.id}`,
-  //     };
-  //   });
-  //   setEmployersTableData(data);
-  // }, [employers, pickList]);
 
   const fetchData = useCallback(
     (
@@ -456,66 +411,10 @@ const Employers = (props) => {
     [activeTab.key]
   );
 
-  const hideCreateModal = async (data) => {
-    setFormErrors([]);
-    if (!data || data.isTrusted) {
-      setModalShow(false);
-      return;
-    }
-
-    // need to remove `show` from the payload
-    let { show, ...dataToSave } = data;
-
-    nProgress.start();
-    createEmployer(dataToSave)
-      .then((data) => {
-        if (data.data.errors) {
-          setFormErrors(data.data.errors);
-        } else {
-          setAlert("Employer created successfully.", "success");
-          getEmployers();
-          setModalShow(false);
-          history.push(
-            `/employer/${data.data.data.createEmployer.employer.id}`
-          );
-        }
-      })
-      .catch((err) => {
-        setAlert("Unable to create employer.", "error");
-        getEmployers();
-        setModalShow(false);
-      })
-      .finally(() => {
-        nProgress.done();
-      });
-  };
 
   return (
     <Collapse title="Historical Data" type="plain" opened={true}>
       <div className="row">
-        {/* <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-2 navbar_sec">
-          <TabPicker options={tabPickerOptions} setActiveTab={setActiveTab} />
-          <button
-            className="btn btn-primary add_button_sec"
-            onClick={() => setModalShow(true)}
-            style={{ marginLeft: "15px" }}
-          >
-            Add New
-          </button>
-        </div>
-        <EmployerSearchBar
-          selectedSearchField={selectedSearchField}
-          setSelectedSearchField={setSelectedSearchField}
-          setIsSearchEnable={setIsSearchEnable}
-          setSelectedSearchedValue={setSelectedSearchedValue}
-          tab={activeTab.key}
-          info={{
-            id: userId,
-            area: area,
-            state: state,
-          }}
-          isDisable={employersAggregate.count ? false : true}
-        /> */}
         <Table
           columns={columns}
           data={employers}
@@ -528,11 +427,6 @@ const Employers = (props) => {
           selectedSearchField={selectedSearchField}
           selectedSearchedValue={selectedSearchedValue}
         />
-        {/* <EmployerForm
-          show={modalShow}
-          onHide={hideCreateModal}
-          errors={formErrors}
-        /> */}
       </div>
     </Collapse>
   );

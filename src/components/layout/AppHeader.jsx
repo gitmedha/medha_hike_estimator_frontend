@@ -1,8 +1,6 @@
 import styled from "styled-components";
 
 import Userbox from "./Userbox";
-import SearchBar from "./Search/SearchBar";
-
 const AppHeader = styled.div`
   z-index: 3;
   width: 100%;
@@ -25,7 +23,6 @@ const AppHeader = styled.div`
 const Header = ({ isOpen, toggleMenu }) => {
   return (
     <AppHeader style={{width: isOpen ? 'calc(100vw - 275px)' : 'calc(100vw - 80px)'}}>
-      {/* <SearchBar /> */}
       <Userbox />
     </AppHeader>
   );

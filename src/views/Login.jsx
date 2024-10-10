@@ -247,7 +247,7 @@ const Login = () => {
             </div>
             <div className="line-box"> </div>
             <div className=" button-box" style={{textAlign:"center"}}>
-              <a type="button" href={apiPath('/connect/microsoft')} className="btn-ms-login d-flex">
+              <a type="button" href={`${process.env.REACT_APP_FRONTEND_BASEURL}/employees_details`} className="btn-ms-login d-flex">
                   <img
                     src={require('../assets/images/logo-microsoft.svg').default}
                     alt="Microsoft"

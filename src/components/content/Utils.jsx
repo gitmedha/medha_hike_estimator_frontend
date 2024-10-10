@@ -8,7 +8,6 @@ import ProgressBar from "@ramonak/react-progress-bar";
 import api from "../../apis";
 import SkeletonLoader from "./SkeletonLoader";
 import { FaAngleDoubleDown } from "react-icons/fa";
-import { FILE_UPLOAD, GET_STUDENT_DETAILS } from "../../graphql";
 import { FaAngleDoubleRight } from "react-icons/fa";
 
 const ProgressBarContainer = styled.div`
@@ -93,27 +92,6 @@ const StudentModal = (props) => {
   const [details, setDetails] = useState({});
   const [isLoading, setLoading] = useState(false);
 
-  useEffect(() => {
-    getStudentDetails();
-    // eslint-disable-next-line
-  }, []);
-
-  const getStudentDetails = async () => {
-    setLoading(true);
-    try {
-      let { data } = await api.post("/graphql", {
-        query: GET_STUDENT_DETAILS,
-        variables: {
-          id: props.student.id,
-        },
-      });
-      setDetails(data.data.student);
-    } catch (err) {
-     
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <Modal
@@ -235,31 +213,4 @@ export const cellStyle = {
   outline: "none",
   alignItems: "center",
   fontFamily: "Latto-Regular",
-};
-
-export const uploadFile = async (file) => {
-  let formdata = new FormData();
-  const queryString = {
-    query: FILE_UPLOAD,
-    variables: {
-      file: null,
-    },
-  };
-
-  formdata.append("operations", JSON.stringify(queryString));
-  formdata.append(
-    "map",
-    JSON.stringify({
-      0: ["variables.file"],
-    })
-  );
-
-  formdata.append("0", file, file.name);
-
-  return await api.post("/graphql", formdata, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
-
-  // await setFileUrl(urlPath(data.data.upload.url.substring(0)));
-  // await setFileId(Number(data.data.upload.id));
 };

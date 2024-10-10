@@ -3,10 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "@apollo/client": "^3.9.5",
+    "@babel/core": "^7.16.0",
     "@material-ui/core": "^4.11.4",
     "@material-ui/icons": "^4.11.2",
-    "@meilisearch/instant-meilisearch": "^0.5.10",
     "@ramonak/react-progress-bar": "^3.1.0",
     "@sentry/react": "^6.16.1",
     "@sentry/tracing": "^6.16.1",
@@ -27,7 +26,6 @@
     "material-ui": "^0.20.2",
     "meilisearch": "^0.20.0",
     "moment": "^2.29.1",
-    "node-sass": "^4.14.0",
     "nprogress": "^0.2.0",
     "papaparse": "^5.4.1",
     "prop-types": "^15.8.1",
@@ -60,6 +58,7 @@
     "redux": "^4.1.0",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
+    "sass": "^1.79.4",
     "styled-components": "^5.3.0",
     "web-vitals": "^1.1.2",
     "xlsx": "^0.18.5",
@@ -90,7 +89,10 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "react-json-view": "^1.21.3",
-    "redux-devtools-extension": "^2.13.9"
+    "redux-devtools-extension": "^2.13.9",
+    "resolve-url-loader": "^5.0.0",
+    "sass-loader": "^16.0.2"
   }
 }

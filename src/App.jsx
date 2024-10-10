@@ -1,7 +1,6 @@
 import { connect } from "react-redux";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-import Session from "./views/Batches/sessions";
 import { useToasts } from "react-toast-notifications";
 import { Switch, Route, useHistory, Redirect } from "react-router-dom";
 import ReactTooltip from 'react-tooltip';
@@ -14,33 +13,17 @@ import AppContainer from "./components/layout/AppContainer";
 
 // Route Components
 import Login from "./views/Login";
-import Batches from "./views/Batches/Batches";
-import Home from "./views/Dashboard/Home";
-import Batch from "./views/Batches/Batch";
-import Institution from "./views/Institutions/Institution";
-import Institutions from "./views/Institutions/Institutions";
-import Opportunities from "./views/Opportunities/Opportunities";
-import Opportunity from "./views/Opportunities/Opportunity";
-import Student from "./views/Students/Student";
 import Students from "./views/Students/Students";
-import AddSession from "./views/Batches/batchComponents/AddSession";
-import updateSession from "./views/Batches/sessions/updateSession";
-import Employer from "./views/Employers/Employer";
 import Employers from "./views/Employers/Employers";
-import EventCalendar from "./views/Calendar/Calendar";
-import TableView from "./views/Tables";
 
 import AuthContext from "./context/AuthContext";
 import { PrivateRoute } from "./route/PrivateRoute";
 import axios from "axios";
-import { apiPath, urlPath } from "./constants";
+import { apiPath} from "./constants";
 import { PublicRoute } from "./route/PublicRoute";
 import PageNotFound from "./views/404Page";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
-import operations from "./views/OperationsModule/Operations";
-import Operation from "./views/OperationsModule/Operation";
-import { isAdmin, isMedhavi, isPartnership, isSRM } from "./common/commonFunctions";
 
 const RouteContainer = styled.div`
   flex: 1;
@@ -129,9 +112,6 @@ const App = (props) => {
     }
   }, []);
 
-  // useEffect(() => {
-  //   getUserDetails();
-  // }, []);
 
   return (
     <AuthContext.Provider
@@ -144,7 +124,6 @@ const App = (props) => {
     >
       <Switch>
         <PublicRoute path="/" exact component={Login} />
-        <PublicRoute path="/auth/microsoft/callback" />
         <Route>
           <AppContainer>
             <Sidebar isOpen={isOpen} toggleMenu={toggleMenu} />
@@ -152,10 +131,8 @@ const App = (props) => {
               <Header isOpen={isOpen} />
               <RouteContainer id="main-content">
                 <Switch>
-                  {/* <PrivateRoute path="/dashboard" exact component={()=><Home/> } /> */}
-                  <PrivateRoute path="/employees_details" exact component={() => <Students isSidebarOpen={isOpen} />} />
-                  {/* <PrivateRoute path="/student/:id" exact component={Student} /> */}
-                  <PrivateRoute path="/historical_data" exact component={Employers} />
+                  <Route path="/employees_details" exact component={() => <Students isSidebarOpen={isOpen} />} />
+                  <Route path="/historical_data" exact component={Employers} />
                   <Route path='/404-page' component={PageNotFound} />
                   <Redirect to='/404-page' />
                 </Switch>
