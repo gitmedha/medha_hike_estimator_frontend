@@ -21,7 +21,14 @@ const routes = [
     to: "/employees_details",
     title: "Employees Details",
     aliases: ['student'],
-    icon: <FaUserGraduate {...iconProps} />,
+    icon:  (
+      <img
+        className="employees_details_icon"
+        src={require('../../assets/images/employee-data.png').default}
+        alt="employee details"
+        style={{ width: '24px', height: '24px', objectFit: 'contain' }}
+      />
+    ),
     show: true,
   },
   // {
@@ -42,7 +49,14 @@ const routes = [
     to: "/historical_data",
     title: "Historical Data",
     aliases: ['employer'],
-    icon: <FaUserTie {...iconProps} />,
+    icon:  (
+      <img
+        className="historical_details_icon"
+        src={require('../../assets/images/historic-data.png').default}
+        alt="historic-logo"
+        style={{ width: '24px', height: '24px', objectFit: 'contain' }}
+      />
+    ),
     show: true,
   },
   // {

@@ -4,7 +4,7 @@ import { Redirect, Route } from "react-router";
 export const PublicRoute = ({ children, ...rest }) => {
   let token = localStorage.getItem('token');
   if (token) {
-    return <Redirect to={{pathname: '/students'}} />
+    return <Redirect to={{pathname: '/employees_details'}} />
   }
   return (
     <Route

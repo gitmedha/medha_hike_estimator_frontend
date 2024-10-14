@@ -1,273 +1,112 @@
+import React, { useState } from "react";
 import styled from "styled-components";
-import { apiPath } from "../constants";
+import { Modal, Form, Button } from "react-bootstrap";
+import api from "../apis";
+import { useHistory } from "react-router-dom";
 
 const Styled = styled.div`
-
-.button-box{
-  padding: 0px 68px 0px 5px;
-}
-
-.line-box{
-    border: 2px solid #32b89d;
-    margin:0px 130px 0px 130px;
-  }
-
-.logo {
-  padding: 5px;
-  width: 130px;
-  height: 130px;
- }
-
- .row{
-  display: flex;
-  justify-content: center;
- }
-
- .row-box{
-    color: black;
-    font-size: 40px;
-    line-height: 1.25;
-    margin: 49px 39px 1px 19px;
-    width:90%;
-  }
-
-p{
-  margin-top: -6px;
-  margin-bottom: 0rem;
-  font-family: Bebas Neue Book;
-  font-size: 80px;
-  text-align:center;
-}
-
-.box-1, .col{
-  display: inline-block;
-  overflow: hidden;
-}
-
-.image{
-  max-width:100%;
-  max-height:10%;
-}
-
-.btn-ms-login {
+  .btn-ms-login {
     border: 3px solid #32b89d;
     box-sizing: border-box;
     border-radius: 40px;
     font-size: 15px;
     padding: 8px 30px;
     color: black;
-    font-family: 'Lato';
+    font-family: "Lato";
     text-decoration: none;
     margin: 31px 19px 19px 6px;
-    img {
-      width: 20px;
-      margin-right: 20px;
-    }
-}
-
-  @media (min-width:350px) and (max-width: 767px) {
-  .row{
-    display: flex;
-    justify-content:center;
   }
-
-  .row-box{
-    color: black;
-    font-size: 40px;
-    line-height: 1.25;
-    margin: 40px 39px 1px 19px;
-    width:90%;
-  }
-  .line-box{
-    border: 2px solid #32b89d;
-    margin: 9px 97px 3px 107px;
-  }
-  .image{
-    max-height: 100%;
-    height: 100%;
-    width: 100%
-  }
-  .btn-ms-login {
-    font-size: 15px;
-    padding: 13px 30px 12px 29px;
-    margin:  31px -60px 17px 8px;
-    justify-content: center;
-  }
-}
-
-@media (min-width:768px) and (max-width:1024px) {
-  .row-box-2{
-    display: flex;
-    justify-content:start;
-    height: 100vh;
-  }
-
-
-  .row-box{
-    color: black;
-    font-size: 40px;
-    line-height: 1.25;
-    margin: 173px 39px 1px 19px;
-    width:90%;
-  }
-  .logo {
-    position:absolute;
-	  top:0;
-	  left:22px;
-  }
-
-  .line-box{
-    border: 2px solid #32b89d;
-    margin: 9px 200px 0px 15px;
-  }
-  .image{
-    max-height: 100%;
-    height: 100vh;
-    width: 100%
-  }
-  .btn-ms-login {
-    font-size: 15px;
-    padding: 14px 25px 12px 23px;
-    margin: 64px -52px 48px -7px;
-    justify-content: center;
-  }
-  p{
-    text-align: initial;
-    font-size: 70px;
-  }
-}
-@media (min-width:1024px) and (max-width:1440px)   {
-  .row-box-2{
-    display: flex;
-    justify-content:start;
-    height: 100vh;
-  }
-
-  .row-box{
-    color: black;
-    font-size: 40px;
-    line-height: 1.25;
-    margin: 173px 39px 1px 19px;
-    width:90%;
-  }
-
-  .logo {
-    position:absolute;
-	  top:0;
-	  left:22px;
-  }
-
-  .line-box{
-    border: 2px solid #32b89d;
-    margin:10px 235px 0px 15px;
-  }
-
-  .image{
-    max-height: 100%;
-    height: 100vh;
-    width: 100%
-  }
-
-  .btn-ms-login {
-    font-size: 18px;
-    padding: 18px 57px 15px 49px;
-    margin: 55px -40px 43px -8px;
-    justify-content: center;
-  }
-
-  p{
-    text-align: initial;
-    font-size: 70px;
-  }
-}
-
-@media screen and (min-width:1440px)   {
-  .row-box-2{
-    display: flex;
-    justify-content:start;
-    height: 100vh;
-  }
-
-  .row-box{
-    color: black;
-    font-size: 40px;
-    line-height: 1.25;
-    margin: 173px 39px 1px 19px;
-    width:90%;
-  }
-
-  .logo {
-    position:absolute;
-	  top:0;
-	  left:22px;
-  }
-
-  .line-box{
-    border: 2px solid #32b89d;
-    margin: 9px 400px 0px 15px;
-  }
-
-  .image{
-    max-height: 100%;
-    height: 100vh;
-    width: 100%
-  }
-
-  .btn-ms-login {
-    position:absolute;
-	  bottom:-10px;
-    font-size: 18px;
-    padding: 18px 57px 15px 49px;
-    margin: 100px -30px 43px -8px;
-    justify-content: center;
-  }
-
-  p{
-    text-align: initial;
-    font-size: 70px;
-  }
-}
 `;
 
 const Login = () => {
+ 
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [show, setShow] = useState(true);
+  const handleClose = () => setShow(false);
+  const [onSuccess,SetSuccess] = useState(false);
+  const navigate = useHistory();
+
+  const handleLogin = async (event) => {
+    event.preventDefault();
+
+    try {
+      const response = await api.post('/api/users/login_user', {
+        username,
+        password,
+      });
+      
+      if (response.status === 200) {
+        SetSuccess(true);
+        setTimeout(() =>navigate.push('/employees_details'),3000);        
+        localStorage.setItem('user', JSON.stringify(response.data.data[0]));
+        localStorage.setItem('token', response.data.token);
+      } else {
+        setError("Invalid username or password");
+      }
+    } catch (err) {
+      setError("An error occurred. Please try again.");
+      console.error(err);
+    }
+  };
+
   return (
     <Styled>
       <div className="container-fluid">
-        <div className="row-box-2">
-          <div className="box-2 col-md-5">
-            <div className="row">
-              <img
-                  src={require('../assets/images/logo.png').default}
-                  alt="Medha SIS"
-                  className='logo'
-              />
-            </div>
-            <div className="row-box">
-              <p id="text" >STUDENT </p> <p>INFORMATION</p> <p>SYSTEM</p>
-            </div>
-            <div className="line-box"> </div>
-            <div className=" button-box" style={{textAlign:"center"}}>
-              <a type="button" href={`${process.env.REACT_APP_FRONTEND_BASEURL}/employees_details`} className="btn-ms-login d-flex">
-                  <img
-                    src={require('../assets/images/logo-microsoft.svg').default}
-                    alt="Microsoft"
-                    className={`mr-5`}
+        <div className="row justify-content-center align-items-center">
+          <div>
+            <Modal
+              centered
+              size="lg"
+              show={show}
+              animation={false}
+              aria-labelledby="contained-modal-title-vcenter"
+              className="form-modal"
+            >
+              <Modal.Header className="bg-white d-flex justify-content-center">
+                <Modal.Title>
+                  <h1 className="text--primary bebas-thick mb-0">Log in</h1>
+                </Modal.Title>
+              </Modal.Header>
+              <Modal.Body className="bg-white">
+                <Form onSubmit={handleLogin}>
+                  <Form.Group controlId="formUsername">
+                    <Form.Label>Username</Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="Enter username"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      required
+                    />
+                  </Form.Group>
 
-                  />
-                  <span style={{fontFamily:"Latto-Regular", textAlign:"center"}}>Login using Microsoft account</span>
-              </a>
-            </div>
-        </div>
-        <div className="box-1 col-md-7">
-          <img
-              src={require('../assets/images/web-image.png').default}
-              alt="Medha SIS"
-              className='image'
-              width="400" height="400"
-          />
+                  <Form.Group controlId="formPassword">
+                    <Form.Label>Password</Form.Label>
+                    <Form.Control
+                      type="password"
+                      placeholder="Password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
+                  </Form.Group>
+
+                  {error && <p style={{ color: "red" }}>{error}</p>}
+                  {onSuccess && <p style={{color:'green'}}> Successfully Logged in!</p>}
+                  <div className="row justify-content-center">
+                    <Button className="btn-ms-login my-2 bebas-thick col-auto" type="submit">
+                      Log in
+                    </Button>
+                  </div>
+               
+                </Form>
+              </Modal.Body>
+            </Modal>
+          </div>
         </div>
       </div>
-    </div>
     </Styled>
   );
 };

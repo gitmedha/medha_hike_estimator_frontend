@@ -43,6 +43,7 @@ const App = (props) => {
   const logout = (callback = () => {}) => {
     setUser(null);
     localStorage.removeItem('token');
+    history.push("/")
     callback();
   }
 
@@ -94,22 +95,7 @@ const App = (props) => {
   }
 
   useEffect(() => {
-    const accessToken = new URL(window.location.href).searchParams.get('access_token');
 
-    // check for full path also.
-    if (accessToken) {
-      // make api request to fetch JSON
-      axios.get(apiPath('/auth/microsoft/callback') + '?access_token=' + accessToken).then(data => {
-        localStorage.setItem("token", data.data.jwt);
-        setUser(data.data.user);
-        let nextUrl = '/students';
-        if (localStorage.getItem("next_url")){
-          nextUrl = localStorage.getItem("next_url");
-        }
-        localStorage.removeItem("next_url");
-        history.push(nextUrl); // or redirect to next url
-      })
-    }
   }, []);
 
 
@@ -131,8 +117,8 @@ const App = (props) => {
               <Header isOpen={isOpen} />
               <RouteContainer id="main-content">
                 <Switch>
-                  <Route path="/employees_details" exact component={() => <Students isSidebarOpen={isOpen} />} />
-                  <Route path="/historical_data" exact component={Employers} />
+                  <PrivateRoute path="/employees_details" exact component={() => <Students isSidebarOpen={isOpen} />} />
+                  <PrivateRoute path="/historical_data" exact component={Employers} />
                   <Route path='/404-page' component={PageNotFound} />
                   <Redirect to='/404-page' />
                 </Switch>
