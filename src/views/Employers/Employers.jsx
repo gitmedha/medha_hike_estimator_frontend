@@ -411,6 +411,9 @@ const Employers = (props) => {
     [activeTab.key]
   );
 
+  const onRowClick = (row)=>{
+    history.push(`/historic/${row.id}`);
+  }
 
   return (
     <Collapse title="Historical Data" type="plain" opened={true}>
@@ -426,6 +429,7 @@ const Employers = (props) => {
           isSearchEnable={isSearchEnable}
           selectedSearchField={selectedSearchField}
           selectedSearchedValue={selectedSearchedValue}
+          onRowClick={onRowClick}
         />
       </div>
     </Collapse>

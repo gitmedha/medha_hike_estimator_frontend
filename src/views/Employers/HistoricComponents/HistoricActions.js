@@ -1,11 +1,12 @@
 import api from "../../../apis";
-export const getEmployee = async (id)=>{
+
+export const getHistoric = async (id) =>{
     try{
-        const response = await api.get(`/api/employees/get_employee/${id}`);
+        const response = await api.get(`/api/historical_data/get_historic/${id}`);
         console.log(response)
         return response.data;
     }catch(error){
         console.error(error);
     }
-}
 
+}

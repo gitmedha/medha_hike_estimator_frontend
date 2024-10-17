@@ -16,6 +16,7 @@ import Login from "./views/Login";
 import Students from "./views/Students/Students";
 import Employers from "./views/Employers/Employers";
 import Employee from "./views/Students/Employee";
+import HistoricData from "./views/Employers/HistoricData";
 
 import AuthContext from "./context/AuthContext";
 import { PrivateRoute } from "./route/PrivateRoute";
@@ -121,6 +122,7 @@ const App = (props) => {
                   <PrivateRoute path="/employees_details" exact component={() => <Students isSidebarOpen={isOpen} />} />
                   <PrivateRoute path="/historical_data" exact component={Employers} />
                   <PrivateRoute path="/employee/:id" component={Employee}/>
+                  <PrivateRoute path="/historic/:id" component={HistoricData}/>
                   <Route path='/404-page' component={PageNotFound} />
                   <Redirect to='/404-page' />
                 </Switch>
