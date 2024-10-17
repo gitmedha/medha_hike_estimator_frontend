@@ -219,100 +219,11 @@ catch(error){
     setPaginationPageIndex(0);
   }, [activeTab.key, activeStatus]);
 
+  const onRowClick = (row)=>{
+    history.push(`/employee/${row.id}`);
+  }
 
 
-
-  const handleStudentStatusTabChange = (statusTab) => {
-    setActiveStatus(statusTab.title);
-    getStudents(
-      statusTab.title,
-      activeTab.key,
-      paginationPageSize,
-      paginationPageSize * paginationPageIndex
-    );
-  };
-
-  const HideMassEmployerCreateModal = async (data) => {
-    try {
-      // const uniqueStudentIds = [...new Set(data.map((item) => item.student))];
-      // for (const id in uniqueStudentIds) {
-      //   await getAndUpdateStudentFullName(id);
-      // }
-      await api.post(
-        "/employment-connections/createBulkEmploymentConnections",
-        data
-      );
-      setAlert("Employment Connection data created successfully.", "success");
-    } catch (error) {
-      setAlert("Unable to create Employment Connection Data.", "error");
-    }
-  };
-
-  const hideMassCreateModal = async (data) => {
-    if (data.length === 0) {
-      setAlert("Unable to create Alumni Data.", "error");
-    } else {
-      try {
-        await api.post("/alumni-services/createBulkAlumniServices", data);
-        setAlert("Alumni data created successfully.", "success");
-      } catch (error) {
-        setAlert("Unable to create Alumni Data.", "error");
-      }
-    }
-  };
-
-  const hideCreateMassEdit = (value) => {
-    setModalShowmassEdit(value);
-  };
-
-  const uploadData = (data) => {
-    HideMassEmployerCreateModal(data);
-  };
-
-  const uploadAlumniData = (data) => {
-    hideMassCreateModal(data);
-  };
-
-  const handelSubmitMassEdit = async (data, key) => {
-    if (key === "AlumniBulkEdit") {
-      await api
-        .post("/alumni-services/bulk-update", data)
-        .then(async(data) => {
-          setAlert("Data Edited Successfully.", "success");
-          setTimeout(() => {
-            window.location.reload(false);
-          }, 3000);
-        })
-        .catch((err) => {
-          setAlert("Unable To Edit.", "error");
-          setTimeout(() => {
-            window.location.reload(false);
-          }, 1000);
-        });
-    }
-
-    if (key === "EmployerBulkdEdit") {
-      await api
-        .post("/employment-connections/bulk-update", data)
-        .then(async(data) => {
-          // Return data
-        //   const uniqueStudentIds = [...new Set(data.map(item => item.student))];
-        // for(const id in uniqueStudentIds){
-        //   await getAndUpdateStudentFullName(id);
-        // }
-          setAlert("Data Edited Successfully.", "success");
-          setTimeout(() => {
-            window.location.reload(false);
-          }, 3000);
-        })
-        .catch((err) => {
-          setAlert("Unable To Edit", "error");
-          setTimeout(() => {
-            window.location.reload(false);
-          }, 1000);
-        });
-    }
-  };
 
   return (
     <Collapse title="Employees Details" type="plain" opened={true}>
@@ -352,6 +263,7 @@ catch(error){
               isSearchEnable={isSearchEnable}
               selectedSearchField={selectedSearchField}
               selectedSearchedValue={selectedSearchedValue}
+              onRowClick={onRowClick}
             />
           </div>
         </div>
