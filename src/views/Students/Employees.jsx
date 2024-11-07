@@ -8,8 +8,10 @@ import Table from "../../components/content/Table";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import { FaListUl, FaThLarge } from "react-icons/fa";
 import Switch from "@material-ui/core/Switch";
-import StudentGrid from "./StudentComponents/StudentGrid";
+import EmployeesGrid from "./StudentComponents/EmployeesGrid";
 import Collapse from "../../components/content/CollapsiblePanels";
+import SearchBar from "../../components/layout/SearchBar";
+import {searchEmployees,LoadSearchPicklist} from "./StudentComponents/EmployeeActions";
 
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
@@ -34,29 +36,23 @@ const Styled = styled.div`
   }
 `;
 
-const Students = (props) => {
+const Employees = (props) => {
   let { isSidebarOpen } = props;
   const { setAlert } = props;
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [students, setStudents] = useState([]);
   const [studentsAggregate, setStudentsAggregate] = useState([]);
-  const [studentsData, setStudentsData] = useState([]);
-  const [pickList, setPickList] = useState([]);
-  const [modalShow, setModalShow] = useState(false);
   const [layout, setLayout] = useState("list");
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
   const [activeStatus, setActiveStatus] = useState("All");
   const pageSize = parseInt(localStorage.getItem("tablePageSize")) || 25;
   const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
   const [paginationPageIndex, setPaginationPageIndex] = useState(0);
-  const userId = parseInt(localStorage.getItem("user_id"));
-  const state = localStorage.getItem("user_state");
-  const area = localStorage.getItem("user_area");
   const [selectedSearchField, setSelectedSearchField] = useState(null);
   const [isSearchEnable, setIsSearchEnable] = useState(false);
   const [selectedSearchedValue, setSelectedSearchedValue] = useState(null);
-  const [ModalShowmassEdit, setModalShowmassEdit] = useState(false);
+  const [defaultSearchOptions,setDefaultSearchOptions] = useState([]);
 
 
   const columns = useMemo(
@@ -103,6 +99,49 @@ const Students = (props) => {
     []
   );
 
+const optionsForSearch = [
+  {
+    label: "Employee ID",
+    value: "employee_id",
+    key: 0,
+  },
+  {
+    label: "First Name",
+    value: "first_name",
+    key: 1,
+  },{
+  key:2,
+  label: "Employee Type",
+  value: "employee_type",
+},
+{
+  key:3,
+  label: "Last Name",
+  value: "last_name",
+},
+{
+  key:4,
+  label: "Email",
+  value: "email_id",
+}, {
+  key:5,
+  label: "Department",
+  value: "department",
+}, {
+  key:6,
+  label: "Title",
+  value: "title",
+}, {
+  key:7,
+  label: "Date of Joining",
+  value: "date_of_joining",
+}, 
+{
+  key:8,
+  label: "Employee Status",
+  value: "employee_status",
+}
+]
   const getStudents = async (
     status = "All",
     selectedTab,
@@ -222,11 +261,36 @@ catch(error){
   const onRowClick = (row)=>{
     history.push(`/employee/${row.id}`);
   }
+  const loadDefaultOptions = async(dropDownField)=>{
+    const searchPickList = await LoadSearchPicklist(dropDownField)
+    // setDefaultSearchOptions(searchPickList);
+    return searchPickList;
 
+  }
+
+  const search =async (SearchProps)=>{
+    let employees;
+    if(SearchProps.from && SearchProps.to){
+      employees = await  searchEmployees(SearchProps.searchValue,SearchProps.from,SearchProps.to,paginationPageSize,paginationPageIndex)
+    }
+    else {
+      employees= await searchEmployees(SearchProps.searchValue,paginationPageSize,paginationPageIndex);
+    }
+    setStudents(employees.data);
+    setStudentsAggregate(employees.total);
+  }
 
 
   return (
     <Collapse title="Employees Details" type="plain" opened={true}>
+      <SearchBar
+      searchFieldOptions={optionsForSearch}
+      defaultSearchOptions={defaultSearchOptions}
+      searchValueOptions={[]}
+      handleSearch = {search}
+      handleSearchPicklist = {loadDefaultOptions}
+      
+      />
       <Styled>
         <div className="row m-1">
           <div className="d-flex justify-content-end py-2">
@@ -269,7 +333,7 @@ catch(error){
         </div>
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-center m-2">
           <div className={`col-12 ${layout !== "grid" ? "d-none" : ""}`}>
-            <StudentGrid
+            <EmployeesGrid
               data={students}
               isSidebarOpen={isSidebarOpen}
               totalRecords={studentsAggregate.count}
@@ -280,30 +344,7 @@ catch(error){
               onPageIndexChange={setPaginationPageIndex}
             />
           </div>
-          {/* <StudentForm show={modalShow} onHide={hideCreateModal} /> */}
-
-          {/* <ModaltoSelectBulkMassEdit
-            id={""}
-            name={"name"}
-            onHide={() => hideCreateMassEdit(false)}
-            show={ModalShowmassEdit}
-            handelSubmitMassEdit={handelSubmitMassEdit}
-            data={studentsData}
-            AddCheck={false}
-            EditCheck={false}
-            uploadAlumniData={uploadAlumniData}
-            uploadData={uploadData}
-            
-          /> */}
-
-          {/* <ModalShowmassedit
-            handelSubmitMassEdit={handelSubmitMassEdit}
-            data={studentsData}
-            onHide={() => hideCreateMassEdit(false)}
-            show={ModalShowmassEdit}
-            uploadData={uploadData}
-            uploadAlumniData={uploadAlumniData}
-          /> */}
+        
         </div>
       </Styled>
     </Collapse>
@@ -316,4 +357,4 @@ const mapActionsToProps = {
   setAlert,
 };
 
-export default connect(mapStateToProps, mapActionsToProps)(Students);
+export default connect(mapStateToProps, mapActionsToProps)(Employees);

@@ -13,10 +13,10 @@ import AppContainer from "./components/layout/AppContainer";
 
 // Route Components
 import Login from "./views/Login";
-import Students from "./views/Students/Students";
-import Employers from "./views/Employers/Employers";
+import Students from "./views/Students/Employees";
+import Historics from "./views/Historics/Historics";
 import Employee from "./views/Students/Employee";
-import HistoricData from "./views/Employers/HistoricData";
+import HistoricData from "./views/Historics/HistoricData";
 
 import AuthContext from "./context/AuthContext";
 import { PrivateRoute } from "./route/PrivateRoute";
@@ -120,7 +120,7 @@ const App = (props) => {
               <RouteContainer id="main-content">
                 <Switch>
                   <PrivateRoute path="/employees_details" exact component={() => <Students isSidebarOpen={isOpen} />} />
-                  <PrivateRoute path="/historical_data" exact component={Employers} />
+                  <PrivateRoute path="/historical_data" exact component={Historics} />
                   <PrivateRoute path="/employee/:id" component={Employee}/>
                   <PrivateRoute path="/historic/:id" component={HistoricData}/>
                   <Route path='/404-page' component={PageNotFound} />

@@ -4,7 +4,9 @@ import { useHistory ,useParams} from "react-router-dom";
 
 import Details from "./StudentComponents/Details";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
+import Collapsible from "../../components/content/CollapsiblePanels";
 import {getEmployee} from "./StudentComponents/EmployeeActions";
+import HistoricDetails from "./StudentComponents/HistoricDetails";
 import styled from 'styled-components';
 
 const Styled = styled.div`
@@ -21,9 +23,6 @@ const Employee = (props) => {
 const {id} = useParams();
 
   const [isLoading, setLoading] = useState(false);
-  const [student, setStudent] = useState({});
-  const [modalShow, setModalShow] = useState(false);
-  const history = useHistory();
   const [employee,setEmployee] = useState({});
 
 
@@ -48,6 +47,9 @@ if (isLoading) {
           </div>
         </div>
         <Details {...employee}/>
+        <Collapsible title="Historic Details">
+          <HistoricDetails firstName={employee.first_name} lastName = {employee.last_name}/>
+        </Collapsible>
       </>
       </Styled>
     );

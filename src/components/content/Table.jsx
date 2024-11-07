@@ -99,10 +99,7 @@ const Styles = styled.div`
 `;
 
 const Table = ({
-  selectedSearchedValue,
-  selectedSearchField,
   isSearchEnable,
-  fetchSearchedData,
   columns,
   data,
   fetchData,
@@ -153,19 +150,13 @@ const Table = ({
   };
 
   React.useEffect(() => {
-    if (fetchSearchedData) {
-      fetchSearchedData(pageIndex, pageSize, sortBy);
-    } else {
-      fetchData(
-        pageIndex,
-        pageSize,
-        sortBy,
-        isSearchEnable,
-        selectedSearchedValue,
-        selectedSearchField
-      );
-    }
-  }, [fetchData, pageIndex, pageSize, sortBy, fetchSearchedData]);
+    fetchData(
+      pageIndex,
+      pageSize,
+      sortBy,
+      isSearchEnable
+    );
+  }, [fetchData, pageIndex, pageSize, sortBy]);
 
   React.useEffect(() => {
     onPageSizeChange(pageSize);

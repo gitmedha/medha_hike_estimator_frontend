@@ -137,7 +137,7 @@ const Styles = styled.div`
   }
 `
 
-const StudentGrid = ({ isSidebarOpen, data, fetchData, totalRecords, loading, onRowClick=null, indexes=true, paginationPageSize, onPageSizeChange, paginationPageIndex, onPageIndexChange }) => {
+const EmployeesGrid = ({ isSidebarOpen, data, fetchData, totalRecords, loading, onRowClick=null, indexes=true, paginationPageSize, onPageSizeChange, paginationPageIndex, onPageIndexChange }) => {
   const [activeBoxRow, setActiveBoxRow] = React.useState(0);
   const [activeItem, setActiveItem] = React.useState({});
   const [activeBox, setActiveBox] = React.useState(0);
@@ -306,4 +306,4 @@ const StudentGrid = ({ isSidebarOpen, data, fetchData, totalRecords, loading, on
   )
 };
 
-export default StudentGrid;
+export default EmployeesGrid;
