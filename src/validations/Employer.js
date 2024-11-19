@@ -112,7 +112,6 @@ export const EmployerValidations = Yup.object({
     ),
     district,
 });
-
 export const ContactValidations = Yup.object({
   phone,
   full_name,

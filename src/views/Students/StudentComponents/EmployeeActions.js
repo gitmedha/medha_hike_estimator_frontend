@@ -44,3 +44,13 @@ export const getEmployeeHistoricsData = async(firstName,lastName)=>{
         console.error(error);
     }
 }
+
+export const getEmployeePicklist = async ()=>{
+    try{
+        const response = await api.get(`/api/employees/get_employee_picklists`);
+        console.log(response)
+        return response.data;
+    }catch(error){
+        console.error(error);
+    }
+}

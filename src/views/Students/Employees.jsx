@@ -12,6 +12,7 @@ import EmployeesGrid from "./StudentComponents/EmployeesGrid";
 import Collapse from "../../components/content/CollapsiblePanels";
 import SearchBar from "../../components/layout/SearchBar";
 import {searchEmployees,LoadSearchPicklist} from "./StudentComponents/EmployeeActions";
+import EmployeeForm from "./StudentComponents/EmployeeForm";  
 
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
@@ -53,6 +54,7 @@ const Employees = (props) => {
   const [isSearchEnable, setIsSearchEnable] = useState(false);
   const [selectedSearchedValue, setSelectedSearchedValue] = useState(null);
   const [defaultSearchOptions,setDefaultSearchOptions] = useState([]);
+  const [modalShow,setModalShow] = useState(false);
 
 
   const columns = useMemo(
@@ -250,7 +252,6 @@ catch(error){
   );
 
   useEffect(() => {
-    // getStudentsPickList().then((data) => setPickList(data));
     fetchData(0, paginationPageSize, []);
   }, []);
 
@@ -283,14 +284,26 @@ catch(error){
 
   return (
     <Collapse title="Employees Details" type="plain" opened={true}>
-      <SearchBar
-      searchFieldOptions={optionsForSearch}
-      defaultSearchOptions={defaultSearchOptions}
-      searchValueOptions={[]}
-      handleSearch = {search}
-      handleSearchPicklist = {loadDefaultOptions}
-      
-      />
+      <div className="d-flex justify-content-between align-items-center">
+        <div className="col-10">
+          <SearchBar
+          searchFieldOptions={optionsForSearch}
+          defaultSearchOptions={defaultSearchOptions}
+          searchValueOptions={[]}
+          handleSearch = {search}
+          handleSearchPicklist = {loadDefaultOptions}
+          />
+        </div>
+        <div className="col-auto">
+        <button
+            className="btn btn-primary add_button_sec"
+            onClick={() => setModalShow(true)}
+            // style={{ marginLeft: "15px" }}
+          >
+            Add New
+          </button>
+        </div>
+      </div>
       <Styled>
         <div className="row m-1">
           <div className="d-flex justify-content-end py-2">
@@ -344,8 +357,15 @@ catch(error){
               onPageIndexChange={setPaginationPageIndex}
             />
           </div>
-        
         </div>
+        {
+          modalShow && (
+            <EmployeeForm
+              show={modalShow}
+              onHide={() => setModalShow(false)}
+            />
+          )
+        }
       </Styled>
     </Collapse>
   );

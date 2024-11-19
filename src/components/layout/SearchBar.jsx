@@ -288,6 +288,7 @@ function SearchBar(props) {
                   type="button"
                   onClick={() => clear(formik)}
                   disabled={isDisable ? true : false}
+                  style={{marginLeft:15}}
                 >
                   CLEAR
                 </button>
