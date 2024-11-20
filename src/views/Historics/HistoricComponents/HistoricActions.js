@@ -48,3 +48,12 @@ export const getHistoricPickList = async ()=>{
         console.error(error);
     }
 }
+
+export const getReportee = async (name)=>{
+    try{
+        const response = await api.get(`/api/historical_data/get_reportee_details/${name}`);
+        return response.data;
+    }catch(error){
+        console.error(error);
+    }
+}

@@ -4,9 +4,11 @@ import { useHistory ,useParams} from "react-router-dom";
 import SweetAlert from "react-bootstrap-sweetalert";
 import Details from "./HistoricComponents/Details";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
-import {getHistoric} from "./HistoricComponents/HistoricActions";
+import {getHistoric,getReportee} from "./HistoricComponents/HistoricActions";
 import styled from 'styled-components';
 import HistoricForm from "./HistoricComponents/HistoricForm";
+import Collapsible from "src/components/content/CollapsiblePanels";
+import ReporteeDetails from "./HistoricComponents/ReporteeDetails";
 
 const Styled = styled.div`
 
@@ -31,6 +33,8 @@ const {id} = useParams();
 useEffect(()=>{
     async function getHistoricDetails(id){
         const data = await getHistoric(id);
+        // const reportee = await getReportee(id);
+        // console.log("reportee",reportee);
         setHistoric(data.data[0]);
     }
     getHistoricDetails(id);  
@@ -67,6 +71,9 @@ if (isLoading) {
           </div>
         </div>
         <Details {...historic}/>
+        <Collapsible title="Reportee Details">
+          <ReporteeDetails managerData={historic}/>
+        </Collapsible>
         {
           modalShow ? <HistoricForm show={modalShow} onHide={()=>setModalShow(false)} HistoricalData={historic}/> : <div></div>
         }
