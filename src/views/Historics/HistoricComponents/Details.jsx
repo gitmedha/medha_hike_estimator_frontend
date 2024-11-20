@@ -84,7 +84,6 @@ const Details = (props) => {
     competency,
     start_month,
     reviewer,
-    email_id,
   } = props;
 
 

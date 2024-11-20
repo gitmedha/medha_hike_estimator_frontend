@@ -163,7 +163,6 @@ try {
   const data = await api.get('/api/employees/get_employees', {params});
   if(data.status === 200){
     setStudents(data?.data?.data);
-    console.log('total',data?.data?.total, typeof data?.data?.total);
     setStudentsAggregate(data?.data?.total);
     setLoading(false);
     nProgress.done();

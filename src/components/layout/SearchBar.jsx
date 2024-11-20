@@ -160,7 +160,6 @@ function SearchBar(props) {
         handleLoaderForSearch();
 
        const data = await handleSearchPicklist(searchField);
-       console.log(data);
        
 
         await setSearchValueOptions(data);

@@ -5,3 +5,4 @@
 // export * from "./Opportunity";
 
 export * from "./Employee";
+export * from "./Historic";

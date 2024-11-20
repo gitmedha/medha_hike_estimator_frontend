@@ -7,6 +7,9 @@ import api from "../../apis";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
 import Collapse from "../../components/content/CollapsiblePanels";
+import SearchBar from "../../components/layout/SearchBar";
+import {searchHistorics,LoadSearchPicklist} from "./HistoricComponents/HistoricActions";
+import HistoricForm from "./HistoricComponents/HistoricForm";
 
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
@@ -27,9 +30,6 @@ const Historics = (props) => {
   const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
   const { setAlert } = props;
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
-  const userId = parseInt(localStorage.getItem("user_id"));
-  const state = localStorage.getItem("user_state");
-  const area = localStorage.getItem("user_area");
   const [selectedSearchField, setSelectedSearchField] = useState(null);
   const [isSearchEnable, setIsSearchEnable] = useState(false);
   const [selectedSearchedValue, setSelectedSearchedValue] = useState(null);
@@ -144,8 +144,78 @@ const Historics = (props) => {
     history.push(`/historic/${row.id}`);
   }
 
+  const optionsForSearch = [
+    {
+      label: "Employee",
+      value: "employee",
+      key: 0,
+    },
+    {
+      label: "Reviewer",
+      value: "reviewer",
+      key: 1,
+    },{
+    key:2,
+    label: "KRA VS GOALS",
+    value: "kra_vs_goals",
+  },
+  {
+    key:3,
+    label: "Competency",
+    value: "competency",
+  },
+  {
+    key:4,
+    label: "Final Score",
+    value: "final_score",
+  }, {
+    key:5,
+    label: "Start Month",
+    value: "start_month",
+  }, {
+    key:6,
+    label: "Ending Month",
+    value: "ending_month",
+  }
+  ]
+  const search =async (SearchProps)=>{
+    let historics;
+    if(SearchProps.from && SearchProps.to){
+      historics = await  searchHistorics(SearchProps.searchValue,SearchProps.from,SearchProps.to,paginationPageSize)
+    }
+    else {
+      historics= await searchHistorics(SearchProps.searchValue,paginationPageSize);
+    }
+    setEmployers(historics.data);
+    setEmployersAggregate(historics.total);
+  }
+
+  const loadDefaultOptions = async(dropDownField)=>{
+    const searchPickList = await LoadSearchPicklist(dropDownField)
+    return searchPickList;
+
+  }
   return (
     <Collapse title="Historical Data" type="plain" opened={true}>
+      <div className="d-flex justify-content-between align-items-center">
+        <div className="col-10">
+          <SearchBar
+          searchFieldOptions={optionsForSearch}
+          searchValueOptions={[]}
+          handleSearch = {search}
+          handleSearchPicklist = {loadDefaultOptions}
+          />
+        </div>
+        <div className="col-auto">
+        <button
+            className="btn btn-primary add_button_sec"
+            onClick={() => setModalShow(true)}
+            // style={{ marginLeft: "15px" }}
+          >
+            Add New
+          </button>
+        </div>
+      </div>
       <div className="row">
         <Table
           columns={columns}
@@ -159,6 +229,14 @@ const Historics = (props) => {
           onRowClick={onRowClick}
         />
       </div>
+      {
+        modalShow && (
+          <HistoricForm
+            show={modalShow}
+            onHide={() => setModalShow(false)}
+          />
+        )
+      }
     </Collapse>
   );
 };

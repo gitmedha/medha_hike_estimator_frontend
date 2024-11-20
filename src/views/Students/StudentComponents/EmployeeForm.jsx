@@ -39,10 +39,10 @@ export default function EmployeeForm(props) {
     const [employeeStatuses] = useState([
         {
         label: 'Active',
-        Value: 'Active'
+        value: 'Active'
     }, {
         label: 'Inactive',
-        Value: 'Inactive'
+        value: 'Inactive'
     }
 ]);
     const [employeeTitles, setEmployeeTitles] = useState([]);
@@ -57,12 +57,14 @@ export default function EmployeeForm(props) {
         first_name:props?.employeeData?.first_name || "",
         last_name:props?.employeeData?.last_name || "",
         experience:props?.employeeData?.experience || "",
-        employee_status:props?.employeeData?.employee_status || "Active",
+        employee_status:props?.employeeData?.employee_status || "",
         employee_id:props?.employeeData?.employee_id || "",
         title:props?.employeeData?.title || "",
         employee_type:props?.employeeData?.employee_type || "",
         date_of_joining: new Date(props?.employeeData?.date_of_joining ) || ""
     }
+
+    
 
 
     useEffect(()=>{
