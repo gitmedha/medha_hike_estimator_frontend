@@ -54,3 +54,35 @@ export const getEmployeePicklist = async ()=>{
         console.error(error);
     }
 }
+
+export const createEmployee = async (employeeData)=>{
+    try{
+        const response = await api.post(`/api/employees/create_employee`, employeeData, {
+            headers: { 'Content-Type': 'application/json' }
+        });
+        return response.data;
+    }catch(error){
+        console.error(error);
+    }
+
+}
+
+export const updateEmployee = async (employeeData,id)=>{
+    try{
+        const response = await api.put(`/api/employees/edit_employee/${id}`, employeeData, {
+            headers: { 'Content-Type': 'application/json' }
+        });
+        return response.data;
+    }catch(error){
+        console.error(error);
+    }
+}
+
+export const deleteEmployee = async (id)=>{
+    try{
+        const response = await api.delete(`/api/employees/delete_employee/${id}`);
+        return response.data;
+    }catch(error){
+        console.error(error);
+    }
+}

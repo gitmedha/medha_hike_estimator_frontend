@@ -6,7 +6,7 @@ import SweetAlert from "react-bootstrap-sweetalert";
 import Details from "./StudentComponents/Details";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import Collapsible from "../../components/content/CollapsiblePanels";
-import {getEmployee} from "./StudentComponents/EmployeeActions";
+import {getEmployee,deleteEmployee} from "./StudentComponents/EmployeeActions";
 import HistoricDetails from "./StudentComponents/HistoricDetails";
 import EmployeeForm from "./StudentComponents/EmployeeForm";
 import styled from 'styled-components';
@@ -39,6 +39,12 @@ useEffect(()=>{
 },[])
 
 const handleDelete = async ()=>{
+  try{
+    await deleteEmployee(employee.id);
+    window.location.href = "/employees_details";
+  }catch(error){
+    console.error(error);
+  }
   
 }
 

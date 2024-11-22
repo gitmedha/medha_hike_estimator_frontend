@@ -124,7 +124,7 @@ const App = (props) => {
                   <PrivateRoute path="/historical_data" exact component={Historics} />
                   <PrivateRoute path="/employee_details/:id" component={Employee}/>
                   <PrivateRoute path="/employee_increments" component={EmployeeIncrements}/>
-                  {/* <PrivateRoute path="/employee/:id" component={Employee}/> */}
+                  <PrivateRoute path="/employee/:id" component={Employee}/>
                   <PrivateRoute path="/historic/:id" component={HistoricData}/>
                   <Route path='/404-page' component={PageNotFound} />
                   <Redirect to='/404-page' />

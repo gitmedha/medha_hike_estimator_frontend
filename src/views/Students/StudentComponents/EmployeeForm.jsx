@@ -1,13 +1,16 @@
 import React from 'react'
 import { Formik, Form } from 'formik';
 import { Modal } from "react-bootstrap";
+import {useHistory} from "react-router-dom";
+import nProgress from "nprogress";
+
 // import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 
 import { Input } from "../../../utils/Form";
 import { EmployeeValidations} from "../../../validations";
-import {getEmployeePicklist} from './EmployeeActions';
+import {getEmployeePicklist,createEmployee,updateEmployee} from './EmployeeActions';
 import moment from "moment";
 
 const Section = styled.div`
@@ -31,7 +34,8 @@ const Section = styled.div`
 export default function EmployeeForm(props) {
 
     
-    const { show, handleClose,onHide } = props;
+    const { show,onHide } = props;
+    let navigation = useHistory();
 
     const [currentBands, setCurrentBands] = useState([]);
     const [departments, setDepartments] = useState([]);
@@ -48,9 +52,9 @@ export default function EmployeeForm(props) {
     const [employeeTitles, setEmployeeTitles] = useState([]);
 
     const [isWorking,setIsWorking] = useState(props.employeeData ? true:false);
+    const [isUpdated,setIsUpdated] = useState(false);
 
     const initialValues = {
-        is_present: isWorking ? ["present"] : [],
         current_band:props?.employeeData?.current_band || "",
         department:props?.employeeData?.department || "",
         email_id:props?.employeeData?.email_id || "",
@@ -61,7 +65,7 @@ export default function EmployeeForm(props) {
         employee_id:props?.employeeData?.employee_id || "",
         title:props?.employeeData?.title || "",
         employee_type:props?.employeeData?.employee_type || "",
-        date_of_joining: new Date(props?.employeeData?.date_of_joining ) || ""
+        date_of_joining: props.employeeData?new Date(props.employeeData.date_of_joining):""
     }
 
     
@@ -79,15 +83,58 @@ export default function EmployeeForm(props) {
         fetchPickList();
     },[])
 
+    const getUpdatedFields = (oldData, newData) => {
+      const updatedFields = {};
+      for (const key in newData) {
+          if (newData[key] !== oldData[key]) {
+            console.log(key)
+            if(key === "date_of_joining"){
+              const newJoiningDate = new Date(newData[key]);
+              const oldJoiningDate = new Date(oldData[key]);
+              if(newJoiningDate.toISOString() === oldJoiningDate.toISOString()) {
+                return updatedFields;
+              }
+              else {
+                updatedFields[key] = newData[key];
+              }
+            }
+            updatedFields[key] = newData[key];
+          }
+      }
+      return updatedFields;
+  };
+  
 
+    const onSubmit = async (values) => {
+      nProgress.start();
+      try {
+          if (props.employeeData) {
+              const updatedData = getUpdatedFields(props.employeeData, values);
+              if (Object.keys(updatedData).length > 0) {
+                  await updateEmployee(updatedData,props.employeeData.id);
+                  onHide();
+              } else {
 
-    const onSubmit = async(values) =>{
-        try {
-            console.log(values);
-        } catch (error) {
-            console.error(error)
-        }
-    }
+                setIsUpdated(true);
+                setTimeout(() => {
+                  setIsUpdated(false);
+                  onHide();
+                  nProgress.done();
+                },3000);
+                
+              }
+          } else {
+              const response = await createEmployee(values);
+              onHide();
+              console.log(response);
+              navigation.push(`/employee/177`)
+              nProgress.done();
+          }
+          
+      } catch (error) {
+          console.error("Error submitting form:", error);
+      }
+  };
 
     return (
         <Modal
@@ -158,7 +205,7 @@ export default function EmployeeForm(props) {
                           className="form-control"
                         />
                       </div>
-                      {/* <div className="col-md-6 col-sm-12 mt-2">
+                      <div className="col-md-6 col-sm-12 mt-2">
                         <Input
                           name="date_of_joining"
                           label="Date of Joining"
@@ -168,7 +215,7 @@ export default function EmployeeForm(props) {
                           placeholder="Date of Joining"
                           autoComplete="off"
                         />
-                        </div> */}
+                        </div>
                       <div className="col-md-6 col-sm-12 mt-2">
                           <Input
                             control="lookup"
@@ -254,19 +301,8 @@ export default function EmployeeForm(props) {
                           autoComplete="off"
                         />
                       </div>}
-                      <div className="col-md-6 col-sm-12 mt-2">
-                        <Input
-                            control="checkbox"
-                            name="is_present"
-                            label="Current Working"
-                            options={[
-                            { key: "Present", value: "present" }
-                            ]}
-                            className="form-check-label"
-                            onChange={e => setIsWorking(e.target.checked)}                        />
-                        </div>
-
                     </div>
+                    {isUpdated ? <p style={{color:'red'}}> No Changes Detected</p>: <p></p>}
                   </Section>
                   <div className="row justify-content-end mt-1">
                     <div className="col-auto p-0">
