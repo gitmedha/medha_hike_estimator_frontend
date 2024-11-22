@@ -11,9 +11,6 @@ import { useState, useEffect } from "react";
 import { Input } from "../../../utils/Form";
 import { employeeValidations} from "../../../validations";
 import {getEmployeePicklist,createEmployee,updateEmployee} from './EmployeeActions';
-import DetailField from "../../../components/content/DetailField";
-
-import moment from "moment";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -55,9 +52,7 @@ export default function EmployeeForm(props) {
 
     const [isWorking,setIsWorking] = useState(props.employeeData ? true:false);
     const [isUpdated,setIsUpdated] = useState(false);
-    const [experience,setExperience] = useState(props.employeeData?props.employeeData.experience : "0 days" );
-    const [startDate, setStartDate] = useState("");
-    const [endDate,setEndDate] = useState("");
+    
 
  
 
@@ -67,7 +62,12 @@ export default function EmployeeForm(props) {
         email_id:props?.employeeData?.email_id || "",
         first_name:props?.employeeData?.first_name || "",
         last_name:props?.employeeData?.last_name || "",
-        experience:props?.employeeData?.experience || "",
+        years: props?.employeeData?.experience 
+        ? parseInt(props.employeeData.experience.match(/\d+/g)?.[0] || 0, 10) 
+        : 0,
+        months: props?.employeeData?.experience 
+        ? parseInt(props.employeeData.experience.match(/\d+/g)?.[1] || 0, 10) 
+        : 0,
         employee_status:props?.employeeData?.employee_status || "",
         employee_id:props?.employeeData?.employee_id || "",
         title:props?.employeeData?.title || "",
@@ -108,15 +108,27 @@ export default function EmployeeForm(props) {
       }
       return updatedFields;
   };
+
+  const formatExperience = (years, months) => {
+    return `${years} year(s) ${months} month(s)`;
+  };
   
 
     const onSubmit = async (values) => {
       nProgress.start();
+      const experienceText = formatExperience(values.years, values.months);
+  const dataToSubmit = {
+    ...values,
+    experience: experienceText,
+  };
       try {
           if (props.employeeData) {
               const updatedData = getUpdatedFields(props.employeeData, values);
               if (Object.keys(updatedData).length > 0) {
-                  await updateEmployee(updatedData,props.employeeData.id);
+                delete dataToSubmit.years;
+                delete dataToSubmit.months;
+                  await updateEmployee(dataToSubmit,props.employeeData.id);
+                  window.location.href = `/employee/${props.employeeData.id}`;
                   onHide();
               } else {
 
@@ -129,7 +141,10 @@ export default function EmployeeForm(props) {
                 
               }
           } else {
-              const response = await createEmployee(values);
+            delete dataToSubmit.years;
+            delete dataToSubmit.months;
+
+              const response = await createEmployee(dataToSubmit);
               onHide();
               navigation.push(`/employee/${response.data.id}`);
               nProgress.done();
@@ -138,23 +153,6 @@ export default function EmployeeForm(props) {
       } catch (error) {
           console.error("Error submitting form:", error);
       }
-  };
-
-  const calculateExperience = (startDate, endDate) => {
-    // Parse the dates
-    const start = moment(startDate);
-    const end = moment(endDate);
-  
-    // Check if the dates are valid
-    if (!start.isValid() || !end.isValid()) {
-      return "Invalid dates";
-    }
-  
-    // Calculate the difference
-    const years = end.diff(start, "years");
-    const months = end.diff(start, "months") % 12;
-  
-    return `${years} year(s) ${months} month(s)`;
   };
 
     return (
@@ -300,38 +298,31 @@ export default function EmployeeForm(props) {
                     Experience    
                     </h3>
                     <div className="row">
-                    <div className="col-md-6 col-sm-12 mt-2">
-                        <Input
-                          name="start_date"
-                          label="Start Date"
-                          required
-                          control="datepicker"
-                          className="form-control"
-                          placeholder="Start Date"
-                          autoComplete="off"
-                          onChange={(e)=>setFieldValue('start_date',e.target.value)}
-                        />
-                        </div>
                       <div className="col-md-6 col-sm-12 mt-2">
                         <Input
-                          name="end_date"
-                          label="End Date"
+                          name="years"
+                          label="Years"
                           required
-                          control="datepicker"
-                          placeholder="End Date"
+                          control="input"
+                          placeholder="Experience in years"
                           className="form-control"
                           autoComplete="off"
-                          onChange={(e)=>setFieldValue('end_date',e.target.value)}
                         />
                       </div>
-                      {/* <div className="col-md-6 col-sm-12 mt-2 d-flex align-items-center">
-                      <DetailField label="Experience" className="capitalize" value={experience} />
-                      {console.log(values.start_date)}
-                      {console.log(values.end_date)}
-                      {console.log(calculateExperience(values.start_date, values.end_date))}
-                      </div> */}
-
+                      
+                    <div className="col-md-6 col-sm-12 mt-2">
+                        <Input
+                            name="months"
+                            label="Months"
+                            required
+                            control="input"
+                            className="form-control"
+                            placeholder="Experience in months"
+                            autoComplete="off"
+                          />
+                        </div>
                     </div>
+                    
                     {isUpdated ? <p style={{color:'red'}}> No Changes Detected</p>: <p></p>}
                   </Section>
                   <div className="row justify-content-end mt-1">

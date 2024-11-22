@@ -7,8 +7,12 @@ import { useState, useEffect } from "react";
 
 import { Input } from "../../../utils/Form";
 import { historicValidations} from "../../../validations";
-import {getHistoricPickList} from './HistoricActions';
+import {getHistoricPickList,createHistoric,updateHistoric} from './HistoricActions';
 import moment from "moment";
+import nProgress from "nprogress";
+import {useHistory} from "react-router-dom";
+import { BsWindowSidebar } from 'react-icons/bs';
+
 
 
 const Section = styled.div`
@@ -33,31 +37,47 @@ padding-bottom: 30px;
 
 
 function HistoricForm(props) {
-    const { show, handleClose,onHide } = props;
+    const { show,onHide } = props;
     const [employees,setEmployees] = useState([]);
     const [reviewers,setReviewers] = useState([]);
-    const [loading, setLoading] = useState(true);
+    let navigation = useHistory();
+    
     const initialValues = {
         employee:props?.HistoricalData?.employee || "",
-        reviewer:props?.HistoricalData?.department || "",
+        reviewer:props?.HistoricalData?.reviewer || "",
         kra_vs_goals:props?.HistoricalData?.kra_vs_goals || "",
         competency:props?.HistoricalData?.competency || "",
         final_score:props?.HistoricalData?.final_score || "",
-        start_month:new Date(props?.HistoricalData?.start_month) || "",
-        ending_month:new Date(props?.HistoricalData?.ending_month) || ""
+        start_month:props.HistoricalData?new Date(props.HistoricalData.start_month):"",
+        ending_month:props.HistoricalData?new Date(props.HistoricalData.ending_month):""
     }
     const onSubmit = async (values)=>{
+      nProgress.start();
         try{
+          if(props.HistoricalData){
+            await updateHistoric(values,props.HistoricalData.id);
+            window.location.href = `/historic/${props.HistoricalData.id}`
+            onHide();
+            nProgress.done();
+
+          }
+          else {
+           const response =  await createHistoric(values);
+            navigation.push(`/historic/${response.data.id}`);
+
+            onHide();
+            nProgress.done();
+
+          }
 
         }catch(error){
-
+          console.eror(error)
         }
     }
 
     useEffect(()=>{
         async function setInitialFields(){
             const data = await getHistoricPickList();
-            console.log(data)
             setEmployees(data.employees);
             setReviewers(data.reviewers);
         }
@@ -78,7 +98,7 @@ function HistoricForm(props) {
               className="d-flex align-items-center"
             >
               <h1 className="text--primary bebas-thick mb-0">
-                {props.employeeData ? "Edit Details" : 'Add New'}
+                {props.HistoricalData ? "Edit Details" : 'Add New'}
               </h1>
             </Modal.Title>
           </Modal.Header>
@@ -157,7 +177,7 @@ function HistoricForm(props) {
                         </div>
                         <div className="col-md-6 col-sm-12 mt-2">
                         <Input
-                          name="end_month"
+                          name="ending_month"
                           label="End Month"
                           required
                           control="datepicker"

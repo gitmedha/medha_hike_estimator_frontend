@@ -4,7 +4,7 @@ import { useHistory ,useParams} from "react-router-dom";
 import SweetAlert from "react-bootstrap-sweetalert";
 import Details from "./HistoricComponents/Details";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
-import {getHistoric,getReportee} from "./HistoricComponents/HistoricActions";
+import {getHistoric,getReportee,deleteHistoric} from "./HistoricComponents/HistoricActions";
 import styled from 'styled-components';
 import HistoricForm from "./HistoricComponents/HistoricForm";
 import Collapsible from "src/components/content/CollapsiblePanels";
@@ -41,7 +41,12 @@ useEffect(()=>{
 },[])
 
 const handleDelete = async () => {
-
+  try{
+    await deleteHistoric(historic.id);
+    window.location.href = "/historical_data";
+  }catch(error){
+    console.error(error);
+  }
 }
 
 if (isLoading) {

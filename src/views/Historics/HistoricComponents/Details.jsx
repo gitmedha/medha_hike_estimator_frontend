@@ -95,8 +95,8 @@ const Details = (props) => {
         <div className="row latto-regular">
           <div className="col-md-5">
             <DetailField label="Name" className="capitalize" value={`${employee}`?.toLowerCase()} />
-            <DetailField label="Start Month" value={start_month} />
-            <DetailField label="Ending Month" value={ending_month} />
+            <DetailField label="Start Month" value={moment(start_month).format("MMMM YYYY")} />
+            <DetailField label="Ending Month" value={moment(ending_month).format('MMMM YYYY')} />
             <DetailField label="Kra vs Goals" className="capitalize" value={kra_vs_goals} />
 
           </div>

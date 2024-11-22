@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import Table from "../../../components/content/Table";
-import {getEmployeeHistoricsData} from "./EmployeeActions";
+import {getEmployeeHistoricsData, deleteHistoric} from "./EmployeeActions";
 
 
 const HistoricDetails = (props) => {

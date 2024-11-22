@@ -57,3 +57,36 @@ export const getReportee = async (name)=>{
         console.error(error);
     }
 }
+
+
+export const createHistoric = async (historical_data)=>{
+    try{
+        const response = await api.post(`/api/historical_data/create_historical_data`, historical_data, {
+            headers: { 'Content-Type': 'application/json' }
+        });
+        return response.data;
+    }catch(error){
+        console.error(error);
+    }
+
+}
+
+export const updateHistoric = async (historical_data,id)=>{
+    try{
+        const response = await api.put(`/api/historical_data/edit_historical_data/${id}`, historical_data, {
+            headers: { 'Content-Type': 'application/json' }
+        });
+        return response.data;
+    }catch(error){
+        console.error(error);
+    }
+}
+
+export const deleteHistoric = async (id)=>{
+    try{
+        const response = await api.delete(`/api/historical_data/delete_historical_data/${id}`);
+        return response.data;
+    }catch(error){
+        console.error(error);
+    }
+}
