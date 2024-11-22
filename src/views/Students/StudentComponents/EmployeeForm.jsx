@@ -11,6 +11,8 @@ import { useState, useEffect } from "react";
 import { Input } from "../../../utils/Form";
 import { EmployeeValidations} from "../../../validations";
 import {getEmployeePicklist,createEmployee,updateEmployee} from './EmployeeActions';
+import DetailField from "../../../components/content/DetailField";
+
 import moment from "moment";
 
 const Section = styled.div`
@@ -53,6 +55,8 @@ export default function EmployeeForm(props) {
 
     const [isWorking,setIsWorking] = useState(props.employeeData ? true:false);
     const [isUpdated,setIsUpdated] = useState(false);
+    const [experience,setExperience] = useState(props.employeeData?props.employeeData.experience : "0 days" );
+ 
 
     const initialValues = {
         current_band:props?.employeeData?.current_band || "",
@@ -82,7 +86,7 @@ export default function EmployeeForm(props) {
 
         fetchPickList();
     },[])
-
+    
     const getUpdatedFields = (oldData, newData) => {
       const updatedFields = {};
       for (const key in newData) {
@@ -126,14 +130,30 @@ export default function EmployeeForm(props) {
           } else {
               const response = await createEmployee(values);
               onHide();
-              console.log(response);
-              navigation.push(`/employee/177`)
+              navigation.push(`/employee/${response.data.id}`);
               nProgress.done();
           }
           
       } catch (error) {
           console.error("Error submitting form:", error);
       }
+  };
+
+  const calculateExperience = (startDate, endDate) => {
+    // Parse the dates
+    const start = moment(startDate);
+    const end = moment(endDate);
+  
+    // Check if the dates are valid
+    if (!start.isValid() || !end.isValid()) {
+      return "Invalid dates";
+    }
+  
+    // Calculate the difference
+    const years = end.diff(start, "years");
+    const months = end.diff(start, "months") % 12;
+  
+    return `${years} year(s) ${months} month(s)`;
   };
 
     return (
@@ -164,7 +184,7 @@ export default function EmployeeForm(props) {
               {({ values, setFieldValue }) => (
                 <Form>
                   <Section>
-                    <div className="row form_sec">
+                    <div className="row">
                       <div className="col-md-6 col-sm-12 mt-2">
                         <Input
                           name="first_name"
@@ -288,9 +308,10 @@ export default function EmployeeForm(props) {
                           className="form-control"
                           placeholder="Start Date"
                           autoComplete="off"
+                          onChange={(e)=>setFieldValue('start_date',e.target.value)}
                         />
                         </div>
-                      {!isWorking && <div className="col-md-6 col-sm-12 mt-2">
+                      <div className="col-md-6 col-sm-12 mt-2">
                         <Input
                           name="end_date"
                           label="End Date"
@@ -299,8 +320,16 @@ export default function EmployeeForm(props) {
                           placeholder="End Date"
                           className="form-control"
                           autoComplete="off"
+                          onChange={(e)=>setFieldValue('end_date',e.target.value)}
                         />
-                      </div>}
+                      </div>
+                      {/* <div className="col-md-6 col-sm-12 mt-2 d-flex align-items-center">
+                      <DetailField label="Experience" className="capitalize" value={experience} />
+                      {console.log(values.start_date)}
+                      {console.log(values.end_date)}
+                      {console.log(calculateExperience(values.start_date, values.end_date))}
+                      </div> */}
+
                     </div>
                     {isUpdated ? <p style={{color:'red'}}> No Changes Detected</p>: <p></p>}
                   </Section>

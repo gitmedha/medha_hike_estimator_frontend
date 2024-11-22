@@ -43,8 +43,8 @@ function HistoricForm(props) {
         kra_vs_goals:props?.HistoricalData?.kra_vs_goals || "",
         competency:props?.HistoricalData?.competency || "",
         final_score:props?.HistoricalData?.final_score || "",
-        // start_month:new Date(props?.HistoricalData?.start_month) || new Date().toISOString(),
-        // ending_month:new Date(props?.HistoricalData?.ending_month) || new Date().toISOString()
+        start_month:new Date(props?.HistoricalData?.start_month) || "",
+        ending_month:new Date(props?.HistoricalData?.ending_month) || ""
     }
     const onSubmit = async (values)=>{
         try{
@@ -91,7 +91,7 @@ function HistoricForm(props) {
               {({ values, setFieldValue }) => (
                 <Form>
                   <Section>
-                    <div className="row form_sec">
+                    <div className="row">
                       <div className="col-md-6 col-sm-12 mt-2">
                         <Input
                           name="employee"
