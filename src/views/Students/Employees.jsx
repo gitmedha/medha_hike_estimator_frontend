@@ -39,7 +39,6 @@ const Styled = styled.div`
 
 const Employees = (props) => {
   let { isSidebarOpen } = props;
-  const { setAlert } = props;
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [students, setStudents] = useState([]);
@@ -55,6 +54,7 @@ const Employees = (props) => {
   const [selectedSearchedValue, setSelectedSearchedValue] = useState(null);
   const [defaultSearchOptions,setDefaultSearchOptions] = useState([]);
   const [modalShow,setModalShow] = useState(false);
+  const [isCreatedSuccess,setIsCreatedSuccess] = useState(false);
 
 
   const columns = useMemo(
@@ -364,6 +364,8 @@ catch(error){
               onHide={() => setModalShow(false)}
             />
           )
+        }
+        {isCreatedSuccess
         }
       </Styled>
     </Collapse>

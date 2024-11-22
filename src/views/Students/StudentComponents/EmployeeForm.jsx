@@ -9,7 +9,7 @@ import styled from "styled-components";
 import { useState, useEffect } from "react";
 
 import { Input } from "../../../utils/Form";
-import { EmployeeValidations} from "../../../validations";
+import { employeeValidations} from "../../../validations";
 import {getEmployeePicklist,createEmployee,updateEmployee} from './EmployeeActions';
 import DetailField from "../../../components/content/DetailField";
 
@@ -56,6 +56,9 @@ export default function EmployeeForm(props) {
     const [isWorking,setIsWorking] = useState(props.employeeData ? true:false);
     const [isUpdated,setIsUpdated] = useState(false);
     const [experience,setExperience] = useState(props.employeeData?props.employeeData.experience : "0 days" );
+    const [startDate, setStartDate] = useState("");
+    const [endDate,setEndDate] = useState("");
+
  
 
     const initialValues = {
@@ -69,12 +72,10 @@ export default function EmployeeForm(props) {
         employee_id:props?.employeeData?.employee_id || "",
         title:props?.employeeData?.title || "",
         employee_type:props?.employeeData?.employee_type || "",
-        date_of_joining: props.employeeData?new Date(props.employeeData.date_of_joining):""
+        date_of_joining: props.employeeData?new Date(props.employeeData.date_of_joining):"",
     }
 
     
-
-
     useEffect(()=>{
         async function fetchPickList(){
            const employeePickLists =  await getEmployeePicklist();
@@ -179,7 +180,7 @@ export default function EmployeeForm(props) {
             <Formik
               onSubmit={onSubmit}
               initialValues={initialValues}
-              validationSchema={EmployeeValidations}
+              validationSchema={employeeValidations}
             >
               {({ values, setFieldValue }) => (
                 <Form>
