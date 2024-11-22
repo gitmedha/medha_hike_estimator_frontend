@@ -59,6 +59,20 @@ const routes = [
     ),
     show: true,
   },
+  {
+    to: "/employee_increments",
+    title: "Employees Increment",
+    aliases: ['increment'],
+    icon:  (
+      <img
+        className="employees_increment_icon"
+        src={require('../../assets/images/employee-data.png').default}
+        alt="employee increment"
+        style={{ width: '24px', height: '24px', objectFit: 'contain' }}
+      />
+    ),
+    show: true,
+  },
   // {
   //   to: "/opportunities",
   //   title: "Opportunities",
