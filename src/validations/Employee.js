@@ -13,7 +13,7 @@ export const employeeValidations = Yup.object({
     months: Yup.number()
         .required("Months are required.")
         .min(0, "Months cannot be negative.")
-        .max(11, "Months should be between 0 and 11.")
+        .max(12, "Months should be between 0 and 1.")
         .test(
             "valid-months",
             "Months must be less than 12.",
