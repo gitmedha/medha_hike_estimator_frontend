@@ -18,6 +18,7 @@ import Historics from "./views/Historics/Historics";
 import Employee from "./views/Students/Employee";
 import HistoricData from "./views/Historics/HistoricData";
 import EmployeeIncrements from "./views/Increments/EmployeeIncrements";
+import IncrementEmployee from "./views/Increments/IncrementsComponents/Employee";
 
 import AuthContext from "./context/AuthContext";
 import { PrivateRoute } from "./route/PrivateRoute";
@@ -124,6 +125,7 @@ const App = (props) => {
                   <PrivateRoute path="/historical_data" exact component={Historics} />
                   <PrivateRoute path="/employee_details/:id" component={Employee}/>
                   <PrivateRoute path="/employee_increments" component={EmployeeIncrements}/>
+                  <PrivateRoute path="/increment_employee/:id" component={IncrementEmployee}/>
                   <PrivateRoute path="/employee/:id" component={Employee}/>
                   <PrivateRoute path="/historic/:id" component={HistoricData}/>
                   <Route path='/404-page' component={PageNotFound} />

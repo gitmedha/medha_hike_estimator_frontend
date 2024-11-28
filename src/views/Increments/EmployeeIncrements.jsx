@@ -1,18 +1,17 @@
 import nProgress from "nprogress";
 import styled from "styled-components";
 import api from "../../apis";
-import { connect } from "react-redux";
 import { useState, useEffect, useMemo, useCallback,} from "react";
 import { useHistory } from "react-router-dom";
 import Table from "../../components/content/Table";
-import { setAlert } from "../../store/reducers/Notifications/actions";
 import { FaListUl, FaThLarge } from "react-icons/fa";
 import Switch from "@material-ui/core/Switch";
 // import EmployeesGrid from "./StudentComponents/EmployeesGrid";
 import Collapse from "../../components/content/CollapsiblePanels";
 import SearchBar from "../../components/layout/SearchBar";
 // import {searchEmployees,LoadSearchPicklist} from "./StudentComponents/EmployeeActions";
-// import EmployeeForm from "./StudentComponents/EmployeeForm";  
+import IncrementDataForm from "./IncrementsComponents/IncrementDataForm";  
+import {fetchAllIncrements} from "./IncrementsComponents/incrementsActions";
 
 const Styled = styled.div`
   .MuiSwitch-root {
@@ -33,13 +32,10 @@ const Styled = styled.div`
 
 function EmployeeIncrements(props) {
 
-    
-  let { isSidebarOpen } = props;
-  const { setAlert } = props;
   const history = useHistory();
   const [loading, setLoading] = useState(false);
-  const [employees, setEmployees] = useState([]);
-  const [studentsAggregate, setStudentsAggregate] = useState([]);
+  const [incrementData, setIncrementData] = useState([]);
+  const [totalCount, setTotalCount] = useState([]);
   const [layout, setLayout] = useState("list");
 //   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
   const [activeStatus, setActiveStatus] = useState("All");
@@ -73,19 +69,19 @@ function EmployeeIncrements(props) {
           },
           {
             Header: "Average Rating",
-            accessor: "final_score",
+            accessor: "average",
           },
           {
             Header: "Manager",
-            accessor: "reviewer",
+            accessor: "manager",
           },
           {
-            Header: "Review Type",
-            accessor: "review_type",
+            Header: "Review Cycle",
+            accessor: "appraisal_cycle",
           },
           {
             Header: "Normalized Rating",
-            accessor: "employee_status",
+            accessor: "normalize_rating",
           },
           {
             Header: "Increment",
@@ -113,19 +109,19 @@ function EmployeeIncrements(props) {
         key: 3
       }, {
         label: "Average Rating",
-        value: "final_score",
+        value: "average",
         key: 4
       }, {
         label: "Manager",
-        value: "reviewer",
+        value: "manager",
         key: 5
       }, {
-        label: "Review Type",
-        value: "review_type",
+        label: "Review Cycle",
+        value: "appraisal_cycle",
         key: 6
       }, {
         label: "Normalized Rating",
-        value: "employee_status",
+        value: "normalize_rating",
         key: 7
       }, {
         label: "Increment",
@@ -133,9 +129,15 @@ function EmployeeIncrements(props) {
         key: 8
       }]
 
-      const fetchData = useCallback(()=>{
-
-      },[]);
+      const fetchData = useCallback(async()=>{
+        nProgress.start();
+        setLoading(true);
+        const data = await fetchAllIncrements(paginationPageIndex, pageSize);
+        setIncrementData(data.data);
+        setTotalCount(data.totalCount);
+        setLoading(false);
+        nProgress.done();
+      },[paginationPageIndex,pageSize]);
 
       const search = async()=>{
 
@@ -143,6 +145,19 @@ function EmployeeIncrements(props) {
 
       const loadDefaultOptions = async()=>{
 
+      }
+
+      useEffect(()=>{
+        async function mountApis(){
+         const data = await fetchAllIncrements(paginationPageIndex,pageSize);
+         setIncrementData(data.data);
+         setTotalCount(data.totalCount);
+        }
+        mountApis();
+      },[])
+
+      const onRowClick = (row)=>{
+        history.push(`/increment_employee/${row.id}`);
       }
 
   return (
@@ -162,7 +177,6 @@ function EmployeeIncrements(props) {
         <button
             className="btn btn-primary add_button_sec mt-4"
             onClick={() => setModalShow(true)}
-            // style={{ marginLeft: "15px" }}
           >
             Add New
           </button>
@@ -193,8 +207,8 @@ function EmployeeIncrements(props) {
           <div className={`${layout !== "list" ? "d-none" : "p-0"}`}>
             <Table
               columns={columns}
-              data={employees}
-              totalRecords={studentsAggregate}
+              data={incrementData}
+              totalRecords={totalCount}
               fetchData={fetchData}
               loading={loading}
               paginationPageSize={paginationPageSize}
@@ -204,32 +218,18 @@ function EmployeeIncrements(props) {
             //   isSearchEnable={isSearchEnable}
             //   selectedSearchField={selectedSearchField}
             //   selectedSearchedValue={selectedSearchedValue}
-            //   onRowClick={onRowClick}
+              onRowClick={onRowClick}
             />
           </div>
         </div>
-        {/* <div className="d-flex flex-column flex-md-row justify-content-between align-items-center m-2">
-          <div className={`col-12 ${layout !== "grid" ? "d-none" : ""}`}>
-            <EmployeesGrid
-              data={students}
-              isSidebarOpen={isSidebarOpen}
-              totalRecords={studentsAggregate.count}
-              fetchData={() => {}}
-              paginationPageSize={paginationPageSize}
-              onPageSizeChange={setPaginationPageSize}
-              paginationPageIndex={paginationPageIndex}
-              onPageIndexChange={setPaginationPageIndex}
-            />
-          </div>
-        </div> */}
-        {/* {
+        {
           modalShow && (
-            <EmployeeForm
+            <IncrementDataForm
               show={modalShow}
               onHide={() => setModalShow(false)}
             />
           )
-        } */}
+        }
       </Styled>
     </Collapse>
   )
