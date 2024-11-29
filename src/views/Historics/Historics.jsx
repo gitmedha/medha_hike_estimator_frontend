@@ -48,7 +48,7 @@ const Historics = (props) => {
         accessor: "reviewer",
       },
       {
-        Header: "KRA VS GOALS",
+        Header: "KRA",
         accessor: "kra_vs_goals",
       },
       {
@@ -156,7 +156,7 @@ const Historics = (props) => {
       key: 1,
     },{
     key:2,
-    label: "KRA VS GOALS",
+    label: "Kra",
     value: "kra_vs_goals",
   },
   {

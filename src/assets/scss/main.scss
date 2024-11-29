@@ -405,6 +405,22 @@ div::-webkit-scrollbar-thumb {
   max-width: 90%;
   margin: auto auto;
 }
+.login_image{
+  height: 100vh;
+  object-fit: cover;
+}
+
+.login_logo{
+  height: 100px;
+  margin-bottom: 1rem;
+  object-fit: contain
+}
+
+.login_form_header{
+  text-align: center;
+  font-family: Latto-Bold;
+  font-size: 2rem;
+}
 
 
 @import './media/lg.scss';

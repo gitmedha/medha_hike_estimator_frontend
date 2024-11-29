@@ -1,63 +1,50 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Modal, Form, Button } from "react-bootstrap";
+import { Form, Button } from "react-bootstrap";
 import api from "../apis";
 import { useHistory } from "react-router-dom";
 import toast, { Toaster } from 'react-hot-toast';
-
-
+import bg from "../assets/images/bg-login-ui.png";
+import logo from "../assets/images/Medha-logo.svg";
 
 const Styled = styled.div`
-  .btn-ms-login {
-    border: 3px solid #32b89d;
-    box-sizing: border-box;
-    border-radius: 40px;
-    font-size: 15px;
-    padding: 8px 30px;
-    color: black;
-    font-family: "Lato";
-    text-decoration: none;
-    margin: 31px 19px 19px 6px;
-  }
 
-  .custom-login-modal {
-    max-width: 100px !important;
-    padding: 20px;
+  .btn-show-password {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    font-size: 12px;
+    text-decoration: none;
   }
 `;
 
 const Login = () => {
- 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [show, setShow] = useState(true);
-  const handleClose = () => setShow(false);
-  const [onSuccess,SetSuccess] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useHistory();
 
   const handleLogin = async (event) => {
     event.preventDefault();
 
     try {
-      if(username !== "admin" && password !== "password"){
-        toast.error("Invalid username or password")
+      if (username !== "admin" || password !== "password") {
+        setError("Invalid username or password")
         setShowPassword(true);
+        setTimeout(() =>setError(""),4000);
         return;
-      }
-      else {
-
-        const response = await api.post('/api/users/login_user', {
+      } else {
+        const response = await api.post("/api/users/login_user", {
           username,
           password,
         });
-        toast.success("Successfully logged in ! Redirecting ...")
-        setTimeout(() =>navigate.push('/employees_details'),3000);        
-        localStorage.setItem('user', JSON.stringify(response.data.data[0]));
-        localStorage.setItem('token', response.data.token);
+        toast.success("Successfully logged in! Redirecting...",{ position: "top-right" });
+        setTimeout(() => navigate.push("/employees_details"), 3000);
+        localStorage.setItem("user", JSON.stringify(response.data.data[0]));
+        localStorage.setItem("token", response.data.token);
       }
-      
     } catch (err) {
       console.error(err);
     }
@@ -65,55 +52,53 @@ const Login = () => {
 
   return (
     <Styled>
-          <div className="login-container">
-            <div className="form-cotainer">
-            <Form onSubmit={handleLogin} className="login_form">
-              <h3 className="text-center text-success">Login</h3>
-                  <Form.Group controlId="username">
-                    <Form.Label>Username</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="Enter username"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      required
-                    />
-                  </Form.Group>
-                  <Form.Group controlId="password">
-                    <Form.Label>Password</Form.Label>
-                    <div style={{position:"relative"}}>
-                    <Form.Control
-                      type={showPassword ? "text":"password"}
-                      placeholder="Enter password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-                      <Button
-                        variant="link"
-                        style={{
-                          position: "absolute",
-                          top: "50%",
-                          right: "10px",
-                          transform: "translateY(-50%)",
-                          fontSize: "12px",
-                          textDecoration: "none",
-                        }}
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        {showPassword ? "Hide" : "Show"}
-                      </Button>
-
-                    </div>
-                  </Form.Group>
-                  <div className="d-flex justify-content-center">
-                    <Button variant="primary" type="submit" className="mt-3">
-                      Login
-                    </Button>
-                  </div>
-                </Form>
-            </div>
+       <div className="row">
+          <div className="col-8">
+            <img src={bg} alt="Team"  className="w-100 login_image"/>
           </div>
-          <Toaster/>
+          <div className="col d-flex flex-column justify-content-center p-5">
+            <Form onSubmit={handleLogin}>
+              <img src={logo} alt="Medha Logo"  className="w-100 login_logo"/>
+              <h3 className="text-center text-success login_form_header">Login</h3>
+              <Form.Group controlId="username" className="mt-3">
+                <Form.Label>Username</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                />
+              </Form.Group>
+              <Form.Group controlId="password" className="mt-3">
+                <Form.Label>Password</Form.Label>
+                <div style={{ position: "relative" }}>
+                  <Form.Control
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Enter password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                  <Button
+                    variant="link"
+                    className="btn-show-password"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? "Hide" : "Show"}
+                  </Button>
+                </div>
+              </Form.Group>
+              {error && <div className="text-danger">{error}</div>}
+              <div className="d-flex justify-content-center">
+                <Button variant="primary" type="submit" className="mt-4">
+                  Login
+                </Button>
+              </div>
+            </Form>
+          </div>
+        </div>
+      <Toaster />
     </Styled>
   );
 };

@@ -2,7 +2,8 @@ import * as Yup from "yup";
 
 export const employeeValidations = Yup.object({
     current_band: Yup.string().required("Current Band is required"),
-    date_of_joining: Yup.date().required("Date of Joining is required"),
+    date_of_joining: Yup.date().required("Date of Joining is required")
+    .max(new Date(), "Date of Joining cannot be in the future"),
     employee_id: Yup.string().required("Employee ID is required"),
     department: Yup.string().required("Department is required"),
     employee_status: Yup.string().required("Employee Status is required"),

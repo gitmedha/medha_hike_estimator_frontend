@@ -60,7 +60,7 @@ function EmployeeIncrements(props) {
             size: 200,
           },
           {
-            Header: "KRA vs Goals",
+            Header: "KRA",
             accessor: "kra_vs_goals",
           },
           {
@@ -100,7 +100,7 @@ function EmployeeIncrements(props) {
         value: "full_name",
         key: 1
       }, {
-        label: "KRA vs Goals",
+        label: "KRA",
         value: "kra_vs_goals",
         key: 2
       }, {
