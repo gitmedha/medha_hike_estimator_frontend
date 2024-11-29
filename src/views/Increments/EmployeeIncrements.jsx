@@ -6,12 +6,12 @@ import { useHistory } from "react-router-dom";
 import Table from "../../components/content/Table";
 import { FaListUl, FaThLarge } from "react-icons/fa";
 import Switch from "@material-ui/core/Switch";
-// import EmployeesGrid from "./StudentComponents/EmployeesGrid";
 import Collapse from "../../components/content/CollapsiblePanels";
 import SearchBar from "../../components/layout/SearchBar";
-// import {searchEmployees,LoadSearchPicklist} from "./StudentComponents/EmployeeActions";
 import IncrementDataForm from "./IncrementsComponents/IncrementDataForm";  
-import {fetchAllIncrements} from "./IncrementsComponents/incrementsActions";
+import {fetchAllIncrements,fetchFilterPicklist,applyFilterActions} from "./IncrementsComponents/incrementsActions";
+import CurrentBandDropdown from "./IncrementsComponents/CurrentBandFilter";
+import {Input} from "../../utils/Form"
 
 const Styled = styled.div`
   .MuiSwitch-root {
@@ -37,8 +37,6 @@ function EmployeeIncrements(props) {
   const [incrementData, setIncrementData] = useState([]);
   const [totalCount, setTotalCount] = useState([]);
   const [layout, setLayout] = useState("list");
-//   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
-  const [activeStatus, setActiveStatus] = useState("All");
   const pageSize = parseInt(localStorage.getItem("tablePageSize")) || 25;
   const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
   const [paginationPageIndex, setPaginationPageIndex] = useState(0);
@@ -47,6 +45,17 @@ function EmployeeIncrements(props) {
   const [selectedSearchedValue, setSelectedSearchedValue] = useState(null);
   const [defaultSearchOptions,setDefaultSearchOptions] = useState([]);
   const [modalShow,setModalShow] = useState(false);
+  const [newBandOptions,setNewBandOptions] = useState([]);
+  const [longTenureOptions,setLongTenureOptions] = useState([]);
+  const [tenureOptions,setTenureOptions] = useState([]);
+  const [selectedBand, setSelectedBand] = useState(null);
+  const [selectedTenure,setSelectedTenure] = useState(null);
+  const [selectedLongTenures,setSelectedLongTenure] = useState(null);
+
+  const [filters,setFilters] = useState([{
+    fields: [],
+    values:[]
+  }]);
     const columns = useMemo(
         () => [
           {
@@ -150,6 +159,18 @@ function EmployeeIncrements(props) {
       useEffect(()=>{
         async function mountApis(){
          const data = await fetchAllIncrements(paginationPageIndex,pageSize);
+         const {new_band,tenure} = await fetchFilterPicklist();
+         setNewBandOptions([...new_band])
+         setTenureOptions([...tenure])
+         setLongTenureOptions([...[{
+          key:0,
+          label:'No',
+          value: "No"
+          }, {
+          key:1,
+          label:'Yes',
+          value: "Yes"
+        }]])
          setIncrementData(data.data);
          setTotalCount(data.totalCount);
         }
@@ -158,6 +179,39 @@ function EmployeeIncrements(props) {
 
       const onRowClick = (row)=>{
         history.push(`/increment_employee/${row.id}`);
+      }
+
+      const handleFilters = async(filters,offset,limit)=>{
+        try {
+          const data = await applyFilterActions(filters,offset,limit);
+          setIncrementData(data.data);
+          setTotalCount(data.total);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      useEffect(()=>{
+        async function runFilter(filters,offset,limit){
+         await handleFilters(filters,offset,limit);
+        }
+
+        if(filters[0].fields.length){
+          runFilter(filters,paginationPageIndex,paginationPageSize)
+        }
+
+      },[filters])
+
+
+      const clearFilters = async()=>{
+       await setSelectedBand([]);
+       await setSelectedTenure([]);
+       await setSelectedLongTenure([]);
+       
+       const data = await fetchAllIncrements(paginationPageIndex, pageSize);
+       setIncrementData(data.data);
+       setTotalCount(data.totalCount);
+
       }
 
   return (
@@ -171,6 +225,7 @@ function EmployeeIncrements(props) {
           searchValueOptions={[]}
           handleSearch = {search}
           handleSearchPicklist = {loadDefaultOptions}
+          clearFilters={clearFilters}
           />
         </div>
         <div className="col-auto">
@@ -180,6 +235,26 @@ function EmployeeIncrements(props) {
           >
             Add New
           </button>
+        </div>
+      </div>
+      <div className="mt-1">
+        <div className="text-heading leading-24" style={{color:'#787B96',marginLeft:10}}>
+          Filter
+        </div>
+        <div className="filter_container d-flex" style={{marginLeft:10}}>
+        <CurrentBandDropdown 
+        newBands={newBandOptions} 
+        longTenures={longTenureOptions} 
+        tenures={tenureOptions} 
+        applyFilter={setFilters} 
+        filters={filters}
+        selectedBand={selectedBand}
+        setSelectedBand={setSelectedBand}
+        selectedTenure={selectedTenure}
+        setSelectedTenure={setSelectedTenure}
+        selectedLongTenures={selectedLongTenures}
+        setSelectedLongTenure={setSelectedLongTenure}
+        />
         </div>
       </div>
       <Styled>

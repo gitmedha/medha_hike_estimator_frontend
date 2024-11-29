@@ -22,7 +22,7 @@ const Section = styled.div`
 
 
 function SearchBar(props) {
-  const {handleSearch,handleSearchPicklist} = props;
+  const {handleSearch,handleSearchPicklist,clearFilters} = props;
   const [searchValueOptions, setSearchValueOptions] = useState([]);
   const [defaultSearchArray, setDefaultSearchArray] = useState([]);
   const [searchFieldOptions] = useState(props.searchFieldOptions);
@@ -30,6 +30,7 @@ function SearchBar(props) {
   const [searchField,setSearchField] = useState(null);
   const [searchValue,setSearchValue] = useState(null);
   const [isDisable,setIsDisable] = useState(true);
+  const [isClearDisabled,setClearDisabled] = useState(false);
   
 
   let today = new Date();
@@ -62,7 +63,10 @@ function SearchBar(props) {
     formik.resetForm();
     // setSelectedSearchField(null);
     // setIsSearchEnable(false);
-    setIsDisable(true);
+    if(clearFilters){
+      clearFilters()
+    }
+    isClearDisabled(true);
     setSearchValueOptions([]);
   };
 
@@ -286,7 +290,7 @@ function SearchBar(props) {
                   className="btn btn-secondary action_button_sec search_bar_action_sec"
                   type="button"
                   onClick={() => clear(formik)}
-                  disabled={isDisable ? true : false}
+                  disabled={isClearDisabled ? true : false}
                   style={{marginLeft:15}}
                 >
                   CLEAR

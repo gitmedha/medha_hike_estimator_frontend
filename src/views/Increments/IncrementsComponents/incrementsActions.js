@@ -54,3 +54,24 @@ export const fetchIncrementPickList = async() => {
         console.error(error);
     }
 }
+
+export const fetchFilterPicklist = async()=>{
+    try{
+        const response = await api.get(`/api/increments/get_filter_picklist`);
+        return response.data;
+    }catch(error){
+        console.error(error);
+    }
+}
+
+export const applyFilterActions = async(filterData,offset,limit)=>{
+    try{
+        const response = await api.post(`/api/increments/add-filter-increment-data/${offset}/${limit}`, 
+            {"fields":filterData[0].fields,
+            "values":filterData[0].values
+            });
+        return response.data;
+    }catch(error){
+        console.error(error);
+    }
+}
