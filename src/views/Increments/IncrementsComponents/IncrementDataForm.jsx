@@ -101,7 +101,6 @@ function IncrementDataForm(props) {
           else {
             
            const{id} =  await createIncrement(newValues);
-           console.log(id[0].id)
             navigation.push(`/increment_employee/${id[0].id}`);
             onHide();
             nProgress.done();

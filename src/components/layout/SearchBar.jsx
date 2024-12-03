@@ -95,39 +95,6 @@ function SearchBar(props) {
     }
   `;
 
-    // try {
-    //   const { data } = await api.post("/graphql", {
-    //     query: query,
-    //     variables: { query: newValue },
-    //   });
-
-    //   if (data?.data?.studentsConnection?.values?.length) {
-    //     let uniqueNames = new Set();
-    //     let matchedOptions = data?.data?.studentsConnection?.values
-    //       .map((value) => {
-    //         if (searchField === "assigned_to") {
-    //           return value.assigned_to.username;
-    //         } else {
-    //           return value[searchField];
-    //         }
-    //       })
-    //       .filter((value) => {
-    //         if (!uniqueNames.has(value)) {
-    //           uniqueNames.add(value);
-    //           return true;
-    //         }
-    //         return false;
-    //       })
-    //       .map((value) => ({
-    //         label: value,
-    //         value: value,
-    //       }));
-
-    //     return matchedOptions;
-    //   }
-    // } catch (error) {
-    //   console.error(error);
-    // }
   };
 
   //setting the value of the value drop down

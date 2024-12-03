@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import SweetAlert from "react-bootstrap-sweetalert";
 import styled from 'styled-components';
 import { Dropdown } from 'react-bootstrap';
-import {fetchIncrement,deleteIncrement} from "./incrementsActions";
+import {fetchIncrement,deleteIncrement,calculateNormalizedRating,calculateIncrement} from "./incrementsActions";
 import IncrementDataForm from './IncrementDataForm';
 import Details from "./Details";
 const Styled = styled.div`
@@ -21,6 +21,7 @@ function IncrementEmployee() {
   const [modalShow, setModalShow] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const {id} = useParams();
+
   
 useEffect(()=>{
   async function componentMount(){
@@ -38,6 +39,29 @@ const handleDelete = async()=>{
   }catch(error){
     console.error(error);
   }
+}
+
+const handleNormalizedRating = async ()=>{
+  try{
+
+    await calculateNormalizedRating(employeeData.employee_id, employeeData.appraisal_cycle,employeeData.average,employeeData.manager);
+    window.location.href = "/increment_employee/"+ employeeData.id;
+  }catch(error){
+    console.error(error);
+  }
+}
+
+const handleIncrement = async ()=>{
+  try{
+    await calculateIncrement(employeeData.employee_id,employeeData.appraisal_cycle,employeeData.normalize_rating);
+    window.location.href = "/increment_employee/"+ employeeData.id;
+    }catch(error){
+    console.error(error);
+  }
+}
+
+const handleWeightedIncrement = async ()=>{
+
 }
 
   return (
@@ -58,7 +82,7 @@ const handleDelete = async()=>{
               >
                 DELETE
               </button>
-              <Dropdown className="d-inline">
+              <Dropdown className="d-inline ">
                   <Dropdown.Toggle
                     variant="secondary"
                     id="dropdown-basic"
@@ -67,14 +91,14 @@ const handleDelete = async()=>{
                     ACTIONS
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
-                    <Dropdown.Item>
+                    <Dropdown.Item className="dropdown-item-sec" onClick={()=>handleNormalizedRating()}>
                     Normalize Rating
                     </Dropdown.Item>
                     
-                  <Dropdown.Item>
+                  <Dropdown.Item className="dropdown-item-sec" disabled={false} onClick={()=>handleIncrement()}>
                     Increment
                     </Dropdown.Item>
-                    <Dropdown.Item>
+                    <Dropdown.Item disabled={true} onClick={()=>handleWeightedIncrement()}>
                       Weighted Increment
                     </Dropdown.Item>
                   </Dropdown.Menu>

@@ -59,7 +59,10 @@ const Login = () => {
           <div className="col d-flex flex-column justify-content-center p-5">
             <Form onSubmit={handleLogin}>
               <img src={logo} alt="Medha Logo"  className="w-100 login_logo"/>
-              <h3 className="text-center text-success login_form_header">Login</h3>
+              <div className="text-center text-success login_form_header">
+                 Performence &nbsp; <br/> &nbsp; &nbsp; &nbsp; &nbsp; Review App
+                </div>
+
               <Form.Group controlId="username" className="mt-3">
                 <Form.Label>Username</Form.Label>
                 <Form.Control

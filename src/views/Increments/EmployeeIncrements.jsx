@@ -9,7 +9,7 @@ import Switch from "@material-ui/core/Switch";
 import Collapse from "../../components/content/CollapsiblePanels";
 import SearchBar from "../../components/layout/SearchBar";
 import IncrementDataForm from "./IncrementsComponents/IncrementDataForm";  
-import {fetchAllIncrements,fetchFilterPicklist,applyFilterActions} from "./IncrementsComponents/incrementsActions";
+import {fetchAllIncrements,fetchFilterPicklist,applyFilterActions,fetchSearchDropdown} from "./IncrementsComponents/incrementsActions";
 import CurrentBandDropdown from "./IncrementsComponents/CurrentBandFilter";
 import {Input} from "../../utils/Form"
 
@@ -152,8 +152,13 @@ function EmployeeIncrements(props) {
 
       }
 
-      const loadDefaultOptions = async()=>{
+      const loadDefaultOptions = async(field)=>{
+        try{
+          return await fetchSearchDropdown(field);
 
+        }catch(error){
+            console.error(error);
+        }
       }
 
       useEffect(()=>{
@@ -222,7 +227,6 @@ function EmployeeIncrements(props) {
           <SearchBar
           searchFieldOptions={optionsForSearch}
           defaultSearchOptions={defaultSearchOptions}
-          searchValueOptions={[]}
           handleSearch = {search}
           handleSearchPicklist = {loadDefaultOptions}
           clearFilters={clearFilters}

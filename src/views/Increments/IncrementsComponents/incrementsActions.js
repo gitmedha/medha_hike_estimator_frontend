@@ -75,3 +75,40 @@ export const applyFilterActions = async(filterData,offset,limit)=>{
         console.error(error);
     }
 }
+
+export const fetchSearchDropdown = async(field)=>{
+    try{
+        const response = await api.get(`/api/increments/search-dropdowns/${field}`);
+        return response.data;
+    }catch(error){
+        console.error(error);
+    }
+}
+
+export const calculateNormalizedRating = async (employeeId,reviewCycle,ratings,reviewer) =>{
+    try{
+        const response = await api.post('/api/increments/calculate_normalized_rating', {
+            "ratings": ratings,
+            "employeeId": employeeId,
+            "reviewCycle": reviewCycle,
+            "managerName":reviewer
+        });
+        return response.data;
+    }catch(error){
+        console.error(error);
+    }
+}
+
+export const calculateIncrement = async(employeeId,reviewCycle,normalizedRating)=>{
+    try{
+        const response = await api.post('/api/increments/get_increment', {
+            "employeeId": employeeId,
+            "reviewCycle": reviewCycle,
+            "normalizedRating": normalizedRating
+        });
+        return response.data;
+    }catch(error){
+        console.error(error);
+    }
+}
+
