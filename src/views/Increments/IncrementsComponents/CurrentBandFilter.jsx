@@ -2,7 +2,14 @@ import React, { useState,useEffect} from "react";
 import ReactSelect from "react-select";
 
 const CurrentBandDropdown = (props) => {
-    const {selectedBand,setSelectedBand,selectedTenure,setSelectedTenure,selectedLongTenures,setSelectedLongTenure} = props;
+  const {
+    selectedBand,
+    setSelectedBand,
+    selectedTenure,
+    setSelectedTenure,
+    selectedLongTenures,
+    setSelectedLongTenure
+  } = props;
   const [newBands,setBands] = useState([]);
   const [tenures,setTenures] = useState([]);
   const [longTenures,setLongTenures] =useState([]);
@@ -52,35 +59,44 @@ const CurrentBandDropdown = (props) => {
     const {newBands,longTenures,tenures} = props;
     setBands(newBands);
     setLongTenures(longTenures);
-
     setTenures(tenures);
 
   },[props]);
   return (
     <>
-   <div className="col-2" style={{marginRight:10}}>
+   <div className="col-auto" style={{marginRight:10, width:150}}>
+      <div className="text-label">
+        Current Band
+      </div>
         <ReactSelect
       options={newBands}
       value={selectedBand}
       onChange={handleBandChange}
-      placeholder="New band"
+      placeholder="Select"
     />
         </div>
-   <div className="col-2" style={{marginRight:10}}>
+   <div className="col-auto" style={{marginRight:10, width:150}}>
+   <div className="text-label">
+        Long Tenure
+      </div>
    <ReactSelect
       options={longTenures}
       value={selectedLongTenures}
       onChange={handleLongTenureChange}
-      placeholder="Long tenure"
+      style={{width:600}}
+      placeholder="Select"
     />
    </div>
     
-    <div className="col-2">
+    <div className="col-auto" style={{width:150}}>
+    <div className="text-label">
+        Tenure
+      </div>
     <ReactSelect
       options={tenures}
       value={selectedTenure}
       onChange={handleTenureChange}
-      placeholder="tenure"
+      placeholder="Select"
     />
     </div>
     </>

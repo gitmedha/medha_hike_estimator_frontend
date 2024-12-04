@@ -9,7 +9,7 @@ import Switch from "@material-ui/core/Switch";
 import Collapse from "../../components/content/CollapsiblePanels";
 import SearchBar from "../../components/layout/SearchBar";
 import IncrementDataForm from "./IncrementsComponents/IncrementDataForm";  
-import {fetchAllIncrements,fetchFilterPicklist,applyFilterActions,fetchSearchDropdown} from "./IncrementsComponents/incrementsActions";
+import {fetchAllIncrements,fetchFilterPicklist,applyFilterActions,fetchSearchDropdown,search} from "./IncrementsComponents/incrementsActions";
 import CurrentBandDropdown from "./IncrementsComponents/CurrentBandFilter";
 import {Input} from "../../utils/Form"
 
@@ -51,6 +51,8 @@ function EmployeeIncrements(props) {
   const [selectedBand, setSelectedBand] = useState(null);
   const [selectedTenure,setSelectedTenure] = useState(null);
   const [selectedLongTenures,setSelectedLongTenure] = useState(null);
+  const [isClearDisabled,setClearDisabled] = useState(false);
+
 
   const [filters,setFilters] = useState([{
     fields: [],
@@ -148,8 +150,16 @@ function EmployeeIncrements(props) {
         nProgress.done();
       },[paginationPageIndex,pageSize]);
 
-      const search = async()=>{
+      const handleSearch = async(value)=>{
+        try{
+        const data = await search(value.searchField, value.searchValue,pageSize,paginationPageIndex);
+        console.log(data);
+        setIncrementData(data.data);
+        setTotalCount(data.totalCount);
 
+        }catch(e){
+console.error(e.message);
+        }
       }
 
       const loadDefaultOptions = async(field)=>{
@@ -223,13 +233,31 @@ function EmployeeIncrements(props) {
     
     <Collapse title="Increment Data" type="plain" opened={true}>
       <div className="d-flex justify-content-between align-items-center">
-        <div className="col-10">
+      <div className="filter_container d-flex mt-2">
+          <CurrentBandDropdown 
+          newBands={newBandOptions} 
+          longTenures={longTenureOptions} 
+          tenures={tenureOptions} 
+          applyFilter={setFilters} 
+          filters={filters}
+          selectedBand={selectedBand}
+          setSelectedBand={setSelectedBand}
+          selectedTenure={selectedTenure}
+          setSelectedTenure={setSelectedTenure}
+          selectedLongTenures={selectedLongTenures}
+          setSelectedLongTenure={setSelectedLongTenure}
+          setClearDisabled={setClearDisabled}
+          />
+        </div>
+        <div className="col-7">
           <SearchBar
           searchFieldOptions={optionsForSearch}
           defaultSearchOptions={defaultSearchOptions}
-          handleSearch = {search}
+          handleSearch = {handleSearch}
           handleSearchPicklist = {loadDefaultOptions}
           clearFilters={clearFilters}
+          isClearDisabled={isClearDisabled}
+          setClearDisabled={setClearDisabled}
           />
         </div>
         <div className="col-auto">
@@ -239,26 +267,6 @@ function EmployeeIncrements(props) {
           >
             Add New
           </button>
-        </div>
-      </div>
-      <div className="mt-1">
-        <div className="text-heading leading-24" style={{color:'#787B96',marginLeft:10}}>
-          Filter
-        </div>
-        <div className="filter_container d-flex" style={{marginLeft:10}}>
-        <CurrentBandDropdown 
-        newBands={newBandOptions} 
-        longTenures={longTenureOptions} 
-        tenures={tenureOptions} 
-        applyFilter={setFilters} 
-        filters={filters}
-        selectedBand={selectedBand}
-        setSelectedBand={setSelectedBand}
-        selectedTenure={selectedTenure}
-        setSelectedTenure={setSelectedTenure}
-        selectedLongTenures={selectedLongTenures}
-        setSelectedLongTenure={setSelectedLongTenure}
-        />
         </div>
       </div>
       <Styled>

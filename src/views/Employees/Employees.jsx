@@ -55,6 +55,8 @@ const Employees = (props) => {
   const [defaultSearchOptions,setDefaultSearchOptions] = useState([]);
   const [modalShow,setModalShow] = useState(false);
   const [isCreatedSuccess,setIsCreatedSuccess] = useState(false);
+  const [isDisable,setIsDisable] = useState(true);
+
 
 
   const columns = useMemo(
@@ -291,6 +293,8 @@ catch(error){
           searchValueOptions={[]}
           handleSearch = {search}
           handleSearchPicklist = {loadDefaultOptions}
+          isDisable={isDisable}
+          setIsDisable={setIsDisable}
           />
         </div>
         <div className="col-auto">

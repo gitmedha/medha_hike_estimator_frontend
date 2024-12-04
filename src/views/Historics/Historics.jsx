@@ -35,6 +35,8 @@ const Historics = (props) => {
   const [selectedSearchedValue, setSelectedSearchedValue] = useState(null);
   const [formErrors, setFormErrors] = useState([]);
   const prevIsSearchEnableRef = useRef(isSearchEnable);
+  const [isDisable,setIsDisable] = useState(true);
+
 
 
   const columns = useMemo(
@@ -204,6 +206,8 @@ const Historics = (props) => {
           searchValueOptions={[]}
           handleSearch = {search}
           handleSearchPicklist = {loadDefaultOptions}
+          isDisable={isDisable}
+          setIsDisable={setIsDisable}
           />
         </div>
         <div className="col-auto">

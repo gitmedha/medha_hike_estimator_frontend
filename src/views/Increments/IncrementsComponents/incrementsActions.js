@@ -112,3 +112,16 @@ export const calculateIncrement = async(employeeId,reviewCycle,normalizedRating)
     }
 }
 
+export const search = async(field,value,limit,page)=>{
+    try{
+        const response = await api.post(`/api/increments/search-increment-data`, {
+            "field": field,
+            "value": value,
+            "offset": page,
+            "limit": limit
+        });
+        return response.data;
+    }catch(error){
+        console.error(error);
+    }
+}

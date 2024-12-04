@@ -22,15 +22,14 @@ const Section = styled.div`
 
 
 function SearchBar(props) {
-  const {handleSearch,handleSearchPicklist,clearFilters} = props;
+  const {handleSearch,handleSearchPicklist,clearFilters,isClearDisabled,setClearDisabled} = props;
   const [searchValueOptions, setSearchValueOptions] = useState([]);
   const [defaultSearchArray, setDefaultSearchArray] = useState([]);
   const [searchFieldOptions] = useState(props.searchFieldOptions);
   const [progress, setProgress] = useState(0);
   const [searchField,setSearchField] = useState(null);
   const [searchValue,setSearchValue] = useState(null);
-  const [isDisable,setIsDisable] = useState(true);
-  const [isClearDisabled,setClearDisabled] = useState(false);
+  const [isDisable,setIsDisable] = useState(!props.isClearDisabled ?false:true);
   
 
   let today = new Date();
@@ -42,13 +41,14 @@ function SearchBar(props) {
     search_by_value_date: new Date(new Date(today).setDate(today.getDate())),
   };
 
-  const handleSubmit = async()=>{
+  const handleSubmit = async(values)=>{
     const searchObj = {};    
     if(searchField === "date_of_joining"){
 
     }
     else {
       searchObj.searchValue = searchValue;
+      searchObj.searchField = searchField;
     }
     handleSearch(searchObj);
   }
@@ -65,9 +65,12 @@ function SearchBar(props) {
     // setIsSearchEnable(false);
     if(clearFilters){
       clearFilters()
+      setSearchValueOptions([]);
+    }else {
+
+      setIsDisable(true);
+      setSearchValueOptions([]);
     }
-    isClearDisabled(true);
-    setSearchValueOptions([]);
   };
 
   //search values in the table when it is not there in the default array
@@ -141,10 +144,15 @@ function SearchBar(props) {
     };
 
     if (searchField) {
+      if(!props.isClearDisabled){
+
+      }
+      
       setIsDisable(false);
       setSearchValueDropDown();
     }
   }, [searchField]);
+
   return (
      <Formik 
         initialValues={initialValues} 
@@ -161,6 +169,7 @@ function SearchBar(props) {
                   label="Search Field"
                   control="lookup"
                   options={searchFieldOptions}
+                  style={{maxWidth: 'fit-content'}}
                   className="form-control"
                   onChange={(e) => {
                     setSearchValueOptions([]);
@@ -249,7 +258,7 @@ function SearchBar(props) {
                 <button
                   className="btn btn-primary action_button_sec search_bar_action_sec"
                   type="submit"
-                  disabled={isDisable ? true : false}
+                  disabled={isDisable? true : false}
                 >
                   FIND
                 </button>
@@ -257,7 +266,7 @@ function SearchBar(props) {
                   className="btn btn-secondary action_button_sec search_bar_action_sec"
                   type="button"
                   onClick={() => clear(formik)}
-                  disabled={isClearDisabled ? true : false}
+                  disabled={isDisable || isClearDisabled ? true : false}
                   style={{marginLeft:15}}
                 >
                   CLEAR
