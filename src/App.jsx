@@ -13,9 +13,9 @@ import AppContainer from "./components/layout/AppContainer";
 
 // Route Components
 import Login from "./views/Login";
-import Students from "./views/Students/Employees";
+import Employees from "./views/Employees/Employees";
 import Historics from "./views/Historics/Historics";
-import Employee from "./views/Students/Employee";
+import Employee from "./views/Employees/Employee";
 import HistoricData from "./views/Historics/HistoricData";
 import EmployeeIncrements from "./views/Increments/EmployeeIncrements";
 import IncrementEmployee from "./views/Increments/IncrementsComponents/Employee";
@@ -121,7 +121,7 @@ const App = (props) => {
               <Header isOpen={isOpen} />
               <RouteContainer id="main-content">
                 <Switch>
-                  <PrivateRoute path="/employees_details" exact component={() => <Students isSidebarOpen={isOpen} />} />
+                  <PrivateRoute path="/employees_details" exact component={() => <Employees isSidebarOpen={isOpen} />} />
                   <PrivateRoute path="/historical_data" exact component={Historics} />
                   <PrivateRoute path="/employee_details/:id" component={Employee}/>
                   <PrivateRoute path="/employee_increments" component={EmployeeIncrements}/>

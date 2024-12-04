@@ -8,11 +8,11 @@ import Table from "../../components/content/Table";
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import { FaListUl, FaThLarge } from "react-icons/fa";
 import Switch from "@material-ui/core/Switch";
-import EmployeesGrid from "./StudentComponents/EmployeesGrid";
+import EmployeesGrid from "./EmployeeComponents/EmployeesGrid";
 import Collapse from "../../components/content/CollapsiblePanels";
 import SearchBar from "../../components/layout/SearchBar";
-import {searchEmployees,LoadSearchPicklist} from "./StudentComponents/EmployeeActions";
-import EmployeeForm from "./StudentComponents/EmployeeForm";  
+import {searchEmployees,LoadSearchPicklist} from "./EmployeeComponents/EmployeeActions";
+import EmployeeForm from "./EmployeeComponents/EmployeeForm";  
 
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },

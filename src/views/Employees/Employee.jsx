@@ -3,12 +3,12 @@ import { useState, useEffect } from "react";
 import { useHistory ,useParams} from "react-router-dom";
 import SweetAlert from "react-bootstrap-sweetalert";
 
-import Details from "./StudentComponents/Details";
+import Details from "./EmployeeComponents/Details";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import Collapsible from "../../components/content/CollapsiblePanels";
-import {getEmployee,deleteEmployee} from "./StudentComponents/EmployeeActions";
-import HistoricDetails from "./StudentComponents/HistoricDetails";
-import EmployeeForm from "./StudentComponents/EmployeeForm";
+import {getEmployee,deleteEmployee} from "./EmployeeComponents/EmployeeActions";
+import HistoricDetails from "./EmployeeComponents/HistoricDetails";
+import EmployeeForm from "./EmployeeComponents/EmployeeForm";
 import styled from 'styled-components';
 
 const Styled = styled.div`
