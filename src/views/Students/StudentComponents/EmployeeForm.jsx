@@ -152,6 +152,8 @@ export default function EmployeeForm(props) {
           
       } catch (error) {
           console.error("Error submitting form:", error);
+          nProgress.done();
+
       }
   };
 
