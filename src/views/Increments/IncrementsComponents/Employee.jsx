@@ -47,7 +47,7 @@ const handleDelete = async()=>{
 const handleNormalizedRating = async ()=>{
   try{
     await calculateNormalizedRating(employeeData.employee_id, employeeData.appraisal_cycle,employeeData.average,employeeData.manager);
-    toaster.success('Normalized rating calculated successfully!')
+    toaster.success('Normalized rating calculated successfully!');
     setTimeout(() => {
       window.location.href = "/increment_employee/"+ employeeData.id;
     }, 3000);

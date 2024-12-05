@@ -2,6 +2,7 @@ import nProgress from "nprogress";
 import { useState,useMemo, useCallback, useRef } from "react";
 import Table from "../../components/content/Table";
 import { useHistory } from "react-router-dom";
+import toaster from "react-hot-toast";
 import api from "../../apis";
 
 import { setAlert } from "../../store/reducers/Notifications/actions";
@@ -197,6 +198,13 @@ const Historics = (props) => {
     return searchPickList;
 
   }
+
+  const onFailure = ()=>{
+    toaster.error("Failed to create historic data");
+  }
+  const onSuccess = ()=>{
+    toaster.success("Created the historic data successfully!")
+  }
   return (
     <Collapse title="Historical Data" type="plain" opened={true}>
       <div className="d-flex justify-content-between align-items-center">
@@ -238,6 +246,8 @@ const Historics = (props) => {
           <HistoricForm
             show={modalShow}
             onHide={() => setModalShow(false)}
+            onFailure={onFailure}
+            onSuccess={onSuccess}
           />
         )
       }

@@ -1,18 +1,15 @@
 import React from 'react'
 import { Formik, Form } from 'formik';
 import { Modal } from "react-bootstrap";
-// import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 
 import { Input } from "../../../utils/Form";
 import { historicValidations} from "../../../validations";
 import {getHistoricPickList,createHistoric,updateHistoric} from './HistoricActions';
-import moment from "moment";
 import nProgress from "nprogress";
 import {useHistory} from "react-router-dom";
-import { BsWindowSidebar } from 'react-icons/bs';
-
+import toaster from "react-hot-toast";
 
 
 const Section = styled.div`
@@ -56,22 +53,33 @@ function HistoricForm(props) {
         try{
           if(props.HistoricalData){
             await updateHistoric(values,props.HistoricalData.id);
-            window.location.href = `/historic/${props.HistoricalData.id}`
             onHide();
+            toaster.success('Updated historic data successfully!')
+            setTimeout(() => {
+            window.location.href = `/historic/${props.HistoricalData.id}`
             nProgress.done();
+            }, 2000);
 
           }
           else {
            const response =  await createHistoric(values);
+           onHide();
+           props.onSuccess();
+          setTimeout(() => {
             navigation.push(`/historic/${response.data.id}`);
-
-            onHide();
             nProgress.done();
-
+          }, 2000);
           }
 
         }catch(error){
-          console.eror(error)
+          onHide();
+          nProgress.done();
+          if(props.onFailure){
+            props.onFailure()
+          }
+          else {
+            toaster.error('Error occurred while submitting form!')
+          }
         }
     }
 
