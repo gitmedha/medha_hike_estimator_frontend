@@ -11,6 +11,7 @@ import {fetchIncrementPickList,createIncrement,updateIncrement} from './incremen
 import moment from "moment";
 import nProgress from "nprogress";
 import {useHistory} from "react-router-dom";
+import toaster from 'react-hot-toast'
 
 
 
@@ -93,23 +94,32 @@ function IncrementDataForm(props) {
           if(props.IncrementData){
             
             await updateIncrement(newValues,props.IncrementData.id);
-            window.location.href = `/increment_employee/${props.IncrementData.id}`
             onHide();
+            toaster.success('Details updated successfully!')
+
+            setTimeout(() =>window.location.href = `/increment_employee/${props.IncrementData.id}`,2000);
             nProgress.done();
 
           }
           else {
             
            const{id} =  await createIncrement(newValues);
-            navigation.push(`/increment_employee/${id[0].id}`);
-            onHide();
-            nProgress.done();
+           onHide();
+           props.ToastOnSuccess()
+           setTimeout(() => navigation.push(`/increment_employee/${id[0].id}`),2000);
+          nProgress.done();
 
           }
 
         }catch(error){
-            onHide();
-            nProgress.done();
+          onHide();
+          nProgress.done();
+          if(props.ToastOnFailure){
+            props.ToastOnFailure();
+          }
+          else {
+            toaster.error('Failed to update details!')
+          }
           console.error(error)
         }
     }

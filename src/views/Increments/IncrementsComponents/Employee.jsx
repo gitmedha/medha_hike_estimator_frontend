@@ -6,6 +6,7 @@ import { Dropdown } from 'react-bootstrap';
 import {fetchIncrement,deleteIncrement,calculateNormalizedRating,calculateIncrement} from "./incrementsActions";
 import IncrementDataForm from './IncrementDataForm';
 import Details from "./Details";
+import toaster from  'react-hot-toast'
 const Styled = styled.div`
 
 @media screen and (max-width: 360px) {
@@ -35,18 +36,24 @@ useEffect(()=>{
 const handleDelete = async()=>{
   try{
     await deleteIncrement(id);
-    window.location.href = "/employee_increments";
+    toaster.success("Increment details deleted successfully")
+    setTimeout(()=>window.location.href = "/employee_increments",2000);
   }catch(error){
+    toaster.error("Failed to delete increment details")
     console.error(error);
   }
 }
 
 const handleNormalizedRating = async ()=>{
   try{
-
     await calculateNormalizedRating(employeeData.employee_id, employeeData.appraisal_cycle,employeeData.average,employeeData.manager);
-    window.location.href = "/increment_employee/"+ employeeData.id;
+    toaster.success('Normalized rating calculated successfully!')
+    setTimeout(() => {
+      window.location.href = "/increment_employee/"+ employeeData.id;
+    }, 3000);
+    
   }catch(error){
+    toaster.error('Unable to calculate rating, check the data again')
     console.error(error);
   }
 }
@@ -54,14 +61,18 @@ const handleNormalizedRating = async ()=>{
 const handleIncrement = async ()=>{
   try{
     await calculateIncrement(employeeData.employee_id,employeeData.appraisal_cycle,employeeData.normalize_rating);
-    window.location.href = "/increment_employee/"+ employeeData.id;
+    toaster.success('Increment calculated successfully!')
+    setTimeout(() => {
+      window.location.href = "/increment_employee/"+ employeeData.id;
+    }, 3000);
     }catch(error){
+      toaster.error('Unable to calculate increment, check the data again')
     console.error(error);
   }
 }
 
 const handleWeightedIncrement = async ()=>{
-
+  
 }
 
   return (

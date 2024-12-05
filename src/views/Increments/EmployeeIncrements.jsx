@@ -10,6 +10,7 @@ import Collapse from "../../components/content/CollapsiblePanels";
 import SearchBar from "../../components/layout/SearchBar";
 import IncrementDataForm from "./IncrementsComponents/IncrementDataForm";  
 import {fetchAllIncrements,fetchFilterPicklist,applyFilterActions,fetchSearchDropdown,search} from "./IncrementsComponents/incrementsActions";
+import toaster from 'react-hot-toast'
 import CurrentBandDropdown from "./IncrementsComponents/CurrentBandFilter";
 import {Input} from "../../utils/Form"
 
@@ -229,6 +230,14 @@ console.error(e.message);
 
       }
 
+      const ToastOnSuccess = ()=>{
+        toaster.success("Increment entry created successfully!")
+      }
+      const ToastOnFailure = (value)=>{
+        console.log(value)
+        toaster.error("Failed to create entry!")
+      }
+
   return (
     
     <Collapse title="Increment Data" type="plain" opened={true}>
@@ -314,6 +323,9 @@ console.error(e.message);
             <IncrementDataForm
               show={modalShow}
               onHide={() => setModalShow(false)}
+              ToastOnSuccess={ToastOnSuccess}
+              ToastOnFailure={ToastOnFailure}
+
             />
           )
         }
