@@ -10,6 +10,7 @@ import {getEmployee,deleteEmployee} from "./EmployeeComponents/EmployeeActions";
 import HistoricDetails from "./EmployeeComponents/HistoricDetails";
 import EmployeeForm from "./EmployeeComponents/EmployeeForm";
 import styled from 'styled-components';
+import toaster from 'react-hot-toast'
 
 const Styled = styled.div`
 
@@ -41,7 +42,10 @@ useEffect(()=>{
 const handleDelete = async ()=>{
   try{
     await deleteEmployee(employee.id);
-    window.location.href = "/employees_details";
+    toaster.success('Employee deleted successfully!');
+    setTimeout(()=>{
+      window.location.href = "/employees_details";
+    },1000)
   }catch(error){
     console.error(error);
   }
@@ -80,7 +84,7 @@ if (isLoading) {
           <HistoricDetails firstName={employee.first_name} lastName = {employee.last_name}/>
         </Collapsible>
         {
-          modalShow ? <EmployeeForm show={modalShow} onHide={()=>setModalShow(false)} employeeData={employee}/> : <div></div>
+          modalShow ? <EmployeeForm show={modalShow} onHide={()=>setModalShow(false)} employeeData={employee} triggerToast={toaster}/> : <div></div>
         }
         {
           showDeleteAlert ? 

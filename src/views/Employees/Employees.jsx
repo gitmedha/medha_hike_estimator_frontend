@@ -13,6 +13,7 @@ import Collapse from "../../components/content/CollapsiblePanels";
 import SearchBar from "../../components/layout/SearchBar";
 import {searchEmployees,LoadSearchPicklist} from "./EmployeeComponents/EmployeeActions";
 import EmployeeForm from "./EmployeeComponents/EmployeeForm";  
+import toaster from 'react-hot-toast'
 
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
@@ -282,7 +283,13 @@ catch(error){
     setStudentsAggregate(employees.total);
   }
 
-
+const ToastOnSuccess = ()=>{
+  toaster.success("Employee created successfully!")
+}
+const ToastOnFailure = (value)=>{
+  console.log(value)
+  toaster.error("Failed to create employee!")
+}
   return (
     <Collapse title="Employees Details" type="plain" opened={true}>
       <div className="d-flex justify-content-between align-items-center">
@@ -366,6 +373,8 @@ catch(error){
             <EmployeeForm
               show={modalShow}
               onHide={() => setModalShow(false)}
+              onSuccess={ToastOnSuccess}
+              onFailure={ToastOnFailure}
             />
           )
         }

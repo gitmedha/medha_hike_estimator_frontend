@@ -92,7 +92,6 @@ export default function EmployeeForm(props) {
       const updatedFields = {};
       for (const key in newData) {
           if (newData[key] !== oldData[key]) {
-            console.log(key)
             if(key === "date_of_joining"){
               const newJoiningDate = new Date(newData[key]);
               const oldJoiningDate = new Date(oldData[key]);
@@ -128,8 +127,13 @@ export default function EmployeeForm(props) {
                 delete dataToSubmit.years;
                 delete dataToSubmit.months;
                   await updateEmployee(dataToSubmit,props.employeeData.id);
-                  window.location.href = `/employee/${props.employeeData.id}`;
                   onHide();
+                  props.triggerToast.success('Details updated successfully')
+                  setTimeout(()=>{
+                    window.location.href = `/employee/${props.employeeData.id}`;
+                  },2000)
+                 
+                 
               } else {
 
                 setIsUpdated(true);
@@ -146,11 +150,19 @@ export default function EmployeeForm(props) {
 
               const response = await createEmployee(dataToSubmit);
               onHide();
-              navigation.push(`/employee/${response.data.id}`);
+              props.onSucess();
+              setTimeout(() => navigation.push(`/employee/${response.data.id}`),2000);
               nProgress.done();
+              
           }
           
       } catch (error) {
+        if(props.onFailure){
+          props.onFailure(error);
+        }
+        else {
+          props.triggerToast.error("Internal Server error")
+        }
           console.error("Error submitting form:", error);
           nProgress.done();
 

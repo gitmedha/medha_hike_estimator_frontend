@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { useToasts } from "react-toast-notifications";
 import { Switch, Route, useHistory, Redirect } from "react-router-dom";
 import ReactTooltip from 'react-tooltip';
+import { Toaster } from 'react-hot-toast';
+
 
 // Layout Components
 import Sidebar from "./components/layout/Sidebar";
@@ -137,6 +139,7 @@ const App = (props) => {
           </AppContainer>
         </Route>
       </Switch>
+      <Toaster/>
     </AuthContext.Provider>
   );
 };
