@@ -109,9 +109,9 @@ const handleWeightedIncrement = async ()=>{
                   <Dropdown.Item className="dropdown-item-sec" disabled={false} onClick={()=>handleIncrement()}>
                     Increment
                     </Dropdown.Item>
-                    <Dropdown.Item disabled={true} onClick={()=>handleWeightedIncrement()}>
+                    {/* <Dropdown.Item disabled={true} onClick={()=>handleWeightedIncrement()}>
                       Weighted Increment
-                    </Dropdown.Item>
+                    </Dropdown.Item> */}
                   </Dropdown.Menu>
                 </Dropdown>
             </div>
