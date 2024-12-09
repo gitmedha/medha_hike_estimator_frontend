@@ -103,8 +103,8 @@ const Details = (props) => {
   return (
     <Styled>
       <div className="container-fluid my-3">
-        <div className="row latto-regular">
-          <div className="col-md-5">
+        <div className="row latto-regular justify-content-between">
+          <div className="col-5">
             <DetailField label="Name" className="capitalize" value={`${full_name}`?.toLowerCase()} />
             <DetailField label="Employee ID" className="capitalize" value={employee_id?.toLowerCase()} />
             <DetailField label="Reviewer" className="capitalize" value={manager}/>
@@ -113,9 +113,9 @@ const Details = (props) => {
             <DetailField label="Compentency" value={compentency} />
             <DetailField label="Increment adjustments" value={inc_adjustments} />
             <DetailField label="Increment" value={increment} />
-            <DetailField label="KRA vs Goals" value={kra_vs_goals} />
+            <DetailField label="KRA" value={kra_vs_goals} />
           </div>
-          <div className="col-md-4">
+          <div className="col-5">
          
             <DetailField label="Long tenure" value={long_tenure? "Yes":"No"} />
             <DetailField label="New band" value={new_band} />

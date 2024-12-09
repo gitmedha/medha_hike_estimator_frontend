@@ -40,8 +40,6 @@ export const incrementValidations = Yup.object().shape({
       .typeError('Tenure must be a number')
       .min(0, 'Tenure cannot be less than 0')
       .required('Tenure is required'),
-    weighted_increment: Yup.string()
-      .required('Weighted increment is required'),
     review_type: Yup.string()
       .oneOf(['bi_annual_review', 'annual_review'], 'Review type must be valid')
       .required('Review type is required')

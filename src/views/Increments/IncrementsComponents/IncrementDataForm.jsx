@@ -42,7 +42,7 @@ function IncrementDataForm(props) {
     const [reviewers,setReviewers] = useState([]);
     const [IDs,setIDs] = useState([]);
     let navigation = useHistory();
-    
+    console.log(props.IncrementData)
     const initialValues = {
         appraisal_cycle:props?.IncrementData?.appraisal_cycle || "",
         average:props?.IncrementData?.average || 0,
@@ -63,6 +63,8 @@ function IncrementDataForm(props) {
         weighted_increment:props?.IncrementData?.weighted_increment || "0",
         review_type:props?.IncrementData?.review_type || "",
     }
+
+    console.log(initialValues,'initialValues')
     const onSubmit = async (values)=>{
       nProgress.start();
         try{
@@ -198,10 +200,10 @@ function IncrementDataForm(props) {
                       <div className="col-md-6 col-sm-12 mt-2">
                         <Input
                           name="kra_vs_goals"
-                          label="Kra vs Goals"
+                          label="Kra"
                           required
                           control="input"
-                          placeholder="Kra vs Goals"
+                          placeholder="Kra"
                           className="form-control"
                         />
                       </div>
@@ -218,11 +220,12 @@ function IncrementDataForm(props) {
                       <div className="col-md-6 col-sm-12 mt-2">
                         <Input
                           name="average"
-                          label="Final Score"
+                          label="Average"
                           required
                           control="input"
-                          placeholder="Final Score"
+                          placeholder="Average"
                           className="form-control"
+                          disabled={true}
                         />
                       </div>
                       
@@ -358,6 +361,7 @@ function IncrementDataForm(props) {
                           control="input"
                           placeholder="Increment %"
                           className="form-control"
+                          disabled={true}
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mt-2">
@@ -367,6 +371,7 @@ function IncrementDataForm(props) {
                           control="input"
                           placeholder="Normalize Rating"
                           className="form-control"
+                          disabled={true}
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mt-2">
@@ -378,18 +383,22 @@ function IncrementDataForm(props) {
                           className="form-control"
                         />
                       </div>
-
-                     
                     </div>
                   </Section>
-                  <div className="row justify-content-end mt-1">
+                  <div className="row justify-content-between mt-1">
+                    <div className="col-auto p-0">
+                       {
+                        props.IncrementData && <button type="button"
+                       onClick={()=>props.showDeleteModal()} className='btn btn-danger btn-regular collapse_form_buttons'>
+                        DELETE
+                       </button>
+                       }
+                    </div>
                     <div className="col-auto p-0">
                        <button type="button"
                        onClick={onHide} className='btn btn-secondary btn-regular collapse_form_buttons'>
                         CANCEL                    
                       </button>
-                    </div>
-                    <div className="col-auto p-0">
                       <button type='submit' className='btn btn-primary btn-regular collapse_form_buttons'>
                         SAVE
                       </button>

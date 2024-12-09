@@ -125,3 +125,34 @@ export const search = async(field,value,limit,page)=>{
         console.error(error);
     }
 }
+
+export const getHistoricsData = async (fullName)=>{
+    try{
+        const response = await api.post(`/api/increments/get_historical_data_increment`, {
+            "employeeName": `${fullName}`
+        });
+
+        return response.data;
+    }catch(error){
+        console.error(error);
+    }
+}
+
+export const getIncrementDataByReviewCycle = async (employeeId,reviewCycle)=>{
+    try{
+        const response = await api.post(`/api/increments/get_increment_by_review_cycle`, {
+            "employeeID": employeeId,
+            "reviewCycle": reviewCycle
+        });
+        return response.data;
+    }
+    catch(error){
+        console.log(error);
+        if(error.response){
+            throw new Error(error.response.data.message);
+        }
+        else {
+            throw new Error(error.message);
+        }
+    }
+}
