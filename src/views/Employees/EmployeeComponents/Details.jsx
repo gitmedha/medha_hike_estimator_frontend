@@ -96,8 +96,8 @@ const Details = (props) => {
   return (
     <Styled>
       <div className="container-fluid my-3">
-        <div className="row latto-regular">
-          <div className="col-md-5">
+        <div className="row latto-regular justify-content-between">
+          <div className="col-5">
             <DetailField label="Name" className="capitalize" value={`${first_name} ${last_name}`?.toLowerCase()} />
             <DetailField label="Department" className="capitalize" value={department?.toLowerCase()} />
             <DetailField label="Email" value={<a target="_blank" href={`mailto:${email_id}`} rel="noreferrer">{email_id}</a>} />
@@ -106,7 +106,7 @@ const Details = (props) => {
             <DetailField label="Employee Status" className="capitalize" value={employee_status?.toLowerCase()} />
 
           </div>
-          <div className="col-md-4">
+          <div className="col-5">
             <DetailField label="Employee ID" value={employee_id} />
             <DetailField label="Current Band" value={current_band} />
             <DetailField label="Title" className="capitalize" value={title?.toLowerCase()} />

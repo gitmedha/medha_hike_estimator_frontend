@@ -145,10 +145,10 @@ function HistoricForm(props) {
                       <div className="col-md-6 col-sm-12 mt-2">
                         <Input
                           name="kra_vs_goals"
-                          label="Kra vs Goals"
+                          label="Kra"
                           required
                           control="input"
-                          placeholder="Kra vs Goals"
+                          placeholder="Kra"
                           className="form-control"
                         />
                       </div>
@@ -165,11 +165,12 @@ function HistoricForm(props) {
                       <div className="col-md-6 col-sm-12 mt-2">
                         <Input
                           name="final_score"
-                          label="Final Score"
+                          label="Average"
                           required
                           control="input"
-                          placeholder="Final Score"
+                          placeholder="Average"
                           className="form-control"
+                          disabled={true}
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mt-2">
@@ -196,14 +197,20 @@ function HistoricForm(props) {
                         </div>
                     </div>
                   </Section>
-                  <div className="row justify-content-end mt-1">
+                  <div className="row justify-content-between mt-1">
+                    <div className="col-auto p-0">
+                       {
+                        props.HistoricalData && <button type="button"
+                       onClick={()=>props.showDeleteModal()} className='btn btn-danger btn-regular collapse_form_buttons'>
+                        DELETE
+                       </button>
+                       }
+                    </div>
                     <div className="col-auto p-0">
                        <button type="button"
                        onClick={onHide} className='btn btn-secondary btn-regular collapse_form_buttons'>
                         CANCEL                    
                       </button>
-                    </div>
-                    <div className="col-auto p-0">
                       <button type='submit' className='btn btn-primary btn-regular collapse_form_buttons'>
                         SAVE
                       </button>

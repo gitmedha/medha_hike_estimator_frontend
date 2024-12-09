@@ -48,6 +48,18 @@ const handleDelete = async () => {
     console.error(error);
   }
 }
+const handleDeleteModal = ()=>{
+  setModalShow(false);
+  setShowDeleteAlert(true);
+}
+const handleDeleteAlertConfirm = ()=>{
+  setShowDeleteAlert(false);
+  handleDelete();
+}
+const handleCloseDeleteAlert = ()=>{
+  setModalShow(true);
+  setShowDeleteAlert(false);
+}
 
 if (isLoading) {
     return <SkeletonLoader />;
@@ -56,19 +68,13 @@ if (isLoading) {
       <Styled>
       <>
         <div className="row" style={{margin: '30px 0 0'}}>
-        <div className="col-12 button_container">
+        <div className="col-12 button_container d-flex justify-content-end">
               <button
                 onClick={() => setModalShow(true)}
                 style={{ marginLeft: "0px" }}
                 className="btn--primary action_button_sec"
               >
                 EDIT
-              </button>
-              <button
-                onClick={() => setShowDeleteAlert(true)}
-                className="btn--primary action_button_sec"
-              >
-                DELETE
               </button>
             </div>
           <div className="col-12 d-flex bebas-thick text--primary" style={{fontSize:'2.5rem'}}>
@@ -80,7 +86,13 @@ if (isLoading) {
           <ReporteeDetails managerData={historic}/>
         </Collapsible>
         {
-          modalShow ? <HistoricForm show={modalShow} onHide={()=>setModalShow(false)} HistoricalData={historic}/> : <div></div>
+          modalShow ? <HistoricForm 
+                        show={modalShow} 
+                        onHide={()=>setModalShow(false)} 
+                        HistoricalData={historic}
+                        showDeleteModal={handleDeleteModal}
+
+                        /> : <div></div>
         }
         {
           showDeleteAlert ? 
@@ -99,13 +111,13 @@ if (isLoading) {
           customButtons={
             <>
               <button
-                onClick={() => setShowDeleteAlert(false)}
+                onClick={() => handleCloseDeleteAlert(false)}
                 className="btn btn-secondary mx-2 px-4"
               >
                 Cancel
               </button>
               <button
-                onClick={() => handleDelete()}
+                onClick={() => handleDeleteAlertConfirm()}
                 className="btn btn-danger mx-2 px-4"
               >
                 Delete

@@ -40,9 +40,46 @@ function IncrementDataForm(props) {
     const { show,onHide } = props;
     const [increments,setIncrements] = useState([]);
     const [reviewers,setReviewers] = useState([]);
+    const [newBands] = useState([{
+      label:'I',
+      value:'I'
+     }, {
+      label:'II',
+      value:'II'
+     },{
+      label:'III',
+      value:'III'
+     }, {
+      label:'IV',
+      value:'IV'
+     }, {
+      label:'V',
+      value:'V'
+     }, {
+      label:'VI',
+      value:'VI'
+     }])
+    const [currentBands] = useState([{
+      label:'I',
+      value:'I'
+     }, {
+      label:'II',
+      value:'II'
+     },{
+      label:'III',
+      value:'III'
+     }, {
+      label:'IV',
+      value:'IV'
+     }, {
+      label:'V',
+      value:'V'
+     }, {
+      label:'VI',
+      value:'VI'
+     }])
     const [IDs,setIDs] = useState([]);
     let navigation = useHistory();
-    console.log(props.IncrementData)
     const initialValues = {
         appraisal_cycle:props?.IncrementData?.appraisal_cycle || "",
         average:props?.IncrementData?.average || 0,
@@ -64,7 +101,6 @@ function IncrementDataForm(props) {
         review_type:props?.IncrementData?.review_type || "",
     }
 
-    console.log(initialValues,'initialValues')
     const onSubmit = async (values)=>{
       nProgress.start();
         try{
@@ -317,9 +353,10 @@ function IncrementDataForm(props) {
                           name="current_band"
                           label="Current Band"
                           required
-                          control="input"
+                          control="lookup"
                           placeholder="Current Band"
                           className="form-control"
+                          options={currentBands}
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mt-2">
@@ -338,9 +375,10 @@ function IncrementDataForm(props) {
                           name="new_band"
                           label="New Band"
                           required
-                          control="input"
+                          control="lookup"
                           placeholder="New Band"
                           className="form-control"
+                          options={newBands}
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mt-2">

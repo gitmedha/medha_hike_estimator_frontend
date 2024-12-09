@@ -47,12 +47,14 @@ function EmployeeIncrements(props) {
   const [defaultSearchOptions,setDefaultSearchOptions] = useState([]);
   const [modalShow,setModalShow] = useState(false);
   const [newBandOptions,setNewBandOptions] = useState([]);
+  const [currentBandOptions,setCurrentBandOptions] = useState([]);
   const [longTenureOptions,setLongTenureOptions] = useState([]);
   const [tenureOptions,setTenureOptions] = useState([]);
   const [selectedBand, setSelectedBand] = useState(null);
   const [selectedTenure,setSelectedTenure] = useState(null);
   const [selectedLongTenures,setSelectedLongTenure] = useState(null);
   const [isClearDisabled,setClearDisabled] = useState(false);
+  const [selectCurrentBand,setSelectCurrentBand] = useState(null);
 
 
   const [filters,setFilters] = useState([{
@@ -175,8 +177,45 @@ console.error(e.message);
       useEffect(()=>{
         async function mountApis(){
          const data = await fetchAllIncrements(paginationPageIndex,pageSize);
-         const {new_band,tenure} = await fetchFilterPicklist();
-         setNewBandOptions([...new_band])
+         const {tenure} = await fetchFilterPicklist();
+         setNewBandOptions([{
+          label:'I',
+          value:'I'
+         }, {
+          label:'II',
+          value:'II'
+         },{
+          label:'III',
+          value:'III'
+         }, {
+          label:'IV',
+          value:'IV'
+         }, {
+          label:'V',
+          value:'V'
+         }, {
+          label:'VI',
+          value:'VI'
+         }])
+         setCurrentBandOptions([{
+          label:'I',
+          value:'I'
+         }, {
+          label:'II',
+          value:'II'
+         },{
+          label:'III',
+          value:'III'
+         }, {
+          label:'IV',
+          value:'IV'
+         }, {
+          label:'V',
+          value:'V'
+         }, {
+          label:'VI',
+          value:'VI'
+         }])
          setTenureOptions([...tenure])
          setLongTenureOptions([...[{
           key:0,
@@ -220,6 +259,7 @@ console.error(e.message);
 
 
       const clearFilters = async()=>{
+        await setSelectCurrentBand([])
        await setSelectedBand([]);
        await setSelectedTenure([]);
        await setSelectedLongTenure([]);
@@ -243,11 +283,14 @@ console.error(e.message);
       <div className="d-flex justify-content-between align-items-center">
       <div className="filter_container d-flex mt-2">
           <CurrentBandDropdown 
-          newBands={newBandOptions} 
+          newBands={newBandOptions}
+          currentBands={currentBandOptions} 
           longTenures={longTenureOptions} 
           tenures={tenureOptions} 
           applyFilter={setFilters} 
           filters={filters}
+          selectCurrentBand={selectCurrentBand}
+          setSelectCurrentBand={setSelectCurrentBand}
           selectedBand={selectedBand}
           setSelectedBand={setSelectedBand}
           selectedTenure={selectedTenure}

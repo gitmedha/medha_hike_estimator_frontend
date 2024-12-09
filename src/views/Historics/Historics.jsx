@@ -169,7 +169,7 @@ const Historics = (props) => {
   },
   {
     key:4,
-    label: "Final Score",
+    label: "Average",
     value: "final_score",
   }, {
     key:5,

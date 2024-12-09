@@ -3,6 +3,8 @@ import ReactSelect from "react-select";
 
 const CurrentBandDropdown = (props) => {
   const {
+    selectCurrentBand,
+    setSelectCurrentBand,
     selectedBand,
     setSelectedBand,
     selectedTenure,
@@ -13,7 +15,12 @@ const CurrentBandDropdown = (props) => {
   const [newBands,setBands] = useState([]);
   const [tenures,setTenures] = useState([]);
   const [longTenures,setLongTenures] =useState([]);
+  const [currentBands,setCurrentBands] = useState([]);
 
+  const handleCurrentBandChange = (selectedOption)=>{
+    setSelectCurrentBand(selectedOption);
+    updateFilters("current_band",selectedOption.value);
+  }
   const handleBandChange = (selectedOption) => {
     setSelectedBand(selectedOption);
     updateFilters("new_band",selectedOption.value);
@@ -40,7 +47,6 @@ const CurrentBandDropdown = (props) => {
    let updatedFilters = {...props.filters[0]};
    
     if(existingIndex>-1){
-        console.log(existingIndex);
       updatedFilters.values[existingIndex] = values;
     }else{
       updatedFilters.fields.push(field);
@@ -56,17 +62,29 @@ const CurrentBandDropdown = (props) => {
   
 
   useEffect(()=>{
-    const {newBands,longTenures,tenures} = props;
+    const {newBands,longTenures,tenures,currentBands} = props;
     setBands(newBands);
+    setCurrentBands(currentBands);
     setLongTenures(longTenures);
     setTenures(tenures);
 
   },[props]);
   return (
     <>
-   <div className="col-auto" style={{marginRight:10, width:150}}>
+    <div className="col-auto" style={{marginRight:10, width:150}}>
       <div className="text-label">
         Current Band
+      </div>
+        <ReactSelect
+      options={currentBands}
+      value={selectCurrentBand}
+      onChange={handleCurrentBandChange}
+      placeholder="Select"
+    />
+        </div>
+   <div className="col-auto" style={{marginRight:10, width:150}}>
+      <div className="text-label">
+        New Band
       </div>
         <ReactSelect
       options={newBands}

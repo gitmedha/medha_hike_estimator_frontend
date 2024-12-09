@@ -88,20 +88,19 @@ const Details = (props) => {
 
 
 
-
   return (
     <Styled>
       <div className="container-fluid my-3">
-        <div className="row latto-regular">
-          <div className="col-md-5">
+        <div className="row latto-regular justify-content-between">
+          <div className="col-5">
             <DetailField label="Name" className="capitalize" value={`${employee}`?.toLowerCase()} />
             <DetailField label="Start Month" value={moment(start_month).format("MMMM YYYY")} />
             <DetailField label="Ending Month" value={moment(ending_month).format('MMMM YYYY')} />
-            <DetailField label="Kra vs Goals" className="capitalize" value={kra_vs_goals} />
+            <DetailField label="KRA" className="capitalize" value={kra_vs_goals} />
 
           </div>
-          <div className="col-md-4">
-          <DetailField label="Final Score" className="capitalize" value={final_score} />
+          <div className="col-5">
+          <DetailField label="Average" className="capitalize" value={final_score} />
           <DetailField label="Competency" className="capitalize" value={competency} />
             <DetailField label="Reviewer" value={reviewer} />
           </div>

@@ -339,14 +339,20 @@ export default function EmployeeForm(props) {
                     
                     {isUpdated ? <p style={{color:'red'}}> No Changes Detected</p>: <p></p>}
                   </Section>
-                  <div className="row justify-content-end mt-1">
+                  <div className="row justify-content-between mt-1">
+                    <div className="col-auto p-0">
+                       {
+                        props.employeeData && <button type="button"
+                       onClick={()=>props.showDeleteModal()} className='btn btn-danger btn-regular collapse_form_buttons'>
+                        DELETE
+                       </button>
+                       }
+                    </div>
                     <div className="col-auto p-0">
                        <button type="button"
                        onClick={onHide} className='btn btn-secondary btn-regular collapse_form_buttons'>
                         CANCEL                    
                       </button>
-                    </div>
-                    <div className="col-auto p-0">
                       <button type='submit' className='btn btn-primary btn-regular collapse_form_buttons'>
                         SAVE
                       </button>
