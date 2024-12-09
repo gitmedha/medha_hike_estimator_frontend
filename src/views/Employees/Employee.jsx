@@ -42,7 +42,7 @@ useEffect(()=>{
 const handleDelete = async ()=>{
   try{
     await deleteEmployee(employee.id);
-    toaster.success('Employee deleted successfully!');
+    toaster.success('Employee deleted successfully!', { position: "bottom-center" });
     setTimeout(()=>{
       window.location.href = "/employees_details";
     },1000)

@@ -231,11 +231,10 @@ console.error(e.message);
       }
 
       const ToastOnSuccess = ()=>{
-        toaster.success("Increment entry created successfully!")
+        toaster.success("Increment entry created successfully!",{ position: "bottom-center" })
       }
       const ToastOnFailure = (value)=>{
-        console.log(value)
-        toaster.error("Failed to create entry!")
+        toaster.error("Failed to create entry!",{ position: "bottom-center" })
       }
 
   return (

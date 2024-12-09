@@ -128,7 +128,7 @@ export default function EmployeeForm(props) {
                 delete dataToSubmit.months;
                   await updateEmployee(dataToSubmit,props.employeeData.id);
                   onHide();
-                  props.triggerToast.success('Details updated successfully')
+                  props.triggerToast.success('Details updated successfully',{ position: "bottom-center" })
                   setTimeout(()=>{
                     window.location.href = `/employee/${props.employeeData.id}`;
                   },2000)
@@ -161,7 +161,7 @@ export default function EmployeeForm(props) {
           props.onFailure(error);
         }
         else {
-          props.triggerToast.error("Internal Server error")
+          props.triggerToast.error("Internal Server error",{ position: "bottom-center" })
         }
           console.error("Error submitting form:", error);
           nProgress.done();

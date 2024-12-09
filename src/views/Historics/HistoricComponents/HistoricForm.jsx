@@ -54,7 +54,7 @@ function HistoricForm(props) {
           if(props.HistoricalData){
             await updateHistoric(values,props.HistoricalData.id);
             onHide();
-            toaster.success('Updated historic data successfully!')
+            toaster.success('Updated historic data successfully!',{ position: "bottom-center" })
             setTimeout(() => {
             window.location.href = `/historic/${props.HistoricalData.id}`
             nProgress.done();
@@ -78,7 +78,7 @@ function HistoricForm(props) {
             props.onFailure()
           }
           else {
-            toaster.error('Error occurred while submitting form!')
+            toaster.error('Error occurred while submitting form!',{ position: "bottom-center" })
           }
         }
     }

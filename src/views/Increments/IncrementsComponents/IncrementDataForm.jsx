@@ -97,7 +97,7 @@ function IncrementDataForm(props) {
             
             await updateIncrement(newValues,props.IncrementData.id);
             onHide();
-            toaster.success('Details updated successfully!')
+            toaster.success('Details updated successfully!',{ position: "bottom-center" })
 
             setTimeout(() =>window.location.href = `/increment_employee/${props.IncrementData.id}`,2000);
             nProgress.done();
@@ -120,7 +120,7 @@ function IncrementDataForm(props) {
             props.ToastOnFailure();
           }
           else {
-            toaster.error('Failed to update details!')
+            toaster.error('Failed to update details!',{ position: "bottom-center" })
           }
           console.error(error)
         }

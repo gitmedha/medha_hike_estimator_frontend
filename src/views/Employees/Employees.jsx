@@ -284,11 +284,11 @@ catch(error){
   }
 
 const ToastOnSuccess = ()=>{
-  toaster.success("Employee created successfully!")
+  toaster.success("Employee created successfully!",{ position: "bottom-center" })
 }
 const ToastOnFailure = (value)=>{
   console.log(value)
-  toaster.error("Failed to create employee!")
+  toaster.error("Failed to create employee!",{ position: "bottom-center" })
 }
   return (
     <Collapse title="Employees Details" type="plain" opened={true}>

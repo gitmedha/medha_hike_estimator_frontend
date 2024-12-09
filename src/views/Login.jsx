@@ -40,7 +40,7 @@ const Login = () => {
           username,
           password,
         });
-        toast.success("Successfully logged in! Redirecting...",{ position: "top-right" });
+        toast.success("Successfully logged in! Redirecting...",{ position: "bottom-center" });
         setTimeout(() => navigate.push("/employees_details"), 3000);
         localStorage.setItem("user", JSON.stringify(response.data.data[0]));
         localStorage.setItem("token", response.data.token);

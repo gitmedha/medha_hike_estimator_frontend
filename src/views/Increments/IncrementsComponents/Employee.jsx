@@ -74,10 +74,10 @@ console.log(selectedCycle);
 const handleDelete = async()=>{
   try{
     await deleteIncrement(id);
-    toaster.success("Increment details deleted successfully")
+    toaster.success("Increment details deleted successfully",{ position: "bottom-center" })
     setTimeout(()=>window.location.href = "/employee_increments",2000);
   }catch(error){
-    toaster.error("Failed to delete increment details")
+    toaster.error("Failed to delete increment details",{ position: "bottom-center" })
     console.error(error);
   }
 }
@@ -85,13 +85,13 @@ const handleDelete = async()=>{
 const handleNormalizedRating = async ()=>{
   try{
     await calculateNormalizedRating(employeeData.employee_id, employeeData.appraisal_cycle,employeeData.average,employeeData.manager);
-    toaster.success('Normalized rating calculated successfully!');
+    toaster.success('Normalized rating calculated successfully!',{ position: "bottom-center" });
     setTimeout(() => {
       window.location.href = "/increment_employee/"+ employeeData.id;
     }, 3000);
     
   }catch(error){
-    toaster.error('Unable to calculate rating, check the data again')
+    toaster.error('Unable to calculate rating, check the data again',{ position: "bottom-center" })
     console.error(error);
   }
 }
@@ -99,12 +99,12 @@ const handleNormalizedRating = async ()=>{
 const handleIncrement = async ()=>{
   try{
     await calculateIncrement(employeeData.employee_id,employeeData.appraisal_cycle,employeeData.normalize_rating);
-    toaster.success('Increment calculated successfully!')
+    toaster.success('Increment calculated successfully!',{ position: "bottom-center" })
     setTimeout(() => {
       window.location.href = "/increment_employee/"+ employeeData.id;
     }, 3000);
     }catch(error){
-      toaster.error('Unable to calculate increment, check the data again')
+      toaster.error('Unable to calculate increment, check the data again',{ position: "bottom-center" })
     console.error(error);
   }
 }

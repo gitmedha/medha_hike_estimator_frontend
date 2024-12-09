@@ -200,10 +200,10 @@ const Historics = (props) => {
   }
 
   const onFailure = ()=>{
-    toaster.error("Failed to create historic data");
+    toaster.error("Failed to create historic data",{ position: "bottom-center" });
   }
   const onSuccess = ()=>{
-    toaster.success("Created the historic data successfully!")
+    toaster.success("Created the historic data successfully!",{ position: "bottom-center" })
   }
   return (
     <Collapse title="Historical Data" type="plain" opened={true}>
