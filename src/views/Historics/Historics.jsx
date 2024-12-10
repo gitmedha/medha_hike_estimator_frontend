@@ -59,7 +59,7 @@ const Historics = (props) => {
         accessor: "competency",
       },
       {
-        Header: "Final Score",
+        Header: "Average",
         accessor: "final_score",
       },
       {
@@ -218,11 +218,10 @@ const Historics = (props) => {
           setIsDisable={setIsDisable}
           />
         </div>
-        <div className="col-auto">
+        <div className="col-auto mt-4">
         <button
             className="btn btn-primary add_button_sec"
             onClick={() => setModalShow(true)}
-            // style={{ marginLeft: "15px" }}
           >
             Add New
           </button>

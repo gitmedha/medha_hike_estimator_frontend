@@ -300,7 +300,7 @@ console.error(e.message);
           setClearDisabled={setClearDisabled}
           />
         </div>
-        <div className="col-7">
+        <div className="col">
           <SearchBar
           searchFieldOptions={optionsForSearch}
           defaultSearchOptions={defaultSearchOptions}

@@ -196,8 +196,18 @@ function IncrementDataForm(props) {
               initialValues={initialValues}
               validationSchema={incrementValidations}
             >
-              {({ values, setFieldValue }) => (
-                <Form>
+              {({ values, setFieldValue }) => {
+                const handleInputChange = (field, value) => {
+                  setFieldValue(field, value);
+
+                  if (field === "kra_vs_goals" || field === "compentency") {
+                    const kra = parseFloat(values.kra_vs_goals || (field === "kra_vs_goals" ? value : 0)) || 0;
+                    const compentency = parseFloat(values.compentency || (field === "compentency" ? value : 0)) || 0;
+                    const average = (kra + compentency) / 2;
+                    setFieldValue("average", average.toFixed(2));
+                  }
+                };
+                return(<Form>
                   <Section>
                     <div className="row">
                     <div className="col-md-6 col-sm-12 mt-2">
@@ -241,6 +251,7 @@ function IncrementDataForm(props) {
                           control="input"
                           placeholder="Kra"
                           className="form-control"
+                          onChange={(e) => handleInputChange("kra_vs_goals", e.target.value)}
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mt-2">
@@ -251,6 +262,8 @@ function IncrementDataForm(props) {
                           control="input"
                           placeholder="Competency"
                           className="form-control"
+                          onChange={(e) => handleInputChange("compentency", e.target.value)}
+
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mt-2">
@@ -442,8 +455,8 @@ function IncrementDataForm(props) {
                       </button>
                     </div>
                   </div>
-                </Form>
-              )}
+                </Form>)
+              }}
             </Formik>
           </Modal.Body>
         </Modal>
