@@ -68,7 +68,6 @@ useEffect(()=>{
 
 },[selectedCycle])
 
-console.log(selectedCycle);
 
 
 const handleDelete = async()=>{
@@ -131,44 +130,58 @@ const handleSelect = (event) => {
     <Styled>
       <>
         <div className="row" style={{margin: '30px 0 0'}}>
-          <div className="col-12 d-flex bebas-thick text--primary" style={{fontSize:'2.5rem'}}>
+          <div className="col-12 d-flex bebas-thick text--primary" style={{fontSize:'2.8rem'}}>
             Employee Increment Data
           </div>
-          <div className="col-12 d-flex justify-content-between button_container my-3">
-            <div className="dropdown_sec">
-            <div className="text-label">
-              Review Cycle
-      </div>
-        <ReactSelect
-        styles={customStyles}
-      options={[{
-        value: 'April-March 2022',
-        label: 'April-March 2022'
-      }, {
-        value: 'April-March 2023',
-        label: 'April-March 2023'
-      }]}
-      value={selectedCycle}
-      onChange={handleSelect}
-      placeholder="Select Review Cycle"
-    />
+          <div className="row justify-content-between align-items-center mb-4 mt-2">
+            <div className="col-auto" style={{paddingLeft:20}}>
+              <div className="name-sec d-flex align-items-center">
+                <div className="employee_name">
+                  {employeeData ?employeeData.full_name: ''}
+                </div>
+                <div className="employee_status">
+                {employeeData ?employeeData.employee_status: ''}
+                </div>
+              </div>
+              <div className="designation_sec">
+                {employeeData ? employeeData.title: '' } || {employeeData ? employeeData.department: ''}
+              </div>
             </div>
-            
-            <div>
-              <div>&nbsp;</div>
+            <div className="col-4 d-flex justify-content-end">
+            <div className="dropdown_sec">
+              <div  style={{fontSize:'15px', fontWeight:'bold',color: '#787b96'}}>
+                Review Cycle
+              </div>
+               <div className='d-flex'>
+                
+              <ReactSelect
+                styles={customStyles}
+                options={[{
+                  value: 'April-March 2022',
+                  label: 'April-March 2022'
+                }, {
+                  value: 'April-March 2023',
+                  label: 'April-March 2023'
+                }]}
+                value={selectedCycle}
+                onChange={handleSelect}
+                placeholder="Select Review Cycle"
+              />
             <button
                 onClick={() => setModalShow(true)}
                 className="btn--primary action_button_sec"
               >
                 EDIT
               </button>
+
             </div>
             </div>
+            </div>
+          </div>
         </div>
+        <div>
         <Details {...employeeData}/>
-        {
-          modalShow ? <IncrementDataForm show={modalShow} onHide={()=>setModalShow(false)} IncrementData={employeeData} showDeleteModal={handleDeleteModal}/> : <div></div>
-        }
+
         <div className="d-flex align-items-center justify-content-end">
           
         <div className="col-auto" style={{marginRight:15}}>
@@ -188,6 +201,10 @@ const handleSelect = (event) => {
             </button>
           </div>
         </div>
+        </div>
+        {
+          modalShow ? <IncrementDataForm show={modalShow} onHide={()=>setModalShow(false)} IncrementData={employeeData} showDeleteModal={handleDeleteModal}/> : <div></div>
+        }
         
         <Collapsible title="Historic Details">
           <HistoricDetails fullName={employeeData ?employeeData.full_name: ''}/>

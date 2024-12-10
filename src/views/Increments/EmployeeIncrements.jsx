@@ -233,7 +233,7 @@ console.error(e.message);
       },[])
 
       const onRowClick = (row)=>{
-        history.push(`/increment_employee/${row.id}`);
+        history.push(`/increment_employee/${row.employee_id}`);
       }
 
       const handleFilters = async(filters,offset,limit)=>{

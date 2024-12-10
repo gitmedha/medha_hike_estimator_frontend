@@ -429,6 +429,25 @@ div::-webkit-scrollbar-thumb {
   background-color: #257b69;
   color: #f3f4fc
 }
+
+.employee_name {
+  font-family: 'Latto-Regular';
+  font-size: 2.3rem;
+}
+
+.employee_status {
+  background-color:#1ec940;
+  color: #ffffff;
+  padding : 0px 20px;
+  border-radius: 5px;
+  margin-left:10px;
+  height: fit-content;
+}
+
+.designation_sec {
+  font-family: 'Latto-Regular';
+  font-size:1.1rem;
+}
 @import './media/lg.scss';
 @import './media/md.scss';
 @import './media/sm.scss';
