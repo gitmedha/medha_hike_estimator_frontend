@@ -68,17 +68,18 @@ if (isLoading) {
       <Styled>
       <>
         <div className="row" style={{margin: '30px 0 0'}}>
-        <div className="col-12 button_container d-flex justify-content-end">
-              <button
-                onClick={() => setModalShow(true)}
-                style={{ marginLeft: "0px" }}
-                className="btn--primary action_button_sec"
-              >
-                EDIT
-              </button>
-            </div>
-          <div className="col-12 d-flex bebas-thick text--primary" style={{fontSize:'2.5rem'}}>
+        <div className="bebas-thick text--primary" style={{fontSize:'2.8rem'}}>
             Historical Data
+          </div>
+          <div className="d-flex justify-content-end">
+            
+          <button
+            onClick={() => setModalShow(true)}
+            style={{ marginLeft: "0px" }}
+            className="btn--primary action_button_sec"
+          >
+            EDIT
+          </button>
           </div>
         </div>
         <Details {...historic}/>

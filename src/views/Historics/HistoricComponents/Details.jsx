@@ -1,6 +1,8 @@
 import moment from 'moment';
 import DetailField from "../../../components/content/DetailField";
 import styled from "styled-components";
+import profileImage from '../../../assets/images/profile-user.png'
+
 
 const Styled = styled.div`
   p, label {
@@ -92,17 +94,52 @@ const Details = (props) => {
     <Styled>
       <div className="container-fluid my-3">
         <div className="row latto-regular justify-content-between">
-          <div className="col-5">
-            <DetailField label="Name" className="capitalize" value={`${employee}`?.toLowerCase()} />
-            <DetailField label="Start Month" value={moment(start_month).format("MMMM YYYY")} />
-            <DetailField label="Ending Month" value={moment(ending_month).format('MMMM YYYY')} />
-            <DetailField label="KRA" className="capitalize" value={kra_vs_goals} />
-
+          <div className="col-2">
+          <div className="img-profile-container">
+              <div className="status-icon">
+                <i className="far fa-circle text-success"></i>
+              </div>
+              <img className="img-profile" src={profileImage} alt={'profile-image'} />
+            </div>
           </div>
-          <div className="col-5">
-          <DetailField label="Average" className="capitalize" value={final_score} />
-          <DetailField label="Competency" className="capitalize" value={competency} />
-            <DetailField label="Reviewer" value={reviewer} />
+          <div className="col d-flex">
+            <div className="col-3">
+              <div className="row">
+                <DetailField label="Name" className="capitalize" value={`${employee}`?.toLowerCase()} />
+              </div>
+              <div className="row">
+                <DetailField label="Reviewer" value={reviewer} />
+              </div>
+
+            </div>
+            <div className="col-3">
+<div className="row">
+<DetailField label="Start Month" value={moment(start_month).format("MMMM YYYY")} />
+
+</div>
+<div className="row">
+<DetailField label="Average" className="capitalize" value={final_score} />
+
+</div>
+            </div>
+            <div className="col-3">
+              <div className="row">
+              <DetailField label="Ending Month" value={moment(ending_month).format('MMMM YYYY')} />
+
+              </div>
+              <div className="row">
+              <DetailField label="Competency" className="capitalize" value={competency} />
+
+              </div>
+
+            </div>
+            <div className="col-3">
+<div className="row">
+<DetailField label="KRA" className="capitalize" value={kra_vs_goals} />
+
+</div>
+            </div>
+            
           </div>
         </div>
       </div>
