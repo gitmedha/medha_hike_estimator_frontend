@@ -72,24 +72,33 @@ if (isLoading) {
     return (
       <Styled>
       <>
-        <div className="row" style={{margin: '30px 0 0'}}>
-          <div className="col-12 button_container d-flex justify-content-end">
-              <button
+        <div className="row " style={{margin: '30px 0 0', marginBottom:25}}>
+          <div className="col-12 d-flex bebas-thick text--primary" style={{fontSize:'2.8rem'}}>
+            Employee Details
+          </div>
+          <div className="row justify-content-between align-items-baseline">
+            <div className="col-auto" style={{paddingLeft:20}}>
+              <div className="name-sec d-flex align-items-center">
+                <div className="employee_name">
+                  {employee ?employee.first_name: ''}
+                </div>
+                <div className="employee_status">
+                {employee ?employee.employee_status: ''}
+                </div>
+              </div>
+              <div className="designation_sec">
+                {employee ? employee.title: '' } || {employee ? employee.department: ''}
+              </div>
+            </div>
+            <div className="col-auto">
+            <button
                 onClick={() => setModalShow(true)}
                 style={{ marginLeft: "0px" }}
                 className="btn--primary action_button_sec"
               >
                 EDIT
               </button>
-              {/* <button
-                onClick={() => setShowDeleteAlert(true)}
-                className="btn--primary action_button_sec"
-              >
-                DELETE
-              </button> */}
             </div>
-          <div className="col-12 d-flex bebas-thick text--primary" style={{fontSize:'2.5rem'}}>
-            Employee Details
           </div>
         </div>
         <Details {...employee}/>

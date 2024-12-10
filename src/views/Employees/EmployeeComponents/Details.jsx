@@ -1,6 +1,8 @@
 import moment from 'moment';
 import DetailField from "../../../components/content/DetailField";
 import styled from "styled-components";
+import profileImage from '../../../assets/images/profile-user.png'
+
 
 const Styled = styled.div`
   p, label {
@@ -97,20 +99,43 @@ const Details = (props) => {
     <Styled>
       <div className="container-fluid my-3">
         <div className="row latto-regular justify-content-between">
-          <div className="col-5">
-            <DetailField label="Name" className="capitalize" value={`${first_name} ${last_name}`?.toLowerCase()} />
-            <DetailField label="Department" className="capitalize" value={department?.toLowerCase()} />
-            <DetailField label="Email" value={<a target="_blank" href={`mailto:${email_id}`} rel="noreferrer">{email_id}</a>} />
-            <DetailField label="Date of Joining" value={moment(date_of_joining).format("DD MMM YYYY")} />
-            <DetailField label="Experience" className="capitalize" value={experience?.toLowerCase()} />
-            <DetailField label="Employee Status" className="capitalize" value={employee_status?.toLowerCase()} />
-
+          <div className="col-2">
+          <div className="img-profile-container">
+              <div className="status-icon">
+                <i className="far fa-circle text-success"></i>
+              </div>
+              <img className="img-profile" src={profileImage} alt={'full_name'} />
+            </div>
           </div>
-          <div className="col-5">
-            <DetailField label="Employee ID" value={employee_id} />
-            <DetailField label="Current Band" value={current_band} />
-            <DetailField label="Title" className="capitalize" value={title?.toLowerCase()} />
-            <DetailField label="Employee Type" className="capitalize" value={employee_type?.toLowerCase()} />
+          <div className="col d-flex">
+            <div className="col-2">
+              <div className="row">
+              <DetailField label="Date of Joining" value={moment(date_of_joining).format("DD MMM YYYY")} />
+              </div>
+              <div className="row">
+              <DetailField label="Current Band" value={current_band} />
+              </div>
+            </div>
+            <div className="col-3">
+              <div className="row">
+                <DetailField label="Experience" className="capitalize" value={experience?.toLowerCase()} />
+              </div>
+              
+              <div className="row">
+              <DetailField label="Email" value={<a target="_blank" href={`mailto:${email_id}`} rel="noreferrer">{email_id}</a>} />
+              </div>
+            </div>
+            <div className="col-3">
+              <div className="row">
+              <DetailField label="Employee Type" className="capitalize" value={employee_type?.toLowerCase()} />
+              </div>
+            </div>
+            
+            <div className="col-3">
+              <div className="row">
+                <DetailField label="Employee ID" value={employee_id} />
+              </div>
+            </div>
           </div>
         </div>
       </div>
