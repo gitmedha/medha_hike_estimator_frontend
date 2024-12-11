@@ -448,6 +448,14 @@ div::-webkit-scrollbar-thumb {
   font-family: 'Latto-Regular';
   font-size:1.1rem;
 }
+
+.spinner{
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 @import './media/lg.scss';
 @import './media/md.scss';
 @import './media/sm.scss';

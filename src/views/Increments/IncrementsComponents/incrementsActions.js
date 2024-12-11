@@ -22,6 +22,7 @@ export const fetchIncrement = async(incrementId) => {
 export const createIncrement = async(incrementData) => {
     try{
         const response = await api.post(`/api/increments/create-increment-data`, incrementData);
+        console.log(response)
         return response.data;
     }catch(error){
         console.error(error);

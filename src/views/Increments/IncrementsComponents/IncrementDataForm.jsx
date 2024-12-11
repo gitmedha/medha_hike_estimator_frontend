@@ -135,7 +135,7 @@ function IncrementDataForm(props) {
             onHide();
             toaster.success('Details updated successfully!',{ position: "bottom-center" })
 
-            setTimeout(() =>window.location.href = `/increment_employee/${props.IncrementData.id}`,2000);
+            setTimeout(() =>window.location.href = `/increment_employee/${props.IncrementData.employee_id}`,2000);
             nProgress.done();
 
           }
@@ -144,7 +144,7 @@ function IncrementDataForm(props) {
            const{id} =  await createIncrement(newValues);
            onHide();
            props.ToastOnSuccess()
-           setTimeout(() => navigation.push(`/increment_employee/${id[0].id}`),2000);
+           setTimeout(() => navigation.push(`/increment_employee/${id[0].employee_id}`),2000);
           nProgress.done();
 
           }
@@ -284,7 +284,7 @@ function IncrementDataForm(props) {
                           label="Review Cycle"
                           required
                           control="lookup"
-                          placeholder="Final Score"
+                          placeholder="Review Cycle"
                           className="form-control"
                           options = {[
                             {

@@ -9,6 +9,7 @@ import Details from "./Details";
 import toaster, { toast } from  'react-hot-toast'
 import ReactSelect from "react-select";
 import HistoricDetails from './HistoricalDetails';
+import Spinner from "../../../utils/Spinners/Spinner";
 
 const Styled = styled.div`
 
@@ -28,11 +29,11 @@ const Styled = styled.div`
 const customStyles = {
   container: (provided) => ({
     ...provided,
-    width: "200px",
+    width: "150px",
   }),
   control: (provided) => ({
     ...provided,
-    width: "200px",
+    width: "150px",
   }),
 };
 function IncrementEmployee() {
@@ -41,25 +42,31 @@ function IncrementEmployee() {
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [selectedCycle,setSelectedCycle] = useState("");
   const {id} = useParams();
+  const [isLoading,setIsLoading] = useState(true);
 
   
 useEffect(()=>{
   async function componentMount(){
     const data = await fetchIncrement(id)
-    setEmployeeData(data[0]);
+    await setEmployeeData(data[0]);
+    setIsLoading(false);
   }
   componentMount();
 }, [])
 
 useEffect(()=>{
   async function getIncrementData(){
+    setIsLoading(true);
     try{
       
     const data = await getIncrementDataByReviewCycle(employeeData.employee_id, selectedCycle);
-    setEmployeeData(data[0]);
+    await setEmployeeData(data[0]);
+    setIsLoading(false);
 
     }catch(err){
+      setIsLoading(false);
       toast.error("Increment not found", {position:'bottom-center'})
+
     }
   }
   if(employeeData){
@@ -82,27 +89,31 @@ const handleDelete = async()=>{
 }
 
 const handleNormalizedRating = async ()=>{
+  setIsLoading(true);
   try{
     await calculateNormalizedRating(employeeData.employee_id, employeeData.appraisal_cycle,employeeData.average,employeeData.manager);
     toaster.success('Normalized rating calculated successfully!',{ position: "bottom-center" });
     setTimeout(() => {
-      window.location.href = "/increment_employee/"+ employeeData.id;
+      window.location.href = "/increment_employee/"+ employeeData.employee_id
     }, 3000);
     
   }catch(error){
+    setIsLoading(false);
     toaster.error('Unable to calculate rating, check the data again',{ position: "bottom-center" })
     console.error(error);
   }
 }
 
 const handleIncrement = async ()=>{
+  setIsLoading(true);
   try{
     await calculateIncrement(employeeData.employee_id,employeeData.appraisal_cycle,employeeData.normalize_rating);
     toaster.success('Increment calculated successfully!',{ position: "bottom-center" })
     setTimeout(() => {
-      window.location.href = "/increment_employee/"+ employeeData.id;
+      window.location.href = "/increment_employee/"+ employeeData.employee_id;
     }, 3000);
     }catch(error){
+      setIsLoading(false);
       toaster.error('Unable to calculate increment, check the data again',{ position: "bottom-center" })
     console.error(error);
   }
@@ -128,7 +139,9 @@ const handleSelect = (event) => {
 };
   return (
     <Styled>
-      <>
+     {isLoading ?<div className="spinner">
+      <Spinner/>
+     </div>: <>
         <div className="row" style={{margin: '30px 0 0'}}>
           <div className="col-12 d-flex bebas-thick text--primary" style={{fontSize:'2.8rem'}}>
             Employee Increment Data
@@ -165,7 +178,7 @@ const handleSelect = (event) => {
                 }]}
                 value={selectedCycle}
                 onChange={handleSelect}
-                placeholder="Select Review Cycle"
+                placeholder="Review Cycle"
               />
             <button
                 onClick={() => setModalShow(true)}
@@ -243,7 +256,7 @@ const handleSelect = (event) => {
           <p>Are you sure, you want to delete this increment data?</p>
         </SweetAlert>: <div></div>
         }
-      </>
+      </>}
       </Styled>
   )
 }
