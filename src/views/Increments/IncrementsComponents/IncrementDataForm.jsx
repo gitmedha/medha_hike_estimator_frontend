@@ -201,8 +201,8 @@ function IncrementDataForm(props) {
                   setFieldValue(field, value);
 
                   if (field === "kra_vs_goals" || field === "compentency") {
-                    const kra = parseFloat(values.kra_vs_goals || (field === "kra_vs_goals" ? value : 0)) || 0;
-                    const compentency = parseFloat(values.compentency || (field === "compentency" ? value : 0)) || 0;
+                    const kra = field === "kra_vs_goals" ? parseFloat(value) : parseFloat(values.kra_vs_goals || 0);
+                    const compentency = field === "compentency" ? parseFloat(value) : parseFloat(values.compentency || 0);
                     const average = (kra + compentency) / 2;
                     setFieldValue("average", average.toFixed(2));
                   }
