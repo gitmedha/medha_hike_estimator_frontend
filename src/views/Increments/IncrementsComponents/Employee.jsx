@@ -89,13 +89,16 @@ const handleDelete = async()=>{
 }
 
 const handleNormalizedRating = async ()=>{
-  setIsLoading(true);
+  
   try{
     await calculateNormalizedRating(employeeData.employee_id, employeeData.appraisal_cycle,employeeData.average,employeeData.manager);
-    toaster.success('Normalized rating calculated successfully!',{ position: "bottom-center" });
+    await toaster.success('Normalized rating calculated successfully!',{ position: "bottom-center" });
     setTimeout(() => {
-      window.location.href = "/increment_employee/"+ employeeData.employee_id
-    }, 3000);
+      setIsLoading(true);
+      setTimeout(() => {
+        window.location.href = "/increment_employee/" + employeeData.employee_id;
+      }, 3000);
+    }, 1000);
     
   }catch(error){
     setIsLoading(false);
@@ -105,13 +108,15 @@ const handleNormalizedRating = async ()=>{
 }
 
 const handleIncrement = async ()=>{
-  setIsLoading(true);
   try{
     await calculateIncrement(employeeData.employee_id,employeeData.appraisal_cycle,employeeData.normalize_rating);
     toaster.success('Increment calculated successfully!',{ position: "bottom-center" })
     setTimeout(() => {
-      window.location.href = "/increment_employee/"+ employeeData.employee_id;
-    }, 3000);
+      setIsLoading(true);
+      setTimeout(() => {
+        window.location.href = "/increment_employee/" + employeeData.employee_id;
+      }, 3000);
+    }, 1000);
     }catch(error){
       setIsLoading(false);
       toaster.error('Unable to calculate increment, check the data again',{ position: "bottom-center" })
@@ -152,7 +157,7 @@ const handleSelect = (event) => {
                 <div className="employee_name">
                   {employeeData ?employeeData.full_name: ''}
                 </div>
-                <div className="employee_status">
+                <div className={`employee_status ${employeeData.employee_status === 'Inactive'? 'disabled_label':''}`}>
                 {employeeData ?employeeData.employee_status: ''}
                 </div>
               </div>
@@ -182,7 +187,7 @@ const handleSelect = (event) => {
               />
             <button
                 onClick={() => setModalShow(true)}
-                className="btn--primary action_button_sec"
+                className="action_button_sec edit_button_sec"
               >
                 EDIT
               </button>

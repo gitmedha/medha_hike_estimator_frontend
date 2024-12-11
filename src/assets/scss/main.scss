@@ -456,6 +456,21 @@ div::-webkit-scrollbar-thumb {
   justify-content: center;
   align-items: center;
 }
+
+.edit_button_sec {
+    font-size: 16px;
+    padding: 5px 50px;
+    background-color: #257b69;
+    color: #ffffff;
+    border-radius: 5px;
+    margin-left: 9px;
+    border: none;
+
+}
+
+.disabled_label{
+  background-color: #999999 !important;
+}
 @import './media/lg.scss';
 @import './media/md.scss';
 @import './media/sm.scss';

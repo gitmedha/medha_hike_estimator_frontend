@@ -10,6 +10,7 @@ const Detail = styled.div`
     color: #787B96;
     font-weight:bold;
     font-size: 15px;
+    margin-bottom:6px;
   }
 
   .detail-value {
@@ -23,7 +24,7 @@ const Detail = styled.div`
 
 const DetailField = ({ label, value,className }) => (
   <Detail>
-    <div className="mb-1 mb-md-0 detail-label" style={{paddingLeft:0}}>{label}</div>
+    <div className="detail-label" style={{paddingLeft:0}}>{label}</div>
     <div className={`detail-value text-start ${className ?className:""}`}>{value} </div>
   </Detail>
 )
