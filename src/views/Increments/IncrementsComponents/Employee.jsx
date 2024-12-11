@@ -49,6 +49,7 @@ useEffect(()=>{
   async function componentMount(){
     const data = await fetchIncrement(id)
     await setEmployeeData(data[0]);
+    setSelectedCycle({ value: data[0].appraisal_cycle, label: data[0].appraisal_cycle });
     setIsLoading(false);
   }
   componentMount();
