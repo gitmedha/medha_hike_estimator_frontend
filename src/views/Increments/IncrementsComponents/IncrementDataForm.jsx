@@ -40,6 +40,8 @@ function IncrementDataForm(props) {
     const { show,onHide } = props;
     const [increments,setIncrements] = useState([]);
     const [reviewers,setReviewers] = useState([]);
+    const [kraScore,setKraScore] = useState(0.0);
+    const [compScore,setCompScore] = useState(0.0);
     const [newBands] = useState([{
       label:'I',
       value:'I'
@@ -199,12 +201,17 @@ function IncrementDataForm(props) {
               {({ values, setFieldValue }) => {
                 const handleInputChange = (field, value) => {
                   setFieldValue(field, value);
-
-                  if (field === "kra_vs_goals" || field === "compentency") {
-                    const kra = field === "kra_vs_goals" ? parseFloat(value) : parseFloat(values.kra_vs_goals || 0);
-                    const compentency = field === "compentency" ? parseFloat(value) : parseFloat(values.compentency || 0);
+                  if(field === "kra_vs_goals"){
+                    const kra = parseFloat(value);
+                    const compentency = parseFloat(values.compentency);
                     const average = (kra + compentency) / 2;
-                    setFieldValue("average", average.toFixed(2));
+                    setFieldValue("average", average.toFixed(1));
+                  }
+                  else if (field === "compentency"){
+                    const kra = parseFloat(values.kra_vs_goals);
+                    const compentency = parseFloat(value);
+                    const average = (kra+ compentency)/2;
+                    setFieldValue("average", average.toFixed(1));
                   }
                 };
                 return(<Form>

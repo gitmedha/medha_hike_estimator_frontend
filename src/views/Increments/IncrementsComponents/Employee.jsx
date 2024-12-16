@@ -66,7 +66,7 @@ useEffect(()=>{
 
     }catch(err){
       setIsLoading(false);
-      toast.error("Increment not found", {position:'bottom-center'})
+      toast.error("Review Cycle increment data not found", {position:'bottom-center'})
 
     }
   }
@@ -99,6 +99,8 @@ const handleNormalizedRating = async ()=>{
       setTimeout(() => {
         window.location.href = "/increment_employee/" + employeeData.employee_id;
       }, 3000);
+      
+
     }, 1000);
     
   }catch(error){
