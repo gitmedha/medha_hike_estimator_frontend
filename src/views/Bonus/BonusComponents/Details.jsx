@@ -1,6 +1,7 @@
 import moment from 'moment';
 import DetailField from "../../../components/content/DetailField";
 import styled from "styled-components";
+import { Dropdown } from 'react-bootstrap';
 import profileImage from '../../../assets/images/profile-user.png'
 
 
@@ -79,23 +80,16 @@ const Styled = styled.div`
 
 const Details = (props) => {
   const {
-    appraisal_cycle,
+    review_cycle,
     average,
     compentency,
-    current_band,
-    current_salary,
     employee_id,
     full_name,
-    inc_adjustments,
-    increment,
-    kra_vs_goals,
-    long_tenure,
+    bonus,
+    kra,
     manager,
-    new_band,
-    new_salary,
-    normalize_rating,
-    tenure,
-    weighted_increment
+    normalized_ratings,
+    weighted_bonus
   } = props;
 
 
@@ -123,7 +117,7 @@ const Details = (props) => {
               <DetailField label="Reviewer" className="capitalize" value={manager}/>
               </div>
               <div className="col-2">
-              <DetailField label="Review Cycle" value={appraisal_cycle} />
+              <DetailField label="Review Cycle" value={review_cycle} />
               </div>
               <div className="col-2">
               <DetailField label="Average Rating" value={average} />
@@ -134,45 +128,20 @@ const Details = (props) => {
               <DetailField label="Compentency" value={compentency} />
               </div>
               <div className="col-2">
-              <DetailField label="Increment adjustments" value={inc_adjustments} />
+              <DetailField label="Bonus" value={bonus} />
               </div>
               <div className="col-2">
-              <DetailField label="Increment" value={increment} />
-              </div>
-              <div className="col-2">
-              <DetailField label="KRA" value={kra_vs_goals} />
-              </div>
-              <div className="col-2">
-              <DetailField label="Long tenure" value={long_tenure? "Yes":"No"} />
+              <DetailField label="KRA" value={kra} />
               </div>
             </div>
             <div className="row">
               <div className="col-2">
-              <DetailField label="New band" value={new_band} />
+              <DetailField label="Normalized Rating" value={normalized_ratings} />
               </div>
               <div className="col-2">
-              <DetailField label="New Salary" value={new_salary} />
-              </div>
-              <div className="col-2">
-              <DetailField label="Normalized Rating" value={normalize_rating} />
-              </div>
-              <div className="col-2">
-            <DetailField label="Tenure" value={tenure} />
-              </div>
-              <div className="col-2">
-              <DetailField label="Weighted Increment" value={weighted_increment} />
+              <DetailField label="Weighted Increment" value={weighted_bonus} />
               </div>
             </div>
-            <div className="row">
-            <div className="col-2">
-              <DetailField label="Current Band" value={current_band} />
-              </div>
-              
-              <div className="col-2">
-              <DetailField label="Current Salary" value={current_salary} />
-              </div>
-            </div>
-            
           </div>
         </div>
       </div>

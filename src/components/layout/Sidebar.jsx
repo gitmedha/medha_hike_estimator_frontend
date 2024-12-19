@@ -31,20 +31,6 @@ const routes = [
     ),
     show: true,
   },
-  // {
-  //   to: "/institutions",
-  //   title: "Institutions",
-  //   aliases: ['institution'],
-  //   icon: <FaSchool {...iconProps} />,
-  //   show: isSRM() || isPartnership() || isAdmin() || isMedhavi(),
-  // },
-  // {
-  //   to: "/batches",
-  //   title: "Batches",
-  //   aliases: ['batch'],
-  //   icon: <FaChalkboardTeacher {...iconProps} />,
-  //   show: isSRM() || isPartnership() || isAdmin() || isMedhavi(),
-  // },
   {
     to: "/historical_data",
     title: "Historical Data",
@@ -66,59 +52,27 @@ const routes = [
     icon:  (
       <img
         className="employees_increment_icon"
-        src={require('../../assets/images/employee-data.png').default}
+        src={require('../../assets/images/increment-icon.webp').default}
         alt="employee increment"
         style={{ width: '24px', height: '24px', objectFit: 'contain' }}
       />
     ),
     show: true,
   },
-  // {
-  //   to: "/opportunities",
-  //   title: "Opportunities",
-  //   aliases: ['opportunity'],
-  //   icon: <FaBriefcase {...iconProps} />,
-  //   show: isSRM() || isPartnership() || isAdmin() || isMedhavi(),
-  // },
-  // {
-  //   to: "/operation",
-  //   title: "Operations",
-  //   aliases: ['operations'],
-  //   icon: <FaUsersCog {...iconProps} />,
-  //   show: isAdmin() || isSRM() || isMedhavi(),
-  // },
-  // {
-  //   to:'/calender',
-  //   title:"Calendar",
-  //   aliases: ['calender'],
-  //   icon:<FaCalendarDay {...iconProps}/>,
-  //   show: isAdmin() || isMedhavi(),
-  // },
-  // {
-  //   to: "/dashboard",
-  //   title: "Dashboard",
-  //   aliases:['dashborad'],
-  //   icon: <MdDashboard {...iconProps} />,
-  //   show: isSRM() || isPartnership() || isAdmin() || isMedhavi(),
-  // },
-  // {
-  //   to: "https://data.medha.org.in/",
-  //   title: "Metabase",
-  //   aliases: ['metabase'],
-  //   icon: <img
-  //     className={"metabase-icon"}
-  //     src={require('../../assets/images/logo-metabase.png').default}
-  //     alt={`metabase-logo`}
-  //     style={{}}
-  //   />,
-  //   newTab: true,
-  //   show: isSRM() || isPartnership() || isAdmin() || isMedhavi(),
-  // },
-  // {
-  //   to: "/admin",
-  //   title: "Admin",
-  //   icon: <FaUserCog {...iconProps} />
-  // },
+  {
+    to:"/employee_bonuses",
+    title:"Employees Bonus",
+    aliases: ['bonus'],
+    icon:  (
+      <img
+        className="employees_increment_icon"
+        src={require('../../assets/images/bonus-icon.webp').default}
+        alt="employee bonus"
+        style={{ width: '24px', height: '24px', objectFit: 'contain' }}
+      />
+    ),
+    show: true,
+  }
 ];
 
 const Sidebar = ({ isOpen, toggleMenu }) => {

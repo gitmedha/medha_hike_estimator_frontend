@@ -21,6 +21,8 @@ import Employee from "./views/Employees/Employee";
 import HistoricData from "./views/Historics/HistoricData";
 import EmployeeIncrements from "./views/Increments/EmployeeIncrements";
 import IncrementEmployee from "./views/Increments/IncrementsComponents/Employee";
+import Bonuses from "./views/Bonus/Bonuses";
+import Bonus from "./views/Bonus/BonusComponents/Bonus";
 
 import AuthContext from "./context/AuthContext";
 import { PrivateRoute } from "./route/PrivateRoute";
@@ -130,6 +132,8 @@ const App = (props) => {
                   <PrivateRoute path="/increment_employee/:id" component={IncrementEmployee}/>
                   <PrivateRoute path="/employee/:id" component={Employee}/>
                   <PrivateRoute path="/historic/:id" component={HistoricData}/>
+                  <PrivateRoute path="/employee_bonuses" component={Bonuses}/>
+                  <PrivateRoute path="/bonus/:id" component={Bonus}/>
                   <Route path='/404-page' component={PageNotFound} />
                   <Redirect to='/404-page' />
                 </Switch>
