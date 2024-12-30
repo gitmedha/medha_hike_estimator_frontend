@@ -116,3 +116,13 @@ export const getBonus = async (employeeId,reviewCycle,normalizedRating)=>{
         console.error(error);
     }
 };
+
+export const calculateBulkNormalizeRating = async()=>{
+    try{
+        const response = await api.get('/api/bonuses/calculate_bulk_normalized_rating');
+        return response.data;
+    }catch(error){
+        console.error(error);
+    }
+
+}
