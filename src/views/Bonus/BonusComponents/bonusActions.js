@@ -106,7 +106,7 @@ export const getNormalizedRating = async (employeeId,reviewCycle,ratings,reviewe
 
 export const getBonus = async (employeeId,reviewCycle,normalizedRating)=>{
     try{
-        const response = await api.post(`/api/bonuses/get_bonus`, {
+        const response = await api.post(`/api/bonuses/calculate_bonus`, {
             "employeeId": employeeId,
             "reviewCycle": reviewCycle,
             "normalizedRating": normalizedRating

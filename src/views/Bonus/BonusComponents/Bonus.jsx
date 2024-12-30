@@ -91,9 +91,8 @@ const handleDelete = async()=>{
 }
 
 const handleNormalizedRating = async ()=>{
-  
   try{
-    await getNormalizedRating(bonusData.employee_id, bonusData.appraisal_cycle,bonusData.average,bonusData.manager);
+    await getNormalizedRating(bonusData.employee_id, bonusData.review_cycle,bonusData.average,bonusData.manager);
     await toaster.success('Normalized rating calculated successfully!',{ position: "bottom-center" });
     setTimeout(() => {
       setIsLoading(true);
@@ -102,8 +101,7 @@ const handleNormalizedRating = async ()=>{
       }, 3000);
       
 
-    }, 1000);
-    
+    }, 1000);    
   }catch(error){
     setIsLoading(false);
     toaster.error('Unable to calculate rating, check the data again',{ position: "bottom-center" })
@@ -111,9 +109,9 @@ const handleNormalizedRating = async ()=>{
   }
 }
 
-const handleIncrement = async ()=>{
+const handleBonus = async ()=>{
   try{
-    await getBonus(bonusData.employee_id,bonusData.appraisal_cycle,bonusData.normalized_ratings);
+    await getBonus(bonusData.employee_id,bonusData.review_cycle,bonusData.normalized_ratings);
     toaster.success('bonus calculated successfully!',{ position: "bottom-center" })
     setTimeout(() => {
       setIsLoading(true);
@@ -121,6 +119,7 @@ const handleIncrement = async ()=>{
         window.location.href = "/bonus/" + bonusData.employee_id;
       }, 3000);
     }, 1000);
+
     }catch(error){
       setIsLoading(false);
       toaster.error('Unable to calculate bonus, check the data again',{ position: "bottom-center" })
@@ -208,7 +207,7 @@ const handleSelect = (event) => {
           
         <div className="col-auto" style={{marginRight:15}}>
             <button
-              onClick={() => handleIncrement()}
+              onClick={() => handleBonus()}
               className="btn custom_actions_bottons action_button_sec"
             >
               Bonus

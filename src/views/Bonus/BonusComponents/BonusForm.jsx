@@ -74,7 +74,6 @@ function BonusForm(props) {
           else {
             
            const{data} =  await createBonus(newValues);
-           console.log(data,"data")
            onHide();
            props.ToastOnSuccess()
            setTimeout(() => navigation.push(`/bonus/${data[0].employee_id}`),2000);
