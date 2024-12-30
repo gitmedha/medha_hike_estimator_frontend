@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { useState, useEffect } from "react";
 
 import { Input } from "../../../utils/Form";
-import { incrementValidations} from "../../../validations";
+import { bonusValidations} from "../../../validations";
 import {getBonusPickList,createBonus,updateBonus} from './bonusActions';
 import moment from "moment";
 import nProgress from "nprogress";
@@ -53,7 +53,6 @@ function BonusForm(props) {
         normalized_ratings:props?.bonusData?.normalized_ratings || 0,
         weighted_bonus:props?.bonusData?.weighted_bonus || "0",
     }
-
     const onSubmit = async (values)=>{
       nProgress.start();
         try{
@@ -64,7 +63,6 @@ function BonusForm(props) {
         newValues.average = parseFloat(values.average);
         newValues.kra = parseFloat(values.kra);
           if(props.bonusData){
-            
             await updateBonus(newValues,props.bonusData.id);
             onHide();
             toaster.success('Details updated successfully!',{ position: "bottom-center" })
@@ -75,10 +73,11 @@ function BonusForm(props) {
           }
           else {
             
-           const{id} =  await createBonus(newValues);
+           const{data} =  await createBonus(newValues);
+           console.log(data,"data")
            onHide();
            props.ToastOnSuccess()
-           setTimeout(() => navigation.push(`/bonus/${id[0].employee_id}`),2000);
+           setTimeout(() => navigation.push(`/bonus/${data[0].employee_id}`),2000);
           nProgress.done();
 
           }
@@ -128,7 +127,7 @@ function BonusForm(props) {
             <Formik
               onSubmit={onSubmit}
               initialValues={initialValues}
-              validationSchema={incrementValidations}
+              validationSchema={bonusValidations}
             >
               {({ values, setFieldValue }) => {
                 const handleInputChange = (field, value) => {

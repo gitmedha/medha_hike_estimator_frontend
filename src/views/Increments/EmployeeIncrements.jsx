@@ -9,7 +9,14 @@ import Switch from "@material-ui/core/Switch";
 import Collapse from "../../components/content/CollapsiblePanels";
 import SearchBar from "../../components/layout/SearchBar";
 import IncrementDataForm from "./IncrementsComponents/IncrementDataForm";  
-import {fetchAllIncrements,fetchFilterPicklist,applyFilterActions,fetchSearchDropdown,search} from "./IncrementsComponents/incrementsActions";
+import {
+  fetchAllIncrements,
+  fetchFilterPicklist,
+  applyFilterActions,
+  fetchSearchDropdown,
+  search,
+  calculateBulkNormalizeRating
+} from "./IncrementsComponents/incrementsActions";
 import toaster from 'react-hot-toast'
 import CurrentBandDropdown from "./IncrementsComponents/CurrentBandFilter";
 import {Input} from "../../utils/Form"
@@ -156,7 +163,6 @@ function EmployeeIncrements(props) {
       const handleSearch = async(value)=>{
         try{
         const data = await search(value.searchField, value.searchValue,pageSize,paginationPageIndex);
-        console.log(data);
         setIncrementData(data.data);
         setTotalCount(data.totalCount);
 
@@ -277,6 +283,14 @@ console.error(e.message);
         toaster.error("Failed to create entry!",{ position: "bottom-center" })
       }
 
+      const bulkRatings = async () =>{
+        try{
+          await calculateBulkNormalizeRating();
+
+        }catch(e){
+          console.error(e.message);
+        }
+      }
   return (
     
     <Collapse title="Increment Data" type="plain" opened={true}>
@@ -310,6 +324,14 @@ console.error(e.message);
           isClearDisabled={isClearDisabled}
           setClearDisabled={setClearDisabled}
           />
+        </div>
+        <div className="col-auto" style={{marginRight:10}}>
+        <button
+            className="btn btn-primary add_button_sec mt-4"
+            onClick={() => bulkRatings()}
+          >
+            Bulk Ratings
+          </button>
         </div>
         <div className="col-auto">
         <button

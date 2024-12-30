@@ -71,7 +71,7 @@ const CurrentBandDropdown = (props) => {
   },[props]);
   return (
     <>
-    <div className="col-auto" style={{marginRight:10, width:150}}>
+    <div className="col-auto" style={{marginRight:10, width:120}}>
       <div className="text-label">
         Current Band
       </div>
@@ -82,7 +82,7 @@ const CurrentBandDropdown = (props) => {
       placeholder="Select"
     />
         </div>
-   <div className="col-auto" style={{marginRight:10, width:150}}>
+   <div className="col-auto" style={{marginRight:10, width:120}}>
       <div className="text-label">
         New Band
       </div>
@@ -93,7 +93,7 @@ const CurrentBandDropdown = (props) => {
       placeholder="Select"
     />
         </div>
-   <div className="col-auto" style={{marginRight:10, width:150}}>
+   <div className="col-auto" style={{marginRight:10, width:120}}>
    <div className="text-label">
         Long Tenure
       </div>
@@ -106,7 +106,7 @@ const CurrentBandDropdown = (props) => {
     />
    </div>
     
-    <div className="col-auto" style={{width:150}}>
+    <div className="col-auto" style={{width:120}}>
     <div className="text-label">
         Tenure
       </div>

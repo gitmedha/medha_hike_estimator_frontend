@@ -81,7 +81,7 @@ useEffect(()=>{
 
 const handleDelete = async()=>{
   try{
-    await deleteBonus(id);
+    await deleteBonus(bonusData.id);
     toaster.success("bonus details deleted successfully",{ position: "bottom-center" })
     setTimeout(()=>window.location.href = "/employee_bonuses",2000);
   }catch(error){

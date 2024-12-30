@@ -44,7 +44,7 @@ export const getBonusPickList = async ()=>{
 
 export const createBonus = async (data)=>{
     try{
-        const response = await api.post(`/api/bonuses/create`, data);
+        const response = await api.post(`/api/bonuses/create-bonus`, data);
         return response.data;
     }catch(error){
         console.error(error);
@@ -52,9 +52,9 @@ export const createBonus = async (data)=>{
 
 };
 
-export const updateBonus = async (id, data)=>{
+export const updateBonus = async (data,id)=>{
     try{
-        const response = await api.put(`/api/bonuses/update/${id}`, data);
+        const response = await api.put(`/api/bonuses/update-bonus/${id}`, data);
         return response.data;
     }catch(error){
         console.error(error);
@@ -63,7 +63,7 @@ export const updateBonus = async (id, data)=>{
 
 export const deleteBonus = async (id)=>{
     try{
-        const response = await api.delete(`/api/bonuses/delete/${id}`);
+        const response = await api.delete(`/api/bonuses/delete-bonus/${id}`);
         return response.data;
     }catch(error){
         console.error(error);
