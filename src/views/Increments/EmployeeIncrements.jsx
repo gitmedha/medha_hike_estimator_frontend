@@ -1,6 +1,5 @@
 import nProgress from "nprogress";
 import styled from "styled-components";
-import api from "../../apis";
 import { useState, useEffect, useMemo, useCallback,} from "react";
 import { useHistory } from "react-router-dom";
 import Table from "../../components/content/Table";
@@ -19,8 +18,8 @@ import {
 } from "./IncrementsComponents/incrementsActions";
 import toaster from 'react-hot-toast'
 import CurrentBandDropdown from "./IncrementsComponents/CurrentBandFilter";
-import {Input} from "../../utils/Form"
-
+import Modal from "react-bootstrap/Modal";
+import Spinner from "../../utils/Spinners/Spinner";
 const Styled = styled.div`
   .MuiSwitch-root {
     // material switch
@@ -62,6 +61,8 @@ function EmployeeIncrements(props) {
   const [selectedLongTenures,setSelectedLongTenure] = useState(null);
   const [isClearDisabled,setClearDisabled] = useState(false);
   const [selectCurrentBand,setSelectCurrentBand] = useState(null);
+  const [isBulkLoading, setIsBulkLoading] = useState(false);
+
 
 
   const [filters,setFilters] = useState([{
@@ -285,14 +286,20 @@ console.error(e.message);
 
       const bulkRatings = async () =>{
         try{
+          setIsBulkLoading(true);
           await calculateBulkNormalizeRating();
+          const data = await fetchAllIncrements(paginationPageIndex, pageSize);
+          setIncrementData(data.data);
+          setTotalCount(data.totalCount);
 
         }catch(e){
           console.error(e.message);
+        }finally {
+          setIsBulkLoading(false);
         }
       }
   return (
-    
+    <>
     <Collapse title="Increment Data" type="plain" opened={true}>
       <div className="d-flex justify-content-between align-items-center">
       <div className="filter_container d-flex mt-2">
@@ -395,6 +402,21 @@ console.error(e.message);
         }
       </Styled>
     </Collapse>
+    {/* Loading Modal */}
+    <Modal
+    show={isBulkLoading}
+    centered
+    backdrop="static"
+    keyboard={false}
+    animation={true}
+  >
+    <Modal.Body className="d-flex justify-content-center align-items-center">
+      <Spinner />
+      <span className="ml-3">Calculating Bulk Ratings</span>
+    </Modal.Body>
+  </Modal>
+  </>
+
   )
 }
 

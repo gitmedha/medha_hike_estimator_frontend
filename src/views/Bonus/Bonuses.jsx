@@ -10,6 +10,9 @@ import SearchBar from "../../components/layout/SearchBar";
 import BonusForm from "./BonusComponents/BonusForm";  
 import {fetchAllBonuses,fetchSearchDropdown,search,calculateBulkNormalizeRating} from "./BonusComponents/bonusActions";
 import toaster from 'react-hot-toast'
+import Modal from "react-bootstrap/Modal";
+import Spinner from "../../utils/Spinners/Spinner";
+
 
 const Styled = styled.div`
   .MuiSwitch-root {
@@ -41,6 +44,8 @@ function Bonuses(props) {
   const [modalShow,setModalShow] = useState(false);
   const [isClearDisabled,setClearDisabled] = useState(false);
   const [defaultSearchOptions] = useState([]);
+  const [isBulkLoading, setIsBulkLoading] = useState(false);
+  console.log(bonusData,"bonusData");
 
     const columns = useMemo(
         () => [
@@ -76,7 +81,7 @@ function Bonuses(props) {
           },
           {
             Header: "Normalized Rating",
-            accessor: "normalize_rating",
+            accessor: "normalized_ratings",
           },
           {
             Header: "Bonus",
@@ -116,7 +121,7 @@ function Bonuses(props) {
         key: 6
       }, {
         label: "Normalized Rating",
-        value: "normalize_rating",
+        value: "normalized_ratings",
         key: 7
       }, {
         label: "Bonus",
@@ -168,7 +173,6 @@ function Bonuses(props) {
         history.push(`/bonus/${row.employee_id}`);
       }
 
-
       const clearFilters = async()=>{
        const data = await fetchAllBonuses(paginationPageIndex, pageSize);
        setBonusData(data?.data);
@@ -182,7 +186,22 @@ function Bonuses(props) {
         toaster.error("Failed to create entry!",{ position: "bottom-center" })
       }
 
+     const bulkRatings = async () =>{
+             try{
+               setIsBulkLoading(true);
+               await calculateBulkNormalizeRating();
+               const data = await fetchAllBonuses(paginationPageIndex, pageSize);
+               setBonusData(data?.data);
+               setTotalCount(data?.totalCount);
+     
+             }catch(e){
+               console.error(e.message);
+             }finally {
+               setIsBulkLoading(false);
+             }
+           }
   return (
+    <>
     
     <Collapse title="Bonus Details" type="plain" opened={true}>
       <div className="d-flex justify-content-between align-items-center">
@@ -200,7 +219,7 @@ function Bonuses(props) {
         <div className="col-auto" style={{marginRight:10}}>
           <button
             className="btn btn-primary add_button_sec mt-4"
-            onClick={() => calculateBulkNormalizeRating()}
+            onClick={() => bulkRatings()}
           >
             Bulk Ratings
           </button>
@@ -265,8 +284,23 @@ function Bonuses(props) {
             />
           )
         }
+
       </Styled>
     </Collapse>
+      {/* Loading Modal */}
+      <Modal
+      show={isBulkLoading}
+      centered
+      backdrop="static"
+      keyboard={false}
+      animation={true}
+    >
+      <Modal.Body className="d-flex justify-content-center align-items-center">
+        <Spinner />
+        <span className="ml-3">Calculating Bulk Ratings</span>
+      </Modal.Body>
+    </Modal>
+    </>
   )
 }
 
