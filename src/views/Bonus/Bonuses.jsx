@@ -8,7 +8,7 @@ import Switch from "@material-ui/core/Switch";
 import Collapse from "../../components/content/CollapsiblePanels";
 import SearchBar from "../../components/layout/SearchBar";
 import BonusForm from "./BonusComponents/BonusForm";  
-import {fetchAllBonuses,fetchSearchDropdown,search} from "./BonusComponents/bonusActions";
+import {fetchAllBonuses,fetchSearchDropdown,search,calculateBulkNormalizeRating} from "./BonusComponents/bonusActions";
 import toaster from 'react-hot-toast'
 
 const Styled = styled.div`
@@ -200,7 +200,7 @@ function Bonuses(props) {
         <div className="col-auto" style={{marginRight:10}}>
           <button
             className="btn btn-primary add_button_sec mt-4"
-            onClick={() => setModalShow(true)}
+            onClick={() => calculateBulkNormalizeRating()}
           >
             Bulk Ratings
           </button>
