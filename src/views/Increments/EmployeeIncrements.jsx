@@ -300,8 +300,7 @@ console.error(e.message);
       }
   return (
     <>
-    <Collapse title="Increment Data" type="plain" opened={true}>
-      <div className="d-flex justify-content-between align-items-center">
+    <div className="d-flex justify-content-between align-items-center p-2">
       <div className="filter_container d-flex mt-2">
           <CurrentBandDropdown 
           newBands={newBandOptions}
@@ -401,7 +400,6 @@ console.error(e.message);
           )
         }
       </Styled>
-    </Collapse>
     {/* Loading Modal */}
     <Modal
     show={isBulkLoading}

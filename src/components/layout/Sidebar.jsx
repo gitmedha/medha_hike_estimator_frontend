@@ -52,7 +52,7 @@ const routes = [
     icon:  (
       <img
         className="employees_increment_icon"
-        src={require('../../assets/images/increment-icon.webp').default}
+        src={require('../../assets/images/raise.png').default}
         alt="employee increment"
         style={{ width: '24px', height: '24px', objectFit: 'contain' }}
       />
@@ -66,7 +66,7 @@ const routes = [
     icon:  (
       <img
         className="employees_increment_icon"
-        src={require('../../assets/images/bonus-icon.webp').default}
+        src={require('../../assets/images/bonus.png').default}
         alt="employee bonus"
         style={{ width: '24px', height: '24px', objectFit: 'contain' }}
       />

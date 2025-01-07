@@ -202,9 +202,7 @@ function Bonuses(props) {
            }
   return (
     <>
-    
-    <Collapse title="Bonus Details" type="plain" opened={true}>
-      <div className="d-flex justify-content-between align-items-center">
+     <div className="d-flex justify-content-between align-items-center p-2">
         <div className="col">
           <SearchBar
           searchFieldOptions={optionsForSearch}
@@ -286,7 +284,6 @@ function Bonuses(props) {
         }
 
       </Styled>
-    </Collapse>
       {/* Loading Modal */}
       <Modal
       show={isBulkLoading}

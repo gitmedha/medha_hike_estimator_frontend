@@ -290,8 +290,8 @@ const ToastOnFailure = (value)=>{
   toaster.error("Failed to create employee!",{ position: "bottom-center" })
 }
   return (
-    <Collapse title="Employees Details" type="plain" opened={true}>
-      <div className="d-flex justify-content-between align-items-center">
+   <>
+    <div className="d-flex justify-content-between align-items-center">
         <div className="col-10">
           <SearchBar
           searchFieldOptions={optionsForSearch}
@@ -379,7 +379,7 @@ const ToastOnFailure = (value)=>{
         {isCreatedSuccess
         }
       </Styled>
-    </Collapse>
+   </>
   );
 };
 

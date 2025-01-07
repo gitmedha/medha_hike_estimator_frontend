@@ -206,8 +206,8 @@ const Historics = (props) => {
     toaster.success("Created the historic data successfully!",{ position: "bottom-center" })
   }
   return (
-    <Collapse title="Historical Data" type="plain" opened={true}>
-      <div className="d-flex justify-content-between align-items-center">
+    <>
+    <div className="d-flex justify-content-between align-items-center p-2">
         <div className="col-10">
           <SearchBar
           searchFieldOptions={optionsForSearch}
@@ -227,7 +227,7 @@ const Historics = (props) => {
           </button>
         </div>
       </div>
-      <div className="row">
+      <div style={{ padding: "0 17px" }}>
         <Table
           columns={columns}
           data={employers}
@@ -250,7 +250,7 @@ const Historics = (props) => {
           />
         )
       }
-    </Collapse>
+    </>
   );
 };
 
