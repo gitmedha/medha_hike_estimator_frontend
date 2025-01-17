@@ -43,6 +43,8 @@ function Bonus() {
   const [selectedCycle,setSelectedCycle] = useState("");
   const {id} = useParams();
   const [isLoading,setIsLoading] = useState(true);
+  const [isAdmin] = useState(localStorage.getItem('admin'));
+
 
   
 useEffect(()=>{
@@ -188,12 +190,12 @@ const handleSelect = (event) => {
                 onChange={handleSelect}
                 placeholder="Review Cycle"
               />
-            <button
+            {isAdmin == "true" && <button
                 onClick={() => setModalShow(true)}
                 className="action_button_sec edit_button_sec"
               >
                 EDIT
-              </button>
+              </button>}
 
             </div>
             </div>
@@ -203,7 +205,7 @@ const handleSelect = (event) => {
         <div>
         <Details {...bonusData}/>
 
-        <div className="d-flex align-items-center justify-content-end">
+        {isAdmin == "true" && <div className="d-flex align-items-center justify-content-end">
           
         <div className="col-auto" style={{marginRight:15}}>
             <button
@@ -221,7 +223,7 @@ const handleSelect = (event) => {
               Normalize Rating
             </button>
           </div>
-        </div>
+        </div>}
         </div>
         {
           modalShow ? <BonusForm show={modalShow} onHide={()=>setModalShow(false)} bonusData={bonusData} showDeleteModal={handleDeleteModal}/> : <div></div>

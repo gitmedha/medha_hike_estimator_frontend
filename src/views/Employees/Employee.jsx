@@ -29,6 +29,9 @@ const {id} = useParams();
   const [employee,setEmployee] = useState({});
   const [modalShow, setModalShow] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
+  const [isAdmin] = useState(localStorage.getItem('admin'));
+  console.log("isAdmin",isAdmin)
+  console.log(typeof isAdmin)
 
 
 useEffect(()=>{
@@ -92,13 +95,13 @@ if (isLoading) {
               </div>
             </div>
             <div className="col-auto">
-            <button
+            {isAdmin == "true" && <button
                 onClick={() => setModalShow(true)}
                 style={{ marginLeft: "0px" }}
                 className="btn--primary action_button_sec"
               >
                 EDIT
-              </button>
+              </button>}
             </div>
           </div>
         </div>

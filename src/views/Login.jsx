@@ -30,22 +30,38 @@ const Login = () => {
     event.preventDefault();
 
     try {
-      if (username !== "admin" || password !== "password") {
-        setError("Invalid username or password")
+      // if (username !== "admin" || password !== "password") {
+      //   setError("Invalid username or password")
+      //   setShowPassword(true);
+      //   setTimeout(() =>setError(""),4000);
+      //   return;
+      // } else {
+      // }
+      
+      const response = await api.post("/api/users/login_user", {
+        username,
+        password,
+      });
+      toast.success("Successfully logged in! Redirecting...",{ position: "bottom-center" });
+      setTimeout(() => navigate.push("/employees_details"), 3000);
+      localStorage.setItem("user", JSON.stringify(response.data.data[0]));
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("admin", response.data.isAdmin);
+    } catch (err) {
+      if(err.response.status === 401){
+        setError("Incorrect password");
         setShowPassword(true);
         setTimeout(() =>setError(""),4000);
-        return;
-      } else {
-        const response = await api.post("/api/users/login_user", {
-          username,
-          password,
-        });
-        toast.success("Successfully logged in! Redirecting...",{ position: "bottom-center" });
-        setTimeout(() => navigate.push("/employees_details"), 3000);
-        localStorage.setItem("user", JSON.stringify(response.data.data[0]));
-        localStorage.setItem("token", response.data.token);
       }
-    } catch (err) {
+      else if(err.response.status === 500){
+        toast.error("Internal Server Error! Try again later.",{ position: "bottom-center" });
+      }
+      else if(err.response.status === 404){
+        setError("User not found, check your username or sign up!");
+        setShowPassword(true);
+        setTimeout(() =>setError(""),4000);
+      }
+      
       console.error(err);
     }
   };
