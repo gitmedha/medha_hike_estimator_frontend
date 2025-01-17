@@ -30,13 +30,6 @@ const Login = () => {
     event.preventDefault();
 
     try {
-      // if (username !== "admin" || password !== "password") {
-      //   setError("Invalid username or password")
-      //   setShowPassword(true);
-      //   setTimeout(() =>setError(""),4000);
-      //   return;
-      // } else {
-      // }
       
       const response = await api.post("/api/users/login_user", {
         username,

@@ -10,9 +10,9 @@ export const fetchAllIncrements = async(offset,limit,sortBy='employee_id',sortOr
     }
 }
 
-export const fetchIncrement = async(incrementId) => {
+export const fetchIncrement = async(incrementId,review_cycle) => {
     try{
-        const response = await api.get(`/api/increments/get-increment-data/${incrementId}`);
+        const response = await api.get(`/api/increments/get-increment-data/${incrementId}/${review_cycle}`);
         return response.data;
     }catch(error){
         console.error(error);

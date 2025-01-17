@@ -240,7 +240,7 @@ console.error(e.message);
       },[])
 
       const onRowClick = (row)=>{
-        history.push(`/increment_employee/${row.employee_id}`);
+        history.push(`/increment_employee/${row.employee_id}`,{ review_cycle:row.appraisal_cycle });
       }
 
       const handleFilters = async(filters,offset,limit)=>{

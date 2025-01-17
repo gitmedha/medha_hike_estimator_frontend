@@ -1,5 +1,5 @@
 import React,{useEffect,useState} from 'react'
-import { useParams } from "react-router-dom";
+import { useParams,useLocation } from "react-router-dom";
 import SweetAlert from "react-bootstrap-sweetalert";
 import styled from 'styled-components';
 import {fetchIncrement,deleteIncrement,calculateNormalizedRating,calculateIncrement,getIncrementDataByReviewCycle} from "./incrementsActions";
@@ -44,12 +44,14 @@ function IncrementEmployee() {
   const {id} = useParams();
   const [isLoading,setIsLoading] = useState(true);
   const [isAdmin] = useState(localStorage.getItem('admin'));
+  const location = useLocation();
+  const { review_cycle } = location.state || {};
 
 
   
 useEffect(()=>{
   async function componentMount(){
-    const data = await fetchIncrement(id)
+    const data = await fetchIncrement(id,review_cycle)
     await setEmployeeData(data[0]);
     setSelectedCycle({ value: data[0].appraisal_cycle, label: data[0].appraisal_cycle });
     setIsLoading(false);
