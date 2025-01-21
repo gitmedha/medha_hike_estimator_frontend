@@ -147,6 +147,8 @@ const handleCloseDeleteAlert = ()=>{
 const handleSelect = (event) => {
   setSelectedCycle(event.value);
 };
+
+console.log('isAdmin',isAdmin);
   return (
     <Styled>
      {isLoading ?<div className="spinner">
@@ -154,7 +156,7 @@ const handleSelect = (event) => {
      </div>: <>
         <div className="row" style={{margin: '30px 0 0'}}>
           <div className="col-12 d-flex bebas-thick text--primary" style={{fontSize:'2.8rem'}}>
-            Employee Increment Data
+            Employee Bonus Data
           </div>
           <div className="row justify-content-between align-items-center mb-4 mt-2">
             <div className="col-auto" style={{paddingLeft:20}}>

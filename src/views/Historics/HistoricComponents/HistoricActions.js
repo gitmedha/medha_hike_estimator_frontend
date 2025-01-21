@@ -90,3 +90,25 @@ export const deleteHistoric = async (id)=>{
         console.error(error);
     }
 }
+
+
+export const downloadTableExcel  = async ()=>{
+    try{
+        const response = await api.get('/api/historical_data/download_excel',{
+            responseType: 'blob',
+        });
+
+        const blob = new Blob([response.data], {
+            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        });
+
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'data.xlsx';
+        link.click();
+
+        URL.revokeObjectURL(link.href);
+    }catch(error){
+        console.error(error);
+    }
+}

@@ -7,10 +7,10 @@ import api from "../../apis";
 
 import { setAlert } from "../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
-import Collapse from "../../components/content/CollapsiblePanels";
 import SearchBar from "../../components/layout/SearchBar";
-import {searchHistorics,LoadSearchPicklist} from "./HistoricComponents/HistoricActions";
+import {searchHistorics,LoadSearchPicklist,downloadTableExcel} from "./HistoricComponents/HistoricActions";
 import HistoricForm from "./HistoricComponents/HistoricForm";
+import { Dropdown,Modal,Button } from 'react-bootstrap';
 
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
@@ -37,6 +37,9 @@ const Historics = (props) => {
   const [formErrors, setFormErrors] = useState([]);
   const prevIsSearchEnableRef = useRef(isSearchEnable);
   const [isDisable,setIsDisable] = useState(true);
+  
+  const [showUploadExcelInput,setShowUploadExcelInput] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
 
 
 
@@ -205,10 +208,49 @@ const Historics = (props) => {
   const onSuccess = ()=>{
     toaster.success("Created the historic data successfully!",{ position: "bottom-center" })
   }
+
+  
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    setSelectedFile(file);
+  };
+
+  const handleUploadFile = async () => {
+    if (!selectedFile) {
+      toaster.error("No file selected!", { position: "bottom-center" });
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+
+    try {
+      nProgress.start();
+      const response = await api.post("/api/historical_data/upload_excel", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      if (response.status === 200) {
+        toaster.success("File uploaded successfully!", { position: "bottom-center" });
+      } else {
+        toaster.error("File upload failed!", { position: "bottom-center" });
+      }
+    } catch (error) {
+      toaster.error("File upload failed!", { position: "bottom-center" });
+    } finally {
+      nProgress.done();
+      setShowUploadExcelInput(false);
+      setSelectedFile(null);
+    }
+  };
+
+  
+  const hideExcelModal = ()=>{
+    setShowUploadExcelInput(false);
+  }
   return (
     <>
     <div className="d-flex justify-content-between align-items-center p-2">
-        <div className="col-10">
+        <div className="col">
           <SearchBar
           searchFieldOptions={optionsForSearch}
           searchValueOptions={[]}
@@ -219,6 +261,30 @@ const Historics = (props) => {
           />
         </div>
         <div className="col-auto mt-4">
+        <Dropdown className="d-inline">
+          <Dropdown.Toggle
+                    variant="secondary"
+                    id="dropdown-basic"
+                    className="btn--primary action_button_sec"
+                  >
+                    ACTIONS
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    <Dropdown.Item
+                      onClick={() => setShowUploadExcelInput(true)}
+                      className="d-flex align-items-center"
+                      >
+                      Upload Excel
+
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={() => downloadTableExcel()}
+                    >
+                        Download Excel
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                  </Dropdown>
+
         <button
             className="btn btn-primary add_button_sec"
             onClick={() => setModalShow(true)}
@@ -250,6 +316,40 @@ const Historics = (props) => {
           />
         )
       }
+      {showUploadExcelInput && (
+          <Modal
+            centered
+            size="sm"
+            show={true}
+            onHide={() => setShowUploadExcelInput(false)}
+            animation={false}
+            aria-labelledby="contained-modal-title-vcenter"
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>Upload Excel</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="uploader-container">
+                <input
+                  accept=".xlsx"
+                  type="file"
+                  name="file-uploader"
+                  onChange={handleFileChange}
+                  className="form-control mb-3"
+                />
+                {selectedFile && (
+                  <p className="text-center text-primary">
+                    Selected File: <strong>{selectedFile.name}</strong>
+                  </p>
+                )}
+                <Button variant="primary" className="w-100" onClick={handleUploadFile}>
+                  Upload File
+                </Button>
+              </div>
+            </Modal.Body>
+          </Modal>
+        )}
+
     </>
   );
 };

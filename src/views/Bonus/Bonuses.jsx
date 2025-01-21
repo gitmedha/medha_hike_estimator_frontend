@@ -5,13 +5,14 @@ import { useHistory } from "react-router-dom";
 import Table from "../../components/content/Table";
 import { FaListUl, FaThLarge } from "react-icons/fa";
 import Switch from "@material-ui/core/Switch";
-import Collapse from "../../components/content/CollapsiblePanels";
 import SearchBar from "../../components/layout/SearchBar";
 import BonusForm from "./BonusComponents/BonusForm";  
-import {fetchAllBonuses,fetchSearchDropdown,search,calculateBulkNormalizeRating} from "./BonusComponents/bonusActions";
+import {fetchAllBonuses,fetchSearchDropdown,search,calculateBulkNormalizeRating,bulkBonus,downloadTableExcel} from "./BonusComponents/bonusActions";
 import toaster from 'react-hot-toast'
 import Modal from "react-bootstrap/Modal";
 import Spinner from "../../utils/Spinners/Spinner";
+import { Dropdown,Button } from 'react-bootstrap';
+import api from "../../apis";
 
 
 const Styled = styled.div`
@@ -45,7 +46,9 @@ function Bonuses(props) {
   const [isClearDisabled,setClearDisabled] = useState(false);
   const [defaultSearchOptions] = useState([]);
   const [isBulkLoading, setIsBulkLoading] = useState(false);
-  console.log(bonusData,"bonusData");
+  const [showUploadExcelInput,setShowUploadExcelInput] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+
 
     const columns = useMemo(
         () => [
@@ -200,6 +203,60 @@ function Bonuses(props) {
                setIsBulkLoading(false);
              }
            }
+
+           const handleFileChange = (event) => {
+            const file = event.target.files[0];
+            setSelectedFile(file);
+          };
+        
+          const handleUploadFile = async () => {
+            if (!selectedFile) {
+              toaster.error("No file selected!", { position: "bottom-center" });
+              return;
+            }
+        
+            const formData = new FormData();
+            formData.append("file", selectedFile);
+        
+            try {
+              nProgress.start();
+              const response = await api.post("/api/bonuses/upload_bonus_data", formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+              });
+              if (response.status === 200) {
+                toaster.success("File uploaded successfully!", { position: "bottom-center" });
+              } else {
+                toaster.error("File upload failed!", { position: "bottom-center" });
+              }
+            } catch (error) {
+              toaster.error("File upload failed!", { position: "bottom-center" });
+            } finally {
+              nProgress.done();
+              setShowUploadExcelInput(false);
+              setSelectedFile(null);
+            }
+          };
+        
+          
+          const hideExcelModal = ()=>{
+            setShowUploadExcelInput(false);
+          }
+        
+          const calculateBulkIncrement = async ()=>{
+            try{
+              setIsBulkLoading(true);
+              await bulkBonus();
+              const data = await fetchAllBonuses(paginationPageIndex, pageSize);
+              setBonusData(data.data);
+              setTotalCount(data.totalCount);
+          }
+          catch(e){
+        console.error(e);
+          }finally {
+            setIsBulkLoading(false);
+          }
+        }
+        
   return (
     <>
      <div className="d-flex justify-content-between align-items-center p-2">
@@ -215,12 +272,39 @@ function Bonuses(props) {
           />
         </div>
         <div className="col-auto" style={{marginRight:10}}>
-          <button
-            className="btn btn-primary add_button_sec mt-4"
-            onClick={() => bulkRatings()}
-          >
-            Bulk Ratings
-          </button>
+            <Dropdown className="d-inline">
+                              <Dropdown.Toggle
+                                        variant="secondary"
+                                        id="dropdown-basic"
+                                        className="btn--primary action_button_sec"
+                                      >
+                                        ACTIONS
+                                      </Dropdown.Toggle>
+                                      <Dropdown.Menu>
+                                        <Dropdown.Item
+                                          onClick={() => setShowUploadExcelInput(true)}
+                                          className="d-flex align-items-center"
+                                          >
+                                          Upload Excel
+                    
+                                        </Dropdown.Item>
+                                        <Dropdown.Item
+                                          onClick={() => downloadTableExcel()}
+                                        >
+                                            Download Excel
+                                        </Dropdown.Item>
+                                        <Dropdown.Item
+                                          onClick={() => bulkRatings()}
+                                        >
+                                            Bulk Ratings
+                                        </Dropdown.Item>
+                                        <Dropdown.Item
+                                          onClick={() => calculateBulkIncrement()}
+                                        >
+                                            Bulk Increment
+                                        </Dropdown.Item>
+                                      </Dropdown.Menu>
+                                      </Dropdown>
         </div>
         <div className="col-auto">
         <button
@@ -294,9 +378,44 @@ function Bonuses(props) {
     >
       <Modal.Body className="d-flex justify-content-center align-items-center">
         <Spinner />
-        <span className="ml-3">Calculating Bulk Ratings</span>
+        <span className="ml-3">Calculating...</span>
       </Modal.Body>
     </Modal>
+
+    
+  {showUploadExcelInput && (
+          <Modal
+            centered
+            size="sm"
+            show={true}
+            onHide={() => setShowUploadExcelInput(false)}
+            animation={false}
+            aria-labelledby="contained-modal-title-vcenter"
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>Upload Excel</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="uploader-container">
+                <input
+                  accept=".xlsx"
+                  type="file"
+                  name="file-uploader"
+                  onChange={handleFileChange}
+                  className="form-control mb-3"
+                />
+                {selectedFile && (
+                  <p className="text-center text-primary">
+                    Selected File: <strong>{selectedFile.name}</strong>
+                  </p>
+                )}
+                <Button variant="primary" className="w-100" onClick={handleUploadFile}>
+                  Upload File
+                </Button>
+              </div>
+            </Modal.Body>
+          </Modal>
+        )}
     </>
   )
 }

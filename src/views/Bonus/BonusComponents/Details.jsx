@@ -139,7 +139,7 @@ const Details = (props) => {
               <DetailField label="Normalized Rating" value={normalized_ratings} />
               </div>
               <div className="col-2">
-              <DetailField label="Weighted Increment" value={weighted_bonus} />
+              <DetailField label="Weighted Bonus" value={weighted_bonus} />
               </div>
             </div>
           </div>

@@ -166,3 +166,33 @@ export const calculateBulkNormalizeRating = async()=>{
         console.error(error);
     }
 }
+
+export const downloadTableExcel  = async ()=>{
+    try{
+        const response = await api.get('/api/increments/download_excel',{
+            responseType: 'blob',
+        });
+
+        const blob = new Blob([response.data], {
+            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        });
+
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'increment_details.xlsx';
+        link.click();
+
+        URL.revokeObjectURL(link.href);
+    }catch(error){
+        console.error(error);
+    }
+}
+
+export const bulkIncrement = async ()=>{
+    try{
+        const response = await api.get('/api/increments/calculate_bulk_increment');
+        return response.data;
+    }catch(error){
+        console.error(error);
+    }
+}
