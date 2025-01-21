@@ -99,7 +99,7 @@ export const downloadTableExcel  = async ()=>{
 
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = 'data.xlsx';
+        link.download = 'employee_details.xlsx';
         link.click();
 
         URL.revokeObjectURL(link.href);

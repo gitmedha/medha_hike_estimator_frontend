@@ -148,7 +148,6 @@ const handleSelect = (event) => {
   setSelectedCycle(event.value);
 };
 
-console.log('isAdmin',isAdmin);
   return (
     <Styled>
      {isLoading ?<div className="spinner">
