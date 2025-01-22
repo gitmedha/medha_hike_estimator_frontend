@@ -300,10 +300,12 @@ console.error(e.message);
           setIncrementData(data.data);
           setTotalCount(data.totalCount);
 
+
         }catch(e){
           console.error(e.message);
         }finally {
           setIsBulkLoading(false);
+          window.location.reload();
         }
       }
 
@@ -358,6 +360,8 @@ console.error(e.message);
 console.error(e);
   }finally {
     setIsBulkLoading(false);
+    window.location.reload();
+
   }
 }
 

@@ -201,6 +201,7 @@ function Bonuses(props) {
                console.error(e.message);
              }finally {
                setIsBulkLoading(false);
+               window.location.reload();
              }
            }
 
@@ -254,6 +255,8 @@ function Bonuses(props) {
         console.error(e);
           }finally {
             setIsBulkLoading(false);
+            window.location.reload();
+
           }
         }
         
