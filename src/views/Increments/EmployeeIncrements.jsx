@@ -394,7 +394,7 @@ console.error(e);
           setClearDisabled={setClearDisabled}
           />
         </div>
-        <div className="col-auto" style={{marginRight:10}}>
+        <div className="col-auto" style={{marginRight:10,marginTop:30}}>
           <Dropdown className="d-inline">
                     <Dropdown.Toggle
                               variant="secondary"
@@ -515,7 +515,7 @@ console.error(e);
             animation={false}
             aria-labelledby="contained-modal-title-vcenter"
           >
-            <Modal.Header closeButton>
+            <Modal.Header>
               <Modal.Title>Upload Excel</Modal.Title>
             </Modal.Header>
             <Modal.Body>
