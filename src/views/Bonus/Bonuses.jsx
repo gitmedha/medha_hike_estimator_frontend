@@ -196,6 +196,7 @@ function Bonuses(props) {
                const data = await fetchAllBonuses(paginationPageIndex, pageSize);
                setBonusData(data?.data);
                setTotalCount(data?.totalCount);
+
      
              }catch(e){
                console.error(e.message);
@@ -256,7 +257,6 @@ function Bonuses(props) {
           }finally {
             setIsBulkLoading(false);
             window.location.reload();
-
           }
         }
         

@@ -299,7 +299,7 @@ console.error(e.message);
           const data = await fetchAllIncrements(paginationPageIndex, pageSize);
           setIncrementData(data.data);
           setTotalCount(data.totalCount);
-
+          
 
         }catch(e){
           console.error(e.message);
