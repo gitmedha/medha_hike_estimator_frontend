@@ -191,13 +191,12 @@ const handleSelect = (event) => {
                 onChange={handleSelect}
                 placeholder="Review Cycle"
               />
-            {isAdmin == "true" && <button
+<button
                 onClick={() => setModalShow(true)}
                 className="action_button_sec edit_button_sec"
               >
                 EDIT
-              </button>}
-
+              </button>
             </div>
             </div>
             </div>
@@ -205,26 +204,25 @@ const handleSelect = (event) => {
         </div>
         <div>
         <Details {...bonusData}/>
-
-        {isAdmin == "true" && <div className="d-flex align-items-center justify-content-end">
+        <div className="d-flex align-items-center justify-content-end">
           
-        <div className="col-auto" style={{marginRight:15}}>
-            <button
-              onClick={() => handleBonus()}
-              className="btn custom_actions_bottons action_button_sec"
-            >
-              Bonus
-            </button>
-          </div>
           <div className="col-auto" style={{marginRight:15}}>
-            <button
-              onClick={() => handleNormalizedRating()}
-              className="btn custom_actions_bottons action_button_sec"
-            >
-              Normalize Rating
-            </button>
+              <button
+                onClick={() => handleBonus()}
+                className="btn custom_actions_bottons action_button_sec"
+              >
+                Bonus
+              </button>
+            </div>
+            <div className="col-auto" style={{marginRight:15}}>
+              <button
+                onClick={() => handleNormalizedRating()}
+                className="btn custom_actions_bottons action_button_sec"
+              >
+                Normalize Rating
+              </button>
+            </div>
           </div>
-        </div>}
         </div>
         {
           modalShow ? <BonusForm show={modalShow} onHide={()=>setModalShow(false)} bonusData={bonusData} showDeleteModal={handleDeleteModal}/> : <div></div>
