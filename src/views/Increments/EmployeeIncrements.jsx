@@ -331,6 +331,9 @@ console.error(e.message);
       });
       if (response.status === 200) {
         toaster.success("File uploaded successfully!", { position: "bottom-center" });
+        setTimeout(()=>{
+          window.location.reload();
+        },3000)
       } else {
         toaster.error("File upload failed!", { position: "bottom-center" });
       }
