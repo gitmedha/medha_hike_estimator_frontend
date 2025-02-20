@@ -331,7 +331,7 @@ const Historics = (props) => {
             <Modal.Body>
               <div className="uploader-container">
                 <input
-                  accept=".xlsx"
+                  accept=".xlsx, .xls"
                   type="file"
                   name="file-uploader"
                   onChange={handleFileChange}

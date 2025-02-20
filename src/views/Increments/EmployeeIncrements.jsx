@@ -312,6 +312,7 @@ console.error(e.message);
       
   const handleFileChange = (event) => {
     const file = event.target.files[0];
+    console.log("file",file)
     setSelectedFile(file);
   };
 
@@ -528,7 +529,7 @@ console.error(e);
             <Modal.Body>
               <div className="uploader-container">
                 <input
-                  accept=".xlsx"
+                  accept=".xlsx, .xls"
                   type="file"
                   name="file-uploader"
                   onChange={handleFileChange}
