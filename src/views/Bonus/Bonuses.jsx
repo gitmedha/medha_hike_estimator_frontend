@@ -7,7 +7,7 @@ import { FaListUl, FaThLarge } from "react-icons/fa";
 import Switch from "@material-ui/core/Switch";
 import SearchBar from "../../components/layout/SearchBar";
 import BonusForm from "./BonusComponents/BonusForm";  
-import {fetchAllBonuses,fetchSearchDropdown,search,calculateBulkNormalizeRating,bulkBonus,downloadTableExcel} from "./BonusComponents/bonusActions";
+import {fetchAllBonuses,fetchSearchDropdown,search,calculateBulkNormalizeRating,bulkBonus,downloadTableExcel,WeightedBonus} from "./BonusComponents/bonusActions";
 import toaster from 'react-hot-toast'
 import Modal from "react-bootstrap/Modal";
 import Spinner from "../../utils/Spinners/Spinner";
@@ -259,6 +259,22 @@ function Bonuses(props) {
             window.location.reload();
           }
         }
+        const bulkWeightedBonus = async ()=>{
+          try{
+            setIsBulkLoading(true);
+            await WeightedBonus();
+            const data = await fetchAllBonuses(paginationPageIndex, pageSize);
+            setBonusData(data.data);
+            setTotalCount(data.totalCount);
+          }
+          catch(e){
+            console.error(e);
+        }
+        finally {
+            setIsBulkLoading(false);
+            window.location.reload();
+          }
+      }
         
   return (
     <>
@@ -304,7 +320,12 @@ function Bonuses(props) {
                                         <Dropdown.Item
                                           onClick={() => calculateBulkIncrement()}
                                         >
-                                            Bulk Increment
+                                            Bulk Bonus
+                                        </Dropdown.Item>
+                                        <Dropdown.Item
+                                          onClick={() => bulkWeightedBonus()}
+                                        >
+                                            Bulk Weighted Bonus
                                         </Dropdown.Item>
                                       </Dropdown.Menu>
                                       </Dropdown>

@@ -2,7 +2,7 @@ import React,{useEffect,useState} from 'react'
 import { useParams } from "react-router-dom";
 import SweetAlert from "react-bootstrap-sweetalert";
 import styled from 'styled-components';
-import {fetchBonusDetails,deleteBonus,getNormalizedRating,getBonus,getDataByReviewCycle} from "./bonusActions";
+import {fetchBonusDetails,deleteBonus,getNormalizedRating,getBonus,getDataByReviewCycle,calculateWeightedBonus} from "./bonusActions";
 import Collapsible from "../../../components/content/CollapsiblePanels";
 import BonusForm from './BonusForm';
 import Details from "./Details";
@@ -129,6 +129,23 @@ const handleBonus = async ()=>{
   }
 }
 
+const handleWeightedBonus = async ()=>{
+  try{
+    await calculateWeightedBonus(bonusData.employee_id, bonusData.review_cycle);
+    toaster.success('Weighted bonus calculated successfully!',{ position: "bottom-center" })
+    setTimeout(() => {
+      setIsLoading(true);
+      setTimeout(() => {
+        window.location.href = "/bonus/" + bonusData.employee_id;
+      }, 3000);
+    }, 1000);
+  }catch(error){
+    setIsLoading(false);
+    toaster.error('Unable to calculate weighted bonus, check the data again',{ position: "bottom-center" })
+    console.error(error);
+  }
+}
+
 const handleDeleteModal = ()=>{
   setModalShow(false);
   setShowDeleteAlert(true);
@@ -207,6 +224,12 @@ const handleSelect = (event) => {
         <div className="d-flex align-items-center justify-content-end">
           
           <div className="col-auto" style={{marginRight:15}}>
+          <button
+                onClick={() => handleWeightedBonus()}
+                className="btn custom_actions_bottons action_button_sec"
+              >
+                Weighted Bonus
+              </button>
               <button
                 onClick={() => handleBonus()}
                 className="btn custom_actions_bottons action_button_sec"

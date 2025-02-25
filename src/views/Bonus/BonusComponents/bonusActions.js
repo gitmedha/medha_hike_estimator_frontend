@@ -155,3 +155,24 @@ export const bulkBonus = async ()=>{
         console.error(error);
     }
 }
+
+export const WeightedBonus = async ()=>{
+    try{
+        const response = await api.get('/api/bonuses/calculate_weighted_bonus');
+        return response.data;
+    }catch(error){
+        console.error(error);
+    }
+}
+
+export const calculateWeightedBonus = async (employeeId,reviewCycle,normalizedRating)=>{
+    try{
+        const response = await api.post(`/api/bonuses/calculate_weighted_bonus`, {
+            "employeeId": employeeId,
+            "reviewCycle": reviewCycle
+        });
+        return response.data;
+    }catch(error){
+        console.error(error);
+    }
+}
