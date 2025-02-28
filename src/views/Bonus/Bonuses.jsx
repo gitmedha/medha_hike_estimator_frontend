@@ -90,6 +90,10 @@ function Bonuses(props) {
             Header: "Bonus",
             accessor: "bonus",
           },
+          {
+            Header:"Weighted Bonus",
+            accessor:"weighted_bonus"
+          }
         ],
         []
       );

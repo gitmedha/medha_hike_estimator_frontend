@@ -45,7 +45,6 @@ function Bonus() {
   const [isLoading,setIsLoading] = useState(true);
   const [isAdmin] = useState(localStorage.getItem('admin'));
 
-
   
 useEffect(()=>{
   async function componentMount(){
