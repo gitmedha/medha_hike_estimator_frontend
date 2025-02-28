@@ -2,7 +2,7 @@ import React,{useEffect,useState} from 'react'
 import { useParams,useLocation } from "react-router-dom";
 import SweetAlert from "react-bootstrap-sweetalert";
 import styled from 'styled-components';
-import {fetchIncrement,deleteIncrement,calculateNormalizedRating,calculateIncrement,getIncrementDataByReviewCycle} from "./incrementsActions";
+import {fetchIncrement,deleteIncrement,calculateNormalizedRating,calculateIncrement,getIncrementDataByReviewCycle,weightedIncrement} from "./incrementsActions";
 import Collapsible from "../../../components/content/CollapsiblePanels";
 import IncrementDataForm from './IncrementDataForm';
 import Details from "./Details";
@@ -131,6 +131,24 @@ const handleIncrement = async ()=>{
   }
 }
 
+const handleWeightedIncrement = async ()=>{
+  try{
+    await weightedIncrement(employeeData.employee_id,employeeData.appraisal_cycle);
+    toaster.success('Weighted increment calculated successfully!',{ position: "bottom-center" })
+    setTimeout(() => {
+      setIsLoading(true);
+      setTimeout(() => {
+        window.location.href = "/increment_employee/" + employeeData.employee_id;
+      }, 3000);
+    }, 1000);
+
+    }catch(error){
+      setIsLoading(false);
+      toaster.error('Unable to calculate weighted increment, check the data again',{ position: "bottom-center" })
+    console.error(error);
+  }
+}
+
 const handleDeleteModal = ()=>{
   setModalShow(false);
   setShowDeleteAlert(true);
@@ -222,6 +240,14 @@ const handleSelect = (event) => {
                 className="btn custom_actions_bottons action_button_sec"
               >
                 Normalize Rating
+              </button>
+            </div>
+            <div className="col-auto" style={{marginRight:15}}>
+              <button
+                onClick={() => handleWeightedIncrement()}
+                className="btn custom_actions_bottons action_button_sec"
+              >
+                Weighted Increment
               </button>
             </div>
           </div>        </div>

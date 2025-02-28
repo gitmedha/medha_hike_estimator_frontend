@@ -196,3 +196,24 @@ export const bulkIncrement = async ()=>{
         console.error(error);
     }
 }
+
+export const bulkWeightedIncrement = async ()=>{
+    try{
+        const response = await api.get('/api/increments/calculate_bulk_weighted_increment');
+        return response.data;
+    }catch(error){
+        console.error(error);
+    }
+}
+
+export const weightedIncrement = async(employeeId,reviewCycle)=>{
+    try{
+        const response = await api.post('/api/increments/get_weighted_increment', {
+            "employeeId": employeeId,
+            "reviewCycle": reviewCycle
+        });
+        return response.data;
+    }catch(error){
+        console.error(error);
+    }
+}

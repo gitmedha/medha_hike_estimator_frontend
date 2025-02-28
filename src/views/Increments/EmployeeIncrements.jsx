@@ -15,7 +15,8 @@ import {
   search,
   calculateBulkNormalizeRating,
   downloadTableExcel,
-  bulkIncrement
+  bulkIncrement,
+  bulkWeightedIncrement
 } from "./IncrementsComponents/incrementsActions";
 import toaster from 'react-hot-toast'
 import CurrentBandDropdown from "./IncrementsComponents/CurrentBandFilter";
@@ -368,6 +369,23 @@ console.error(e);
 
   }
 }
+const calculateBulkWeightedIncrement =  async ()=>{
+  try{
+      setIsBulkLoading(true);
+      await bulkWeightedIncrement();
+      const data = await fetchAllIncrements(paginationPageIndex, pageSize);
+      setIncrementData(data.data);
+      setTotalCount(data.totalCount);
+  }
+  catch(e){
+      console.error(e);
+}
+  finally {
+    setIsBulkLoading(false);
+    window.location.reload();
+
+  }
+}
 
   return (
     <>
@@ -433,6 +451,11 @@ console.error(e);
                                 onClick={() => calculateBulkIncrement()}
                               >
                                   Bulk Increment
+                              </Dropdown.Item>
+                              <Dropdown.Item
+                                onClick={() => calculateBulkWeightedIncrement()}
+                              >
+                                  Bulk Weighted Increment
                               </Dropdown.Item>
                             </Dropdown.Menu>
                             </Dropdown>
@@ -553,4 +576,4 @@ console.error(e);
   )
 }
 
-export default EmployeeIncrements
+export default EmployeeIncrements;

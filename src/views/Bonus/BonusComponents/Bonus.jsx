@@ -223,12 +223,6 @@ const handleSelect = (event) => {
         <div className="d-flex align-items-center justify-content-end">
           
           <div className="col-auto" style={{marginRight:15}}>
-          <button
-                onClick={() => handleWeightedBonus()}
-                className="btn custom_actions_bottons action_button_sec"
-              >
-                Weighted Bonus
-              </button>
               <button
                 onClick={() => handleBonus()}
                 className="btn custom_actions_bottons action_button_sec"
@@ -244,6 +238,14 @@ const handleSelect = (event) => {
                 Normalize Rating
               </button>
             </div>
+            <div className="col-auto" style={{marginRight:15}}>
+              <button
+                onClick={() => handleWeightedBonus()}
+                className="btn custom_actions_bottons action_button_sec"
+              >
+                Weighted Bonus
+              </button>
+              </div>
           </div>
         </div>
         {
