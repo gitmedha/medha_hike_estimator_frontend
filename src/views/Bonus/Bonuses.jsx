@@ -177,7 +177,15 @@ function Bonuses(props) {
       },[])
 
       const onRowClick = (row)=>{
-        history.push(`/bonus/${row.employee_id}`);
+
+        history.push({
+          pathname:`/bonus/${row.employee_id}`,
+          state:{
+            review_cycle:row.review_cycle
+          }
+
+        });
+
       }
 
       const clearFilters = async()=>{

@@ -1,5 +1,5 @@
 import React,{useEffect,useState} from 'react'
-import { useParams } from "react-router-dom";
+import { useParams,useLocation } from "react-router-dom";
 import SweetAlert from "react-bootstrap-sweetalert";
 import styled from 'styled-components';
 import {fetchBonusDetails,deleteBonus,getNormalizedRating,getBonus,getDataByReviewCycle,calculateWeightedBonus} from "./bonusActions";
@@ -44,12 +44,12 @@ function Bonus() {
   const {id} = useParams();
   const [isLoading,setIsLoading] = useState(true);
   const [isAdmin] = useState(localStorage.getItem('admin'));
+  const location = useLocation();
 
   
 useEffect(()=>{
   async function componentMount(){
-    const data = await fetchBonusDetails(id)
-    console.log(data);
+    const data = await fetchBonusDetails(id,location.state.review_cycle);
     await setBonusData(data[0]);
     // setSelectedCycle({ value: data[0].review_cycle, label: data[0].review_cycle });
     setIsLoading(false);

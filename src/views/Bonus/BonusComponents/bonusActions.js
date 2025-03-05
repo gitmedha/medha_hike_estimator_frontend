@@ -70,9 +70,9 @@ export const deleteBonus = async (id)=>{
     }
  };
 
-export const fetchBonusDetails = async (id)=>{
+export const fetchBonusDetails = async (id,reviewCycle)=>{
     try{
-        const response = await api.get(`/api/bonuses/fetch-bonus/${id}`);
+        const response = await api.get(`/api/bonuses/fetch-bonus/${id}/${reviewCycle}`);
         console.log(response);
         return response.data;
     }catch(error){
