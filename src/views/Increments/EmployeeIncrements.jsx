@@ -160,10 +160,19 @@ function EmployeeIncrements(props) {
         key: 8
       }]
 
-      const fetchData = useCallback(async()=>{
+      const fetchData = useCallback(async(pageIndex,
+        pageSize,
+        sortBy,)=>{
+          let SortField='employee_id';
+          let SortOrder='asc';
+          if(sortBy.length){
+            
+          SortField = sortBy[0].id;
+          SortOrder = sortBy[0].desc ? "desc" : "asc";
+          }
         nProgress.start();
         setLoading(true);
-        const data = await fetchAllIncrements(paginationPageIndex, pageSize);
+        const data = await fetchAllIncrements(paginationPageIndex, pageSize,SortField,SortOrder);
         setIncrementData(data.data);
         setTotalCount(data.totalCount);
         setLoading(false);
