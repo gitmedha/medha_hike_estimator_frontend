@@ -2,7 +2,15 @@ import React,{useEffect,useState} from 'react'
 import { useParams,useLocation } from "react-router-dom";
 import SweetAlert from "react-bootstrap-sweetalert";
 import styled from 'styled-components';
-import {fetchBonusDetails,deleteBonus,getNormalizedRating,getBonus,getDataByReviewCycle,calculateWeightedBonus} from "./bonusActions";
+import {
+  fetchBonusDetails,
+  deleteBonus,
+  getNormalizedRating,
+  getBonus,
+  getDataByReviewCycle,
+  calculateWeightedBonus,
+  getReviewCycles
+} from "./bonusActions";
 import Collapsible from "../../../components/content/CollapsiblePanels";
 import BonusForm from './BonusForm';
 import Details from "./Details";
@@ -41,6 +49,7 @@ function Bonus() {
   const [modalShow, setModalShow] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [selectedCycle,setSelectedCycle] = useState("");
+  const [reviewCycles, setReviewCycles] = useState([]);
   const {id} = useParams();
   const [isLoading,setIsLoading] = useState(true);
   const [isAdmin] = useState(localStorage.getItem('admin'));
@@ -51,7 +60,7 @@ useEffect(()=>{
   async function componentMount(){
     const data = await fetchBonusDetails(id,location.state.review_cycle);
     await setBonusData(data[0]);
-    // setSelectedCycle({ value: data[0].review_cycle, label: data[0].review_cycle });
+    await setReviewCycles(await getReviewCycles(id));
     setIsLoading(false);
   }
   componentMount();
@@ -162,6 +171,8 @@ const handleCloseDeleteAlert = ()=>{
 
 const handleSelect = (event) => {
   setSelectedCycle(event.value);
+  
+  // setSelectedCycle(event.value);
 };
 
   return (
@@ -196,13 +207,7 @@ const handleSelect = (event) => {
                 
               <ReactSelect
                 styles={customStyles}
-                options={[{
-                  value: 'April-March 2022',
-                  label: 'April-March 2022'
-                }, {
-                  value: 'April-March 2023',
-                  label: 'April-March 2023'
-                }]}
+                options={reviewCycles}
                 value={selectedCycle}
                 onChange={handleSelect}
                 placeholder="Review Cycle"
