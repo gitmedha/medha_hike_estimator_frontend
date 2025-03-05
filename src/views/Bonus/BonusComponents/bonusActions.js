@@ -87,8 +87,8 @@ export const getDataByReviewCycle = async(employee_id,reviewCycle)=>{
     }catch(error){
         console.error(error);
     }
-
 }
+
 export const getNormalizedRating = async (employeeId,reviewCycle,ratings,reviewer)=>{
     try{
         const response = await api.post(`/api/bonuses/get_normalized_rating`,{
@@ -171,6 +171,15 @@ export const calculateWeightedBonus = async (employeeId,reviewCycle)=>{
             "employeeId": employeeId,
             "reviewCycle": reviewCycle
         });
+        return response.data;
+    }catch(error){
+        console.error(error);
+    }
+}
+
+export const getReviewCycles = async(id)=>{
+    try{
+        const response = await api.get(`/api/bonuses/review-cycle-dropdowns/${id}`);
         return response.data;
     }catch(error){
         console.error(error);
