@@ -154,12 +154,10 @@ const optionsForSearch = [
 }
 ]
   const getStudents = async (
-    status = "All",
-    selectedTab,
     limit = paginationPageSize,
     offset = 0,
-    sortBy = "updated_at",
-    sortOrder = "desc"
+    sortBy = "employee_id",
+    sortOrder = "asc"
   ) => {
     nProgress.start();
     setLoading(true);
@@ -167,6 +165,8 @@ try {
   const params = {
     limit: limit,
     offset: offset,
+    sortBy: sortBy,
+    sortOrder: sortOrder
   };
   
   const data = await api.get('/api/employees/get_employees', {params});
@@ -191,30 +191,12 @@ catch(error){
       pageSize,
       sortBy,
       isSearchEnable,
-      selectedSearchedValue,
-      selectedSearchField
     ) => {
+      let sortByField = "employee_id";
+      let sortOrder = "asc";
       if (sortBy.length) {
-        let sortByField = "full_name";
-        let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
-
-        switch (sortBy[0].id) {
-          case "status":
-          case "phone":
-          case "city":
-          case "id":
-          case "medha_area":
-          case "student_id":
-          case "assigned_to.username":
-          case "course_type_latest":
-            sortByField = sortBy[0].id;
-            break;
-
-          case "avatar":
-          default:
-            sortByField = "full_name";
-            break;
-        }
+        sortByField = sortBy[0].id;
+        sortOrder = sortBy[0].desc === true ? "desc" : "asc";
         if (isSearchEnable) {
           // getStudentsBySearchFilter(
           //   activeStatus,
@@ -248,10 +230,11 @@ catch(error){
           // );
         } else {
           getStudents(
-            activeStatus,
-            activeTab.key,
             pageSize,
-            pageSize * pageIndex
+            pageSize * pageIndex,
+            sortByField,
+            sortOrder
+
           );
         }
       }

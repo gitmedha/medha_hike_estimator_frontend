@@ -2,7 +2,7 @@ import React,{useEffect,useState} from 'react'
 import { useParams,useLocation } from "react-router-dom";
 import SweetAlert from "react-bootstrap-sweetalert";
 import styled from 'styled-components';
-import {fetchIncrement,deleteIncrement,calculateNormalizedRating,calculateIncrement,getIncrementDataByReviewCycle,weightedIncrement} from "./incrementsActions";
+import {fetchIncrement,deleteIncrement,calculateNormalizedRating,calculateIncrement,getIncrementDataByReviewCycle,weightedIncrement,getReviewCycles} from "./incrementsActions";
 import Collapsible from "../../../components/content/CollapsiblePanels";
 import IncrementDataForm from './IncrementDataForm';
 import Details from "./Details";
@@ -45,6 +45,8 @@ function IncrementEmployee() {
   const [isLoading,setIsLoading] = useState(true);
   const [isAdmin] = useState(localStorage.getItem('admin'));
   const location = useLocation();
+  const [reviewCycles, setReviewCycles] = useState([]);
+
   const { review_cycle } = location.state || {};
 
 
@@ -53,7 +55,7 @@ useEffect(()=>{
   async function componentMount(){
     const data = await fetchIncrement(id,review_cycle)
     await setEmployeeData(data[0]);
-    setSelectedCycle({ value: data[0].appraisal_cycle, label: data[0].appraisal_cycle });
+    await setReviewCycles(await getReviewCycles(id));
     setIsLoading(false);
   }
   componentMount();
@@ -199,13 +201,7 @@ const handleSelect = (event) => {
                 
               <ReactSelect
                 styles={customStyles}
-                options={[{
-                  value: 'April-March 2022',
-                  label: 'April-March 2022'
-                }, {
-                  value: 'April-March 2023',
-                  label: 'April-March 2023'
-                }]}
+                options={reviewCycles}
                 value={selectedCycle}
                 onChange={handleSelect}
                 placeholder="Review Cycle"

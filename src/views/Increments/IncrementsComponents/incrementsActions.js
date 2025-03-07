@@ -141,10 +141,7 @@ export const getHistoricsData = async (fullName)=>{
 
 export const getIncrementDataByReviewCycle = async (employeeId,reviewCycle)=>{
     try{
-        const response = await api.post(`/api/increments/get_increment_by_review_cycle`, {
-            "employeeID": employeeId,
-            "reviewCycle": reviewCycle
-        });
+        const response = await api.get(`/api/increments/get_increment_by_review_cycle/${employeeId}/${reviewCycle}`);
         return response.data;
     }
     catch(error){
@@ -212,6 +209,15 @@ export const weightedIncrement = async(employeeId,reviewCycle)=>{
             "employeeId": employeeId,
             "reviewCycle": reviewCycle
         });
+        return response.data;
+    }catch(error){
+        console.error(error);
+    }
+}
+
+export const getReviewCycles = async(id)=>{
+    try{
+        const response = await api.get(`/api/increments/review-cycle-dropdowns/${id}`);
         return response.data;
     }catch(error){
         console.error(error);

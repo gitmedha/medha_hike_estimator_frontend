@@ -30,8 +30,9 @@ const {id} = useParams();
   const [modalShow, setModalShow] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [isAdmin] = useState(localStorage.getItem('admin'));
-  console.log("isAdmin",isAdmin)
-  console.log(typeof isAdmin)
+  
+  // console.log("isAdmin",isAdmin)
+  // console.log(typeof isAdmin)
 
 
 useEffect(()=>{

@@ -171,7 +171,7 @@ const handleCloseDeleteAlert = ()=>{
 
 const handleSelect = (event) => {
   setSelectedCycle(event.value);
-  
+
   // setSelectedCycle(event.value);
 };
 
