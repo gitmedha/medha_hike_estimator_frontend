@@ -153,7 +153,7 @@ const optionsForSearch = [
   value: "employee_status",
 }
 ]
-  const getStudents = async (
+  const getEmployees = async (
     limit = paginationPageSize,
     offset = 0,
     sortBy = "employee_id",
@@ -198,7 +198,7 @@ catch(error){
         sortByField = sortBy[0].id;
         sortOrder = sortBy[0].desc === true ? "desc" : "asc";
         if (isSearchEnable) {
-          // getStudentsBySearchFilter(
+          // getEmployeesBySearchFilter(
           //   activeStatus,
           //   activeTab.key,
           //   pageSize,
@@ -209,9 +209,7 @@ catch(error){
           //   sortOrder
           // );
         } else {
-          getStudents(
-            activeStatus,
-            activeTab.key,
+          getEmployees(
             pageSize,
             pageSize * pageIndex,
             sortByField,
@@ -220,7 +218,7 @@ catch(error){
         }
       } else {
         if (isSearchEnable) {
-          // getStudentsBySearchFilter(
+          // getEmployeesBySearchFilter(
           //   activeStatus,
           //   activeTab.key,
           //   pageSize,
@@ -229,7 +227,7 @@ catch(error){
           //   selectedSearchField
           // );
         } else {
-          getStudents(
+          getEmployees(
             pageSize,
             pageSize * pageIndex,
             sortByField,

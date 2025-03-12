@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect,useCallback } from "react";
 import Table from "../../../components/content/Table";
 import {getEmployeeHistoricsData, deleteHistoric} from "./EmployeeActions";
 
@@ -15,6 +15,19 @@ setHistoricalData(data);
     });
     
   },[]);
+
+const fetchData = useCallback((pageSize,paginationPageSize,sortBy)=>{
+if(sortBy.length){
+  let sortOrder = sortBy[0].desc ? "desc" : "asc";
+  let sort = sortBy[0].id;
+  getEmployeeHistoricsData(firstName,lastName,sort,sortOrder).then((data)=>{
+    setHistoricalData(data);
+        }).catch((error) => {
+            console.log("Error fetching historical data: ", error);
+        });
+}
+
+},[]);
 
 
   
@@ -59,7 +72,7 @@ setHistoricalData(data);
         data={historicalData}
         paginationPageSize={25}
         totalRecords={historicalData.length}
-        fetchData={() => {}}
+        fetchData={fetchData}
         loading={false}
         showPagination={false}
         // onRowClick={handleRowClick}

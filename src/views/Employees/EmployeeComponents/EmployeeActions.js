@@ -36,9 +36,9 @@ export const LoadSearchPicklist = async (dropDownField) => {
     }
 }
 
-export const getEmployeeHistoricsData = async(firstName,lastName)=>{
+export const getEmployeeHistoricsData = async(firstName,lastName,sortBy="reviewer", sortOrder="asc")=>{
     try{
-        const response = await api.get(`/api/employees/get_employee_historical_data/${firstName}/${lastName}`);
+        const response = await api.get(`/api/employees/get_employee_historical_data/${firstName}/${lastName}/${sortBy}/${sortOrder}`);
         return response.data;
     }catch(error){
         console.error(error);
