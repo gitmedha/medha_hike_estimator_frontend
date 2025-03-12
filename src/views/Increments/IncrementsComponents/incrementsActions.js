@@ -127,10 +127,12 @@ export const search = async(field,value,limit,page)=>{
     }
 }
 
-export const getHistoricsData = async (fullName)=>{
+export const getHistoricsData = async (fullName,sortBy="reviewer",sortOrder="asc")=>{
     try{
         const response = await api.post(`/api/increments/get_historical_data_increment`, {
-            "employeeName": `${fullName}`
+            "employeeName": `${fullName}`,
+            "sortBy": sortBy,
+            "sortOrder": sortOrder
         });
 
         return response.data;

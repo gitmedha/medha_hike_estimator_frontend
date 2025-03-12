@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect,useCallback } from "react";
 import Table from "../../../components/content/Table";
 import {getHistoricsData} from "./incrementsActions";
 
@@ -16,7 +16,19 @@ setHistoricalData(data);
     
   },[]);
 
-
+const fetchData = useCallback(async (pageIndex,pageSize,sortBy) => {
+  try {
+   if(sortBy.length){
+    let sortField = sortBy[0].id;
+    let sortOrder = sortBy[0].desc ? "desc" : "asc";
+    const response = await getHistoricsData(fullName,sortField,sortOrder);
+    setHistoricalData(response);
+  }
+  } catch (error) {
+    console.error(error);
+    return Promise.reject(error);
+  }
+},[]);
   
   const columns = useMemo(
     () => [
@@ -59,7 +71,7 @@ setHistoricalData(data);
         data={historicalData}
         paginationPageSize={25}
         totalRecords={historicalData.length}
-        fetchData={() => {}}
+        fetchData={fetchData}
         loading={false}
         showPagination={false}
         // onRowClick={handleRowClick}
