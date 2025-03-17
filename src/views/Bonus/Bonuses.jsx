@@ -136,14 +136,30 @@ function Bonuses(props) {
         key: 8
       }]
 
-      const fetchData = useCallback(async()=>{
+      const fetchData = useCallback(async(paginationPageIndex,pageSize,sortBy)=>{
         nProgress.start();
         setLoading(true);
-        const data = await fetchAllBonuses(paginationPageIndex, pageSize);
-        setBonusData(data?.data);
-        setTotalCount(data?.totalCount);
-        setLoading(false);
-        nProgress.done();
+
+        if(sortBy.length){
+          
+          let sortField = sortBy[0].id;
+          let sortOrder = sortBy[0].desc? "desc" : "asc";
+          
+          const data = await fetchAllBonuses(paginationPageIndex, pageSize,sortField,sortOrder);
+          setBonusData(data?.data);
+          setTotalCount(data?.totalCount);
+          setLoading(false);
+          nProgress.done();
+         
+
+        }else {
+          const data = await fetchAllBonuses(paginationPageIndex, pageSize);
+          setBonusData(data?.data);
+          setTotalCount(data?.totalCount);
+          setLoading(false);
+          nProgress.done();
+        }
+        
       },[paginationPageIndex,pageSize]);
 
       const handleSearch = async(value)=>{
