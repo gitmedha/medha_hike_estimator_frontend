@@ -112,7 +112,8 @@ const Table = ({
   onPageSizeChange = () => {},
   paginationPageIndex = 0,
   onPageIndexChange = () => {},
-  collapse_tab_name = null
+  collapse_tab_name = null,
+  reviewCycle=null
 }) => {
   const tableInstance = useTable(
     {
@@ -154,7 +155,7 @@ const Table = ({
       pageIndex,
       pageSize,
       sortBy,
-      isSearchEnable
+      reviewCycle
     );
   }, [fetchData, pageIndex, pageSize, sortBy]);
 

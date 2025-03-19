@@ -185,3 +185,29 @@ export const getReviewCycles = async(id)=>{
         console.error(error);
     }
 }
+
+export const getAllReviewCycles = async()=>{
+    try{
+        const response = await api.get(`/api/bonuses/get_review_cycles`);
+        return response.data;
+    }catch(error){
+        console.error(error);
+    }
+}
+
+export const fetchBonusesByReview = async(pageSize,pageIndex,sortBy,sortOrder,reviewCycle)=>{
+    try{
+        const {data} = await api.get('/api/bonuses/get_bonuses_by_review', {
+            params: {
+                pageSize: pageSize,
+                pageIndex: pageIndex,
+                sortBy: sortBy,
+                sortOrder: sortOrder,
+                reviewCycle:reviewCycle
+            }
+        });
+        return [data.data,data.totalCount];
+    }catch(error){
+        console.error(error);
+    }
+}
