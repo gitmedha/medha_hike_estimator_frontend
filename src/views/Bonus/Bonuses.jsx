@@ -7,12 +7,24 @@ import { FaListUl, FaThLarge } from "react-icons/fa";
 import Switch from "@material-ui/core/Switch";
 import SearchBar from "../../components/layout/SearchBar";
 import BonusForm from "./BonusComponents/BonusForm";  
-import {fetchAllBonuses,fetchSearchDropdown,search,calculateBulkNormalizeRating,bulkBonus,downloadTableExcel,WeightedBonus} from "./BonusComponents/bonusActions";
+import {
+  fetchAllBonuses,
+  fetchSearchDropdown,
+  search,
+  calculateBulkNormalizeRating,
+  bulkBonus,
+  downloadTableExcel,
+  WeightedBonus,
+  getAllReviewCycles,
+  fetchBonusesByReview
+} from "./BonusComponents/bonusActions";
 import toaster from 'react-hot-toast'
 import Modal from "react-bootstrap/Modal";
 import Spinner from "../../utils/Spinners/Spinner";
 import { Dropdown,Button } from 'react-bootstrap';
 import api from "../../apis";
+import ReactSelect from "react-select";
+
 
 
 const Styled = styled.div`
@@ -31,6 +43,18 @@ const Styled = styled.div`
   }
 `;
 
+const customStyles = {
+  container: (provided) => ({
+    ...provided,
+    width: "150px",
+    marginRight:"15px"
+  }),
+  control: (provided) => ({
+    ...provided,
+    width: "150px",
+  }),
+};
+
 
 function Bonuses(props) {
 
@@ -48,6 +72,8 @@ function Bonuses(props) {
   const [isBulkLoading, setIsBulkLoading] = useState(false);
   const [showUploadExcelInput,setShowUploadExcelInput] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [reviewData,setReviewData] = useState(null);         
+  const [reviewCycle,setReviewCycle] = useState(null);
 
 
     const columns = useMemo(
@@ -136,7 +162,7 @@ function Bonuses(props) {
         key: 8
       }]
 
-      const fetchData = useCallback(async(paginationPageIndex,pageSize,sortBy)=>{
+      const fetchData = useCallback(async(paginationPageIndex,pageSize,sortBy,reviewCycle)=>{
         nProgress.start();
         setLoading(true);
 
@@ -144,20 +170,37 @@ function Bonuses(props) {
           
           let sortField = sortBy[0].id;
           let sortOrder = sortBy[0].desc? "desc" : "asc";
+          if(reviewCycle){
+            await fetchAllBonusesByReviewCycle(pageSize,paginationPageIndex,sortField,sortOrder,reviewCycle);
+            setLoading(false);
+            nProgress.done();
+          }
+          else {
+
+            const data = await fetchAllBonuses(paginationPageIndex, pageSize,sortField,sortOrder);
+            setBonusData(data?.data);
+            setTotalCount(data?.totalCount);
+            setLoading(false);
+            nProgress.done();
+          }
           
-          const data = await fetchAllBonuses(paginationPageIndex, pageSize,sortField,sortOrder);
-          setBonusData(data?.data);
-          setTotalCount(data?.totalCount);
-          setLoading(false);
-          nProgress.done();
          
 
         }else {
-          const data = await fetchAllBonuses(paginationPageIndex, pageSize);
-          setBonusData(data?.data);
-          setTotalCount(data?.totalCount);
-          setLoading(false);
-          nProgress.done();
+          if(reviewCycle){
+            await fetchAllBonusesByReviewCycle(pageSize,paginationPageIndex,'employee_id','asc',reviewCycle);
+            setLoading(false);
+            nProgress.done();
+          }
+          else {
+            const data = await fetchAllBonuses(paginationPageIndex, pageSize);
+            setBonusData(data?.data);
+            setTotalCount(data?.totalCount);
+            setLoading(false);
+            nProgress.done();
+
+          }
+         
         }
         
       },[paginationPageIndex,pageSize]);
@@ -185,6 +228,7 @@ function Bonuses(props) {
       useEffect(()=>{
         async function mountApis(){
          const data = await fetchAllBonuses(paginationPageIndex,pageSize);
+         await getReviews();
         
          setBonusData(data.data);
          setTotalCount(data.totalCount);
@@ -303,7 +347,36 @@ function Bonuses(props) {
             window.location.reload();
           }
       }
-        
+      const getReviews = async ()=>{
+        try{
+          const data = await getAllReviewCycles();
+          setReviewData(data);
+        }
+        catch(e){
+          console.error(e);
+        }
+      }
+
+      const fetchAllBonusesByReviewCycle = async(pageSize,pageIndex,sortBy,sortOrder,review_cycle)=>{
+        try{
+          const [data,totalCount] = await fetchBonusesByReview(pageSize,pageIndex,sortBy,sortOrder,review_cycle);
+          setBonusData(data);
+          setTotalCount(totalCount);
+        }
+        catch(e){
+          console.error(e);
+        }
+      }
+      useEffect(()=>{
+        async function fetchByReview(){
+          if(reviewCycle){
+            await fetchAllBonusesByReviewCycle(paginationPageSize,paginationPageIndex,'employee_id','asc',reviewCycle);
+          }
+        }
+
+        fetchByReview();
+
+      },[reviewCycle])
   return (
     <>
      <div className="d-flex justify-content-between align-items-center p-2">
@@ -369,7 +442,14 @@ function Bonuses(props) {
       </div>
       <Styled>
         <div className="row m-1">
-          <div className="d-flex justify-content-end py-2">
+          <div className="d-flex justify-content-end py-2 align-items-center">
+            <ReactSelect
+                            styles={customStyles}
+                            options={reviewData}
+                            value={reviewCycle}
+                            onChange={(e)=>setReviewCycle(e.value)}
+                            placeholder="Review Cycle"
+                          />
             <FaThLarge
               size={22}
               color={layout === "grid" ? "#00ADEF" : "#787B96"}
@@ -404,6 +484,8 @@ function Bonuses(props) {
             //   selectedSearchField={selectedSearchField}
             //   selectedSearchedValue={selectedSearchedValue}
               onRowClick={onRowClick}
+              reviewCycle={reviewCycle}
+
             />
           </div>
         </div>
