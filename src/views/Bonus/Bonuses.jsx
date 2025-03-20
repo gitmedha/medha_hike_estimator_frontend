@@ -232,6 +232,7 @@ function Bonuses(props) {
         
          setBonusData(data.data);
          setTotalCount(data.totalCount);
+         await localStorage.setItem('review_cycle', data.data[0].review_cycle);
         }
         mountApis();
       },[])
@@ -264,7 +265,13 @@ function Bonuses(props) {
      const bulkRatings = async () =>{
              try{
                setIsBulkLoading(true);
-               await calculateBulkNormalizeRating();
+               if(reviewCycle){
+                await calculateBulkNormalizeRating(reviewCycle);
+               }
+               else {
+                
+                await calculateBulkNormalizeRating(await localStorage.getItem('review_cycle'));
+               }
                const data = await fetchAllBonuses(paginationPageIndex, pageSize);
                setBonusData(data?.data);
                setTotalCount(data?.totalCount);
@@ -319,7 +326,13 @@ function Bonuses(props) {
           const calculateBulkIncrement = async ()=>{
             try{
               setIsBulkLoading(true);
-              await bulkBonus();
+              if(reviewCycle){
+                await bulkBonus(reviewCycle);
+
+              }
+              else {
+                await bulkBonus(await localStorage.getItem('review_cycle'));
+              }
               const data = await fetchAllBonuses(paginationPageIndex, pageSize);
               setBonusData(data.data);
               setTotalCount(data.totalCount);
@@ -334,7 +347,12 @@ function Bonuses(props) {
         const bulkWeightedBonus = async ()=>{
           try{
             setIsBulkLoading(true);
-            await WeightedBonus();
+            if(reviewCycle){
+              await WeightedBonus(reviewCycle);
+            }
+            else {
+              await WeightedBonus(await localStorage.getItem('review_cycle'));
+            }
             const data = await fetchAllBonuses(paginationPageIndex, pageSize);
             setBonusData(data.data);
             setTotalCount(data.totalCount);
@@ -409,7 +427,7 @@ function Bonuses(props) {
                     
                                         </Dropdown.Item>
                                         <Dropdown.Item
-                                          onClick={() => downloadTableExcel()}
+                                          onClick={() => downloadTableExcel(reviewCycle ? reviewCycle : localStorage.getItem('review_cycle'))}
                                         >
                                             Download Excel
                                         </Dropdown.Item>

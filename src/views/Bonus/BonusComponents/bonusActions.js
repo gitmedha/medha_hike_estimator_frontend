@@ -117,18 +117,22 @@ export const getBonus = async (employeeId,reviewCycle,normalizedRating)=>{
     }
 };
 
-export const calculateBulkNormalizeRating = async()=>{
+export const calculateBulkNormalizeRating = async(reviewCycle)=>{
     try{
-        const response = await api.get('/api/bonuses/calculate_bulk_normalized_rating');
+        const response = await api.get('/api/bonuses/calculate_bulk_normalized_rating', {
+            params: {
+                reviewCycle: reviewCycle
+            }
+        });
         return response.data;
     }catch(error){
         console.error(error);
     }
 }
 
-export const downloadTableExcel  = async ()=>{
+export const downloadTableExcel  = async (reviewCycle)=>{
     try{
-        const response = await api.get('/api/bonuses/download_excel',{
+        const response = await api.get(`/api/bonuses/download_excel?reviewCycle=${reviewCycle}`,{
             responseType: 'blob',
         });
 
@@ -147,18 +151,25 @@ export const downloadTableExcel  = async ()=>{
     }
 }
 
-export const bulkBonus = async ()=>{
+export const bulkBonus = async (reviewCycle)=>{
+    console.log(reviewCycle);
     try{
-        const response = await api.get('/api/bonuses/calculate_bulk_bonus');
+        const response = await api.get('/api/bonuses/calculate_bulk_bonus', {
+            params: {
+                reviewCycle: reviewCycle
+            }
+        });
         return response.data;
     }catch(error){
         console.error(error);
     }
 }
 
-export const WeightedBonus = async ()=>{
+export const WeightedBonus = async (reviewCycle)=>{
     try{
-        const response = await api.post('/api/bonuses/calculate_bulk_weighted_bonus');
+        const response = await api.post('/api/bonuses/calculate_bulk_weighted_bonus', {
+            "reviewCycle": reviewCycle
+        });
         return response.data;
     }catch(error){
         console.error(error);

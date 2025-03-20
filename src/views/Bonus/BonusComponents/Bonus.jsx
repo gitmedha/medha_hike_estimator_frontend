@@ -11,7 +11,6 @@ import {
   calculateWeightedBonus,
   getReviewCycles
 } from "./bonusActions";
-import Collapsible from "../../../components/content/CollapsiblePanels";
 import BonusForm from './BonusForm';
 import Details from "./Details";
 import toaster, { toast } from  'react-hot-toast'
