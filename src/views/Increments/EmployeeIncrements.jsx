@@ -16,7 +16,9 @@ import {
   calculateBulkNormalizeRating,
   downloadTableExcel,
   bulkIncrement,
-  bulkWeightedIncrement
+  bulkWeightedIncrement,
+  getAllReviewCycles,
+  getIncrementDataByAppraisalCycle
 } from "./IncrementsComponents/incrementsActions";
 import toaster from 'react-hot-toast'
 import CurrentBandDropdown from "./IncrementsComponents/CurrentBandFilter";
@@ -24,6 +26,8 @@ import Modal from "react-bootstrap/Modal";
 import Spinner from "../../utils/Spinners/Spinner";
 import { Dropdown,Button } from 'react-bootstrap';
 import api from "../../apis";
+import ReactSelect from "react-select";
+
 
 
 const Styled = styled.div`
@@ -42,6 +46,17 @@ const Styled = styled.div`
   }
 `;
 
+const customStyles = {
+  container: (provided) => ({
+    ...provided,
+    width: "150px",
+    marginRight:"15px"
+  }),
+  control: (provided) => ({
+    ...provided,
+    width: "150px",
+  }),
+};
 
 function EmployeeIncrements(props) {
 
@@ -71,9 +86,20 @@ function EmployeeIncrements(props) {
   
   const [showUploadExcelInput,setShowUploadExcelInput] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [reviewCycle,setReviewCycle] = useState(null);
+  const [reviewData,setReviewData] = useState(null);
 
 
-
+const fetchIncrementByReview = async(pageSize,pageIndex,sortBy,sortOrder,review_cycle)=>{
+        try{
+          const [data,totalCount] = await getIncrementDataByAppraisalCycle(pageSize,pageIndex,sortBy,sortOrder,review_cycle);
+          setIncrementData(data);
+          setTotalCount(totalCount);
+        }
+        catch(e){
+          console.error(e);
+        }
+      }
   const [filters,setFilters] = useState([{
     fields: [],
     values:[]
@@ -117,7 +143,10 @@ function EmployeeIncrements(props) {
           {
             Header: "Increment",
             accessor: "increment",
-          },
+          },{
+            Header:"Weighted Increment",
+            accessor:"weighted_increment"
+          }
         ],
         []
       );
@@ -198,11 +227,21 @@ console.error(e.message);
             console.error(error);
         }
       }
-
+ const getReviews = async ()=>{
+        try{
+          const data = await getAllReviewCycles();
+          setReviewData(data);
+        }
+        catch(e){
+          console.error(e);
+        }
+      }
       useEffect(()=>{
         async function mountApis(){
          const data = await fetchAllIncrements(paginationPageIndex,pageSize);
          const {tenure} = await fetchFilterPicklist();
+         await getReviews();
+
          setNewBandOptions([{
           label:'I',
           value:'I'
@@ -251,8 +290,12 @@ console.error(e.message);
           label:'Yes',
           value: "Yes"
         }]])
+
          setIncrementData(data.data);
          setTotalCount(data.totalCount);
+
+         localStorage.setItem('appraisal_cycle', data.data[0].appraisal_cycle);
+
         }
         mountApis();
       },[])
@@ -396,6 +439,16 @@ const calculateBulkWeightedIncrement =  async ()=>{
   }
 }
 
+useEffect(()=>{
+  async function fetchByReview(){
+    if(reviewCycle){
+      await fetchIncrementByReview(paginationPageSize,paginationPageIndex,'employee_id','asc',reviewCycle);
+    }
+  }
+
+  fetchByReview();
+
+},[reviewCycle])
   return (
     <>
     <div className="d-flex justify-content-between align-items-center p-2">
@@ -481,23 +534,12 @@ const calculateBulkWeightedIncrement =  async ()=>{
       <Styled>
         <div className="row m-1">
           <div className="d-flex justify-content-end py-2">
-            <FaThLarge
-              size={22}
-              color={layout === "grid" ? "#00ADEF" : "#787B96"}
-              onClick={() => setLayout("grid")}
-              className="c-pointer"
-            />
-            <Switch
-              size="small"
-              checked={layout === "list"}
-              onChange={() => setLayout(layout === "list" ? "grid" : "list")}
-              color="default"
-            />
-            <FaListUl
-              size={22}
-              color={layout === "list" ? "#00ADEF" : "#787B96"}
-              onClick={() => setLayout("list")}
-              className="c-pointer"
+          <ReactSelect
+              styles={customStyles}
+              options={reviewData}
+              value={reviewCycle}
+              onChange={(e)=>setReviewCycle(e.value)}
+              placeholder="Review Cycle"
             />
           </div>
           <div className={`${layout !== "list" ? "d-none" : "p-0"}`}>
