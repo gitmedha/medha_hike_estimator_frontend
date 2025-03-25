@@ -225,3 +225,29 @@ export const getReviewCycles = async(id)=>{
         console.error(error);
     }
 }
+
+export const getAllReviewCycles = async ()=>{
+    try{
+        const response = await api.get(`/api/increments/get_all_review_cycles`);
+        return response.data;
+    }catch(error){
+        console.error(error);
+    }
+}
+
+export const getIncrementDataByAppraisalCycle = async(pageSize,pageIndex,sortBy,sortOrder,reviewCycle)=>{
+    try{
+        const {data} = await api.get(`/api/increments/get_increment_by_appraisal_cycle`,{
+            params: {
+                pageSize: pageSize,
+                pageIndex: pageIndex,
+                sortBy: sortBy,
+                sortOrder: sortOrder,
+                reviewCycle:reviewCycle
+            }
+        });
+        return [data.data,data.totalCount];
+    }catch(error){
+        console.error(error);
+    }
+}

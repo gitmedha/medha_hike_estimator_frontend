@@ -149,17 +149,13 @@ function Bonuses(props) {
         value: "manager",
         key: 5
       }, {
-        label: "Review Cycle",
-        value: "review_cycle",
-        key: 6
-      }, {
         label: "Normalized Rating",
         value: "normalized_ratings",
-        key: 7
+        key: 6
       }, {
         label: "Bonus",
         value: "bonus",
-        key: 8
+        key: 7
       }]
 
       const fetchData = useCallback(async(paginationPageIndex,pageSize,sortBy,reviewCycle)=>{
@@ -460,31 +456,13 @@ function Bonuses(props) {
       </div>
       <Styled>
         <div className="row m-1">
-          <div className="d-flex justify-content-end py-2 align-items-center">
+          <div className="d-flex justify-content-end py-2">
             <ReactSelect
-                            styles={customStyles}
-                            options={reviewData}
-                            value={reviewCycle}
-                            onChange={(e)=>setReviewCycle(e.value)}
-                            placeholder="Review Cycle"
-                          />
-            <FaThLarge
-              size={22}
-              color={layout === "grid" ? "#00ADEF" : "#787B96"}
-              onClick={() => setLayout("grid")}
-              className="c-pointer"
-            />
-            <Switch
-              size="small"
-              checked={layout === "list"}
-              onChange={() => setLayout(layout === "list" ? "grid" : "list")}
-              color="default"
-            />
-            <FaListUl
-              size={22}
-              color={layout === "list" ? "#00ADEF" : "#787B96"}
-              onClick={() => setLayout("list")}
-              className="c-pointer"
+              styles={customStyles}
+              options={reviewData}
+              value={reviewCycle}
+              onChange={(e)=>setReviewCycle(e.value)}
+              placeholder="Review Cycle"
             />
           </div>
           <div className={`${layout !== "list" ? "d-none" : "p-0"}`}>
