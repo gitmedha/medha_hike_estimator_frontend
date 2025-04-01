@@ -189,12 +189,12 @@ const handleSelect = (event) => {
                 <div className="employee_name">
                   {bonusData ?bonusData.full_name: ''}
                 </div>
-                <div className={`employee_status ${bonusData?.employee_status === 'Inactive'? 'disabled_label':''}`}>
+              <div className={`employee_status ${bonusData?.employee_status === 'Inactive'? 'disabled_label':''}`}  style={{marginTop:7}}>
                 {bonusData ?bonusData.employee_status: ''}
                 </div>
               </div>
               <div className="designation_sec">
-                {bonusData ? bonusData.title: '' } || {bonusData ? bonusData.department: ''}
+                {bonusData ? bonusData.title: '' }
               </div>
             </div>
             <div className="col-4 d-flex justify-content-end">
