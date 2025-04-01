@@ -169,6 +169,7 @@ const handleCloseDeleteAlert = ()=>{
 const handleSelect = (event) => {
   setSelectedCycle(event.value);
 };
+
   return (
     <Styled>
      {isLoading ?<div className="spinner">
@@ -206,12 +207,12 @@ const handleSelect = (event) => {
                 onChange={handleSelect}
                 placeholder="Review Cycle"
               />
-<button
+              {isAdmin === "true" && <button
                 onClick={() => setModalShow(true)}
                 className="action_button_sec edit_button_sec"
               >
                 EDIT
-              </button>
+              </button>}
             </div>
             </div>
             </div>
@@ -220,9 +221,9 @@ const handleSelect = (event) => {
         <div>
         <Details {...employeeData}/>
 
-        <div className="d-flex align-items-center justify-content-end">
+         {isAdmin === "true" && <div className="d-flex align-items-center justify-content-end">
           
-          <div className="col-auto" style={{marginRight:15}}>
+            <div className="col-auto" style={{marginRight:15}}>
               <button
                 onClick={() => handleIncrement()}
                 className="btn custom_actions_bottons action_button_sec"
@@ -246,7 +247,8 @@ const handleSelect = (event) => {
                 Weighted Increment
               </button>
             </div>
-          </div>        </div>
+          </div>}
+          </div>
         {
           modalShow ? <IncrementDataForm show={modalShow} onHide={()=>setModalShow(false)} IncrementData={employeeData} showDeleteModal={handleDeleteModal}/> : <div></div>
         }

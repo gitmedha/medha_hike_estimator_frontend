@@ -75,7 +75,7 @@ if (isLoading) {
           </div>
           <div className="d-flex justify-content-end">
             
-          {isAdmin == "true" && <button
+          {isAdmin === "true" && <button
             onClick={() => setModalShow(true)}
             style={{ marginLeft: "0px" }}
             className="btn--primary action_button_sec"

@@ -74,7 +74,7 @@ function Bonuses(props) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [reviewData,setReviewData] = useState(null);         
   const [reviewCycle,setReviewCycle] = useState(null);
-
+const isAdmin = localStorage.getItem('admin');
 
     const columns = useMemo(
         () => [
@@ -405,7 +405,7 @@ function Bonuses(props) {
           setClearDisabled={setClearDisabled}
           />
         </div>
-        <div className="col-auto" style={{marginRight:10,marginTop:30}}>
+       { isAdmin === "true" && <div className="col-auto" style={{marginRight:10,marginTop:30}}>
             <Dropdown className="d-inline">
                               <Dropdown.Toggle
                                         variant="secondary"
@@ -444,15 +444,15 @@ function Bonuses(props) {
                                         </Dropdown.Item>
                                       </Dropdown.Menu>
                                       </Dropdown>
-        </div>
-        <div className="col-auto">
+        </div>}
+        {isAdmin === "true" && <div className="col-auto">
         <button
             className="btn btn-primary add_button_sec mt-4"
             onClick={() => setModalShow(true)}
           >
             Add New
           </button>
-        </div>
+        </div>}
       </div>
       <Styled>
         <div className="row m-1">

@@ -50,6 +50,7 @@ const Employees = (props) => {
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
   const [activeStatus, setActiveStatus] = useState("All");
   const pageSize = parseInt(localStorage.getItem("tablePageSize")) || 25;
+  const isAdmin = localStorage.getItem("admin");
   const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
   const [paginationPageIndex, setPaginationPageIndex] = useState(0);
   const [selectedSearchField, setSelectedSearchField] = useState(null);
@@ -64,7 +65,7 @@ const Employees = (props) => {
 
 
 
-
+console.log("isAdmin",isAdmin === "true");
 
   const columns = useMemo(
     () => [
@@ -323,7 +324,7 @@ const ToastOnFailure = (value)=>{
           setIsDisable={setIsDisable}
           />
         </div>
-        <div className="col-auto mt-4">
+        {isAdmin === "true" && <div className="col-auto mt-4">
           <Dropdown className="d-inline">
           <Dropdown.Toggle
                     variant="secondary"
@@ -353,30 +354,10 @@ const ToastOnFailure = (value)=>{
           >
             Add New
           </button>
-        </div>
+        </div>}
       </div>
       <Styled>
         <div className="row m-1">
-          <div className="d-flex justify-content-end py-2">
-            <FaThLarge
-              size={22}
-              color={layout === "grid" ? "#00ADEF" : "#787B96"}
-              onClick={() => setLayout("grid")}
-              className="c-pointer"
-            />
-            <Switch
-              size="small"
-              checked={layout === "list"}
-              onChange={() => setLayout(layout === "list" ? "grid" : "list")}
-              color="default"
-            />
-            <FaListUl
-              size={22}
-              color={layout === "list" ? "#00ADEF" : "#787B96"}
-              onClick={() => setLayout("list")}
-              className="c-pointer"
-            />
-          </div>
           <div className={`${layout !== "list" ? "d-none" : "p-0"}`}>
             <Table
               columns={columns}

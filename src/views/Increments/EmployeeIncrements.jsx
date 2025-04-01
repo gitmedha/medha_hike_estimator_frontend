@@ -68,9 +68,6 @@ function EmployeeIncrements(props) {
   const pageSize = parseInt(localStorage.getItem("tablePageSize")) || 25;
   const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
   const [paginationPageIndex, setPaginationPageIndex] = useState(0);
-  const [selectedSearchField, setSelectedSearchField] = useState(null);
-  const [isSearchEnable, setIsSearchEnable] = useState(false);
-  const [selectedSearchedValue, setSelectedSearchedValue] = useState(null);
   const [defaultSearchOptions,setDefaultSearchOptions] = useState([]);
   const [modalShow,setModalShow] = useState(false);
   const [newBandOptions,setNewBandOptions] = useState([]);
@@ -88,6 +85,7 @@ function EmployeeIncrements(props) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [reviewCycle,setReviewCycle] = useState(null);
   const [reviewData,setReviewData] = useState(null);
+  const isAdmin = localStorage.getItem('admin');
 
 
 const fetchIncrementByReview = async(pageSize,pageIndex,sortBy,sortOrder,review_cycle)=>{
@@ -482,7 +480,7 @@ useEffect(()=>{
           setClearDisabled={setClearDisabled}
           />
         </div>
-        <div className="col-auto" style={{marginRight:10,marginTop:30}}>
+       {isAdmin === "true" &&  <div className="col-auto" style={{marginRight:10,marginTop:30}}>
           <Dropdown className="d-inline">
                     <Dropdown.Toggle
                               variant="secondary"
@@ -521,15 +519,15 @@ useEffect(()=>{
                               </Dropdown.Item>
                             </Dropdown.Menu>
                             </Dropdown>
-        </div>
-        <div className="col-auto">
+        </div>}
+        {isAdmin  === "true" && <div className="col-auto">
         <button
             className="btn btn-primary add_button_sec mt-4"
             onClick={() => setModalShow(true)}
           >
             Add New
           </button>
-        </div>
+        </div>}
       </div>
       <Styled>
         <div className="row m-1">
