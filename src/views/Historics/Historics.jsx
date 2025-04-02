@@ -24,23 +24,16 @@ const Historics = (props) => {
   const [loading, setLoading] = useState(false);
   const [employersAggregate, setEmployersAggregate] = useState([]);
   const [employers, setEmployers] = useState([]);
-  const [pickList, setPickList] = useState([]);
   const [modalShow, setModalShow] = useState(false);
-  const [employersTableData, setEmployersTableData] = useState([]);
   const pageSize = parseInt(localStorage.getItem("tablePageSize")) || 25;
   const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
-  const { setAlert } = props;
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
-  const [selectedSearchField, setSelectedSearchField] = useState(null);
   const [isSearchEnable, setIsSearchEnable] = useState(false);
-  const [selectedSearchedValue, setSelectedSearchedValue] = useState(null);
-  const [formErrors, setFormErrors] = useState([]);
-  const prevIsSearchEnableRef = useRef(isSearchEnable);
   const [isDisable,setIsDisable] = useState(true);
   
   const [showUploadExcelInput,setShowUploadExcelInput] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
-
+const isAdmin = localStorage.getItem('admin');
 
 
   const columns = useMemo(
@@ -260,7 +253,7 @@ const Historics = (props) => {
           setIsDisable={setIsDisable}
           />
         </div>
-        <div className="col-auto mt-4">
+        {isAdmin === "true" && <div className="col-auto mt-4">
         <Dropdown className="d-inline">
           <Dropdown.Toggle
                     variant="secondary"
@@ -291,7 +284,7 @@ const Historics = (props) => {
           >
             Add New
           </button>
-        </div>
+        </div>}
       </div>
       <div style={{ padding: "0 17px" }}>
         <Table

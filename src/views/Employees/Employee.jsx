@@ -31,7 +31,7 @@ const {id} = useParams();
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [isAdmin] = useState(localStorage.getItem('admin'));
   
-  // console.log("isAdmin",isAdmin)
+  console.log("isAdmin",isAdmin)
   // console.log(typeof isAdmin)
 
 
@@ -69,7 +69,6 @@ const handleCloseDeleteAlert = ()=>{
   setShowDeleteAlert(false);
 }
 
-console.log(employee.employee_status)
 
 if (isLoading) {
     return <SkeletonLoader />;
@@ -87,23 +86,23 @@ if (isLoading) {
                 <div className="employee_name">
                   {employee ?employee.first_name: ''}
                 </div>
-                <div className={`employee_status ${employee.employee_status === 'Inactive' ?'disabled_label': ''}`}>
+                <div className={`employee_status ${employee.employee_status === 'Inactive' ?'disabled_label': ''}`}  style={{marginTop:7}}>
                 {employee ?employee.employee_status: ''}
                 </div>
               </div>
               <div className="designation_sec">
-                {employee ? employee.title: '' } || {employee ? employee.department: ''}
+                {employee ? employee.title: '' }
               </div>
             </div>
-            <div className="col-auto">
-            {isAdmin == "true" && <button
+            {isAdmin === "true" && <div className="col-auto">
+            <button
                 onClick={() => setModalShow(true)}
                 style={{ marginLeft: "0px" }}
                 className="btn--primary action_button_sec"
               >
                 EDIT
-              </button>}
-            </div>
+              </button>
+            </div>}
           </div>
         </div>
         <Details {...employee}/>
