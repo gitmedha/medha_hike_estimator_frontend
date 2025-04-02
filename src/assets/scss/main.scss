@@ -478,6 +478,14 @@ div::-webkit-scrollbar-thumb {
   font-size: 1.5rem;
   cursor: pointer;
 }
+
+.bulk_action_button_sec{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #257b69;
+  margin-top: 1px;
+}
 @import './media/lg.scss';
 @import './media/md.scss';
 @import './media/sm.scss';

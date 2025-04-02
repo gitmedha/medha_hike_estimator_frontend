@@ -27,7 +27,7 @@ import Spinner from "../../utils/Spinners/Spinner";
 import { Dropdown,Button } from 'react-bootstrap';
 import api from "../../apis";
 import ReactSelect from "react-select";
-
+import SweetAlert from "react-bootstrap-sweetalert";
 
 
 const Styled = styled.div`
@@ -86,6 +86,8 @@ function EmployeeIncrements(props) {
   const [reviewCycle,setReviewCycle] = useState(null);
   const [reviewData,setReviewData] = useState(null);
   const isAdmin = localStorage.getItem('admin');
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [isConfirm,setIsConfirm] = useState(false);
 
 
 const fetchIncrementByReview = async(pageSize,pageIndex,sortBy,sortOrder,review_cycle)=>{
@@ -413,20 +415,25 @@ console.error(e.message);
       }
 
       const bulkRatings = async () =>{
-        try{
-          setIsBulkLoading(true);
-          await calculateBulkNormalizeRating();
-          const data = await fetchAllIncrements(paginationPageIndex, pageSize);
-          setIncrementData(data.data);
-          setTotalCount(data.totalCount);
-          
-
-        }catch(e){
-          console.error(e.message);
-        }finally {
-          setIsBulkLoading(false);
-          window.location.reload();
+        setShowConfirmationModal(true);
+        if(isConfirm){
+          try{
+            setIsBulkLoading(true);
+            await calculateBulkNormalizeRating();
+            const data = await fetchAllIncrements(paginationPageIndex, pageSize);
+            setIncrementData(data.data);
+            setTotalCount(data.totalCount);
+            setIsConfirm(false);
+            
+  
+          }catch(e){
+            console.error(e.message);
+          }finally {
+            setIsBulkLoading(false);
+            window.location.reload();
+          }
         }
+        
       }
 
       
@@ -473,28 +480,39 @@ console.error(e.message);
   }
 
   const calculateBulkIncrement = async ()=>{
-    try{
-      setIsBulkLoading(true);
-      await bulkIncrement();
-      const data = await fetchAllIncrements(paginationPageIndex, pageSize);
-      setIncrementData(data.data);
-      setTotalCount(data.totalCount);
-  }
-  catch(e){
-console.error(e);
-  }finally {
-    setIsBulkLoading(false);
-    window.location.reload();
-
-  }
+    setShowConfirmationModal(true);
+    if(isConfirm){
+      try{
+      
+        setIsBulkLoading(true);
+        await bulkIncrement();
+        const data = await fetchAllIncrements(paginationPageIndex, pageSize);
+        setIncrementData(data.data);
+        setTotalCount(data.totalCount);
+        setIsConfirm(false)
+    }
+    catch(e){
+  console.error(e);
+    }finally {
+      setIsBulkLoading(false);
+      window.location.reload();
+  
+    }
+        
+    }
+  
 }
 const calculateBulkWeightedIncrement =  async ()=>{
-  try{
+  setShowConfirmationModal(true);
+  if(isConfirm){
+    try{
       setIsBulkLoading(true);
       await bulkWeightedIncrement();
       const data = await fetchAllIncrements(paginationPageIndex, pageSize);
       setIncrementData(data.data);
       setTotalCount(data.totalCount);
+      setIsConfirm(false)
+
   }
   catch(e){
       console.error(e);
@@ -504,6 +522,8 @@ const calculateBulkWeightedIncrement =  async ()=>{
     window.location.reload();
 
   }
+  }
+  
 }
 
 useEffect(()=>{
@@ -554,7 +574,7 @@ useEffect(()=>{
                     <Dropdown.Toggle
                               variant="secondary"
                               id="dropdown-basic"
-                              className="btn--primary action_button_sec"
+                              className="bulk_action_button_sec"
                             >
                               ACTIONS
                             </Dropdown.Toggle>
@@ -689,6 +709,26 @@ useEffect(()=>{
           </Modal>
         )}
 
+{
+  showConfirmationModal && (
+    <SweetAlert
+    icon="question"
+    showCancel
+    btnSize="md"
+    show={true}
+    onConfirm={() => setIsConfirm(true)}
+    onCancel={() => setShowConfirmationModal(false)}
+    title={
+      <span className="text--primary latto-bold">Run this action?</span>
+    }
+    cancelBtnStyle={{ backgroundColor: "#dc3545", color: "#fff", border: "none", padding: "8px 16px", borderRadius: "5px" , textDecoration:'none'}}
+    confirmBtnStyle={{ backgroundColor: "#28a745", color: "#fff", border: "none", padding: "8px 16px", borderRadius: "5px" }}
+  >
+    <p>Are you sure you want to run this action?</p>
+  </SweetAlert>
+  
+  )
+}
   </>
 
   )

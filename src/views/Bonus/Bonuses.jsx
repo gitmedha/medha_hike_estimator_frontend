@@ -24,6 +24,8 @@ import Spinner from "../../utils/Spinners/Spinner";
 import { Dropdown,Button } from 'react-bootstrap';
 import api from "../../apis";
 import ReactSelect from "react-select";
+import SweetAlert from "react-bootstrap-sweetalert";
+
 
 
 
@@ -75,6 +77,9 @@ function Bonuses(props) {
   const [reviewData,setReviewData] = useState(null);         
   const [reviewCycle,setReviewCycle] = useState(null);
 const isAdmin = localStorage.getItem('admin');
+
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [isConfirm,setIsConfirm] = useState(false);
 
     const columns = useMemo(
         () => [
@@ -259,26 +264,29 @@ const isAdmin = localStorage.getItem('admin');
       }
 
      const bulkRatings = async () =>{
-             try{
-               setIsBulkLoading(true);
-               if(reviewCycle){
-                await calculateBulkNormalizeRating(reviewCycle);
-               }
-               else {
-                
-                await calculateBulkNormalizeRating(await localStorage.getItem('review_cycle'));
-               }
-               const data = await fetchAllBonuses(paginationPageIndex, pageSize);
-               setBonusData(data?.data);
-               setTotalCount(data?.totalCount);
+      setShowConfirmationModal(true);
+      if(isConfirm){
+        try{
+          setIsBulkLoading(true);
+          if(reviewCycle){
+           await calculateBulkNormalizeRating(reviewCycle);
+          }
+          else {
+           
+           await calculateBulkNormalizeRating(await localStorage.getItem('review_cycle'));
+          }
+          const data = await fetchAllBonuses(paginationPageIndex, pageSize);
+          setBonusData(data?.data);
+          setTotalCount(data?.totalCount);
+          setIsConfirm(false);
 
-     
-             }catch(e){
-               console.error(e.message);
-             }finally {
-               setIsBulkLoading(false);
-               window.location.reload();
-             }
+        }catch(e){
+          console.error(e.message);
+        }finally {
+          setIsBulkLoading(false);
+          window.location.reload();
+        }
+      }
            }
 
            const handleFileChange = (event) => {
@@ -320,45 +328,57 @@ const isAdmin = localStorage.getItem('admin');
           }
         
           const calculateBulkIncrement = async ()=>{
+            setShowConfirmationModal(true);
+            if(isConfirm){
+              try{
+                setIsBulkLoading(true);
+                if(reviewCycle){
+                  await bulkBonus(reviewCycle);
+  
+                }
+                else {
+                  await bulkBonus(await localStorage.getItem('review_cycle'));
+                }
+                const data = await fetchAllBonuses(paginationPageIndex, pageSize);
+                setBonusData(data.data);
+                setTotalCount(data.totalCount);
+                setIsConfirm(false);
+
+                
+            }
+            catch(e){
+          console.error(e);
+            }finally {
+              setIsBulkLoading(false);
+              window.location.reload();
+            }
+            }
+           
+        }
+        const bulkWeightedBonus = async ()=>{
+          setShowConfirmationModal(true);
+          if(isConfirm){
             try{
               setIsBulkLoading(true);
               if(reviewCycle){
-                await bulkBonus(reviewCycle);
-
+                await WeightedBonus(reviewCycle);
               }
               else {
-                await bulkBonus(await localStorage.getItem('review_cycle'));
+                await WeightedBonus(await localStorage.getItem('review_cycle'));
               }
               const data = await fetchAllBonuses(paginationPageIndex, pageSize);
               setBonusData(data.data);
               setTotalCount(data.totalCount);
-          }
-          catch(e){
-        console.error(e);
-          }finally {
-            setIsBulkLoading(false);
-            window.location.reload();
-          }
-        }
-        const bulkWeightedBonus = async ()=>{
-          try{
-            setIsBulkLoading(true);
-            if(reviewCycle){
-              await WeightedBonus(reviewCycle);
+              setIsConfirm(false);
+
             }
-            else {
-              await WeightedBonus(await localStorage.getItem('review_cycle'));
-            }
-            const data = await fetchAllBonuses(paginationPageIndex, pageSize);
-            setBonusData(data.data);
-            setTotalCount(data.totalCount);
+            catch(e){
+              console.error(e);
           }
-          catch(e){
-            console.error(e);
-        }
-        finally {
-            setIsBulkLoading(false);
-            window.location.reload();
+          finally {
+              setIsBulkLoading(false);
+              window.location.reload();
+            }
           }
       }
       const getReviews = async ()=>{
@@ -410,7 +430,7 @@ const isAdmin = localStorage.getItem('admin');
                               <Dropdown.Toggle
                                         variant="secondary"
                                         id="dropdown-basic"
-                                        className="btn--primary action_button_sec"
+                                        className="bulk_action_button_sec"
                                       >
                                         ACTIONS
                                       </Dropdown.Toggle>
@@ -546,6 +566,27 @@ const isAdmin = localStorage.getItem('admin');
             </Modal.Body>
           </Modal>
         )}
+
+        {
+          showConfirmationModal && (
+            <SweetAlert
+            icon="question"
+            showCancel
+            btnSize="md"
+            show={true}
+            onConfirm={() => setIsConfirm(true)}
+            onCancel={() => setShowConfirmationModal(false)}
+            title={
+              <span className="text--primary latto-bold">Run this action?</span>
+            }
+            cancelBtnStyle={{ backgroundColor: "#dc3545", color: "#fff", border: "none", padding: "8px 16px", borderRadius: "5px" , textDecoration:'none'}}
+            confirmBtnStyle={{ backgroundColor: "#28a745", color: "#fff", border: "none", padding: "8px 16px", borderRadius: "5px" }}
+          >
+            <p>Are you sure you want to run this action?</p>
+          </SweetAlert>
+          
+          )
+        }
     </>
   )
 }
