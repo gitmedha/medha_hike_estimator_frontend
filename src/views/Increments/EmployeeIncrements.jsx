@@ -239,7 +239,7 @@ console.error(e.message);
       useEffect(()=>{
         async function mountApis(){
          const data = await fetchAllIncrements(paginationPageIndex,pageSize);
-         const {tenure} = await fetchFilterPicklist();
+        //  const {tenure} = await fetchFilterPicklist();
          await getReviews();
 
          setNewBandOptions([{
@@ -280,7 +280,76 @@ console.error(e.message);
           label:'VI',
           value:'VI'
          }])
-         setTenureOptions([...tenure])
+         setTenureOptions([{
+          key:0,
+          label: '0-1',
+          value: "0-1"
+          }, {
+            key:1,
+            label: '1-2',
+            value: "1-2"
+          },
+          {
+            key:2,
+            label: '2-3',
+            value: "2-3"
+          },
+          {
+            key:3,
+            label: '3-4',
+            value: "3-4"
+          },
+          {
+            key:4,
+            label: '4-5',
+            value: "4-5"
+          },
+          {
+            key:5,
+            label: '5-6',
+            value: "5-6"
+          },
+          {
+            key:6,
+            label: '6-7',
+            value: "6-7"
+          },
+          {
+            key:7,
+            label: '7-8',
+            value: "7-8"
+          },
+          {
+            key:8,
+            label: '8-9',
+            value: "8-9"
+          },
+          {
+            key:9,
+            label: '9-10',
+            value: "9-10"
+          },
+          {
+            key:10,
+            label: '10-11',
+            value: "10-11"
+          },
+          {
+            key:11,
+            label: '11-12',
+            value: "11-12"
+          },
+          {
+            key:12,
+            label: '12-13',
+            value: "12-13"
+          },
+          {
+            key:13,
+            label: '13-14',
+            value: "13-14"
+          }
+         ])
          setLongTenureOptions([...[{
           key:0,
           label:'No',
