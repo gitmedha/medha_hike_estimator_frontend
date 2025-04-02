@@ -6,6 +6,7 @@ import { FaUserAlt} from "react-icons/fa";
 const Userbox = () => {
   const {user, logout} = useContext(AuthContext);
 const userData = JSON.parse(localStorage.getItem("user"));
+console.log("userData", userData);
 
   return (
     <Dropdown className="user-box">
@@ -14,9 +15,7 @@ const userData = JSON.parse(localStorage.getItem("user"));
       </Dropdown.Toggle>
       <Dropdown.Menu>
         <Dropdown.Item disabled>
-          <div className="text-detail-title">Username: {userData?.username}</div>
-          <div>Designation: {userData?.designation}</div>
-          <br/>
+          <div className="text-detail-title">Welcome {userData?.name} !</div>
         </Dropdown.Item>
         <Dropdown.Divider />
         <Dropdown.Item onClick={() => logout()}>
