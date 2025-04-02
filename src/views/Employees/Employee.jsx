@@ -69,7 +69,6 @@ const handleCloseDeleteAlert = ()=>{
   setShowDeleteAlert(false);
 }
 
-console.log(employee.employee_status)
 
 if (isLoading) {
     return <SkeletonLoader />;
@@ -87,12 +86,12 @@ if (isLoading) {
                 <div className="employee_name">
                   {employee ?employee.first_name: ''}
                 </div>
-                <div className={`employee_status ${employee.employee_status === 'Inactive' ?'disabled_label': ''}`}>
+                <div className={`employee_status ${employee.employee_status === 'Inactive' ?'disabled_label': ''}`}  style={{marginTop:7}}>
                 {employee ?employee.employee_status: ''}
                 </div>
               </div>
               <div className="designation_sec">
-                {employee ? employee.title: '' } || {employee ? employee.department: ''}
+                {employee ? employee.title: '' }
               </div>
             </div>
             <div className="col-auto">
