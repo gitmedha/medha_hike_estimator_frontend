@@ -3,8 +3,6 @@ import styled from "styled-components";
 import { useState, useEffect, useMemo, useCallback,} from "react";
 import { useHistory } from "react-router-dom";
 import Table from "../../components/content/Table";
-import { FaListUl, FaThLarge } from "react-icons/fa";
-import Switch from "@material-ui/core/Switch";
 import SearchBar from "../../components/layout/SearchBar";
 import BonusForm from "./BonusComponents/BonusForm";  
 import {
@@ -208,7 +206,7 @@ const isAdmin = localStorage.getItem('admin');
 
       const handleSearch = async(value)=>{
         try{
-        const data = await search(value.searchField, value.searchValue,pageSize,paginationPageIndex);
+        const data = await search(value.searchField, value.searchValue,pageSize,paginationPageIndex,value.reviewCycle);
         setBonusData(data.data);
         setTotalCount(data.totalCount);
 
@@ -423,6 +421,8 @@ const isAdmin = localStorage.getItem('admin');
           clearFilters={clearFilters}
           isClearDisabled={isClearDisabled}
           setClearDisabled={setClearDisabled}
+          reviewCycle={reviewCycle || localStorage.getItem('review_cycle')}
+          setReviewCycle={setReviewCycle}
           />
         </div>
        { isAdmin === "true" && <div className="col-auto" style={{marginRight:10,marginTop:30}}>
@@ -480,7 +480,7 @@ const isAdmin = localStorage.getItem('admin');
             <ReactSelect
               styles={customStyles}
               options={reviewData}
-              value={reviewCycle}
+              value={reviewData ? reviewData.find(option => option.value === reviewCycle) : null} // Prevent errors if reviewData is null
               onChange={(e)=>setReviewCycle(e.value)}
               placeholder="Review Cycle"
             />

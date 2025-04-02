@@ -19,13 +19,14 @@ export const fetchSearchDropdown = async(field)=>{
     }
 }
 
-export const search = async (field,value,offset,limit)=>{
+export const search = async (field,value,offset,limit,reviewCycle)=>{
     try{
         const response = await api.post(`/api/bonuses/search`, {
             "field": field,
             "value": value,
             "offset": offset,
-            "limit": limit
+            "limit": limit,
+            "reviewCycle": reviewCycle
         });
         return response.data;
     }catch(error){

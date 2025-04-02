@@ -113,13 +113,14 @@ export const calculateIncrement = async(employeeId,reviewCycle,normalizedRating)
     }
 }
 
-export const search = async(field,value,limit,page)=>{
+export const search = async(field,value,limit,page, reviewCycle)=>{
     try{
         const response = await api.post(`/api/increments/search-increment-data`, {
             "field": field,
             "value": value,
             "offset": page,
-            "limit": limit
+            "limit": limit,
+            "reviewCycle": reviewCycle
         });
         return response.data;
     }catch(error){
