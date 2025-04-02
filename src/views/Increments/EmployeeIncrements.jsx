@@ -210,7 +210,7 @@ const fetchIncrementByReview = async(pageSize,pageIndex,sortBy,sortOrder,review_
 
       const handleSearch = async(value)=>{
         try{
-        const data = await search(value.searchField, value.searchValue,pageSize,paginationPageIndex);
+        const data = await search(value.searchField, value.searchValue,pageSize,paginationPageIndex,value.reviewCycle);
         setIncrementData(data.data);
         setTotalCount(data.totalCount);
 
@@ -567,6 +567,8 @@ useEffect(()=>{
           clearFilters={clearFilters}
           isClearDisabled={isClearDisabled}
           setClearDisabled={setClearDisabled}
+          reviewCycle={reviewCycle || localStorage.getItem('appraisal_cycle')}
+          setReviewCycle={setReviewCycle}
           />
         </div>
        {isAdmin === "true" &&  <div className="col-auto" style={{marginRight:10,marginTop:30}}>
@@ -624,7 +626,7 @@ useEffect(()=>{
           <ReactSelect
               styles={customStyles}
               options={reviewData}
-              value={reviewCycle}
+              value={reviewData ? reviewData.find(option => option.value === reviewCycle) : null} // Prevent errors if reviewData is null
               onChange={(e)=>setReviewCycle(e.value)}
               placeholder="Review Cycle"
             />

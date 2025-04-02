@@ -22,7 +22,7 @@ const Section = styled.div`
 
 
 function SearchBar(props) {
-  const {handleSearch,handleSearchPicklist,clearFilters,isClearDisabled,setClearDisabled} = props;
+  const {handleSearch,handleSearchPicklist,clearFilters,isClearDisabled,setClearDisabled,reviewCycle={},setReviewCycle=()=>{}} = props;
   const [searchValueOptions, setSearchValueOptions] = useState([]);
   const [defaultSearchArray, setDefaultSearchArray] = useState([]);
   const [searchFieldOptions] = useState(props.searchFieldOptions);
@@ -30,6 +30,7 @@ function SearchBar(props) {
   const [searchField,setSearchField] = useState(null);
   const [searchValue,setSearchValue] = useState(null);
   const [isDisable,setIsDisable] = useState(!props.isClearDisabled ?false:true);
+  console.log("reviewCycle",reviewCycle)
   
 
   let today = new Date();
@@ -49,6 +50,7 @@ function SearchBar(props) {
     else {
       searchObj.searchValue = searchValue;
       searchObj.searchField = searchField;
+      searchObj.reviewCycle = reviewCycle;
     }
     handleSearch(searchObj);
   }
@@ -66,10 +68,12 @@ function SearchBar(props) {
     if(clearFilters){
       clearFilters()
       setSearchValueOptions([]);
+      setReviewCycle(null)
     }else {
 
       setIsDisable(true);
       setSearchValueOptions([]);
+      setReviewCycle(null);
     }
   };
 
