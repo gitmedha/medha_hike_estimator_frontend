@@ -31,7 +31,7 @@ const {id} = useParams();
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [isAdmin] = useState(localStorage.getItem('admin'));
   
-  // console.log("isAdmin",isAdmin)
+  console.log("isAdmin",isAdmin)
   // console.log(typeof isAdmin)
 
 
@@ -94,15 +94,15 @@ if (isLoading) {
                 {employee ? employee.title: '' }
               </div>
             </div>
-            <div className="col-auto">
-            {isAdmin == "true" && <button
+            {isAdmin === "true" && <div className="col-auto">
+            <button
                 onClick={() => setModalShow(true)}
                 style={{ marginLeft: "0px" }}
                 className="btn--primary action_button_sec"
               >
                 EDIT
-              </button>}
-            </div>
+              </button>
+            </div>}
           </div>
         </div>
         <Details {...employee}/>

@@ -35,7 +35,7 @@ const Login = () => {
         username,
         password,
       });
-      toast.success("Successfully logged in! Redirecting...",{ position: "bottom-center" });
+      toast.success("Successfully logged in! Redirecting...",{ position: "bottom-right" ,style: {marginRight:80}});
       setTimeout(() => navigate.push("/employees_details"), 3000);
       localStorage.setItem("user", JSON.stringify(response.data.data[0]));
       localStorage.setItem("token", response.data.token);
@@ -47,7 +47,7 @@ const Login = () => {
         setTimeout(() =>setError(""),4000);
       }
       else if(err.response.status === 500){
-        toast.error("Internal Server Error! Try again later.",{ position: "bottom-center" });
+        toast.error("Internal Server Error! Try again later.",{ position: "bottom-right" , style: {marginRight:80}});
       }
       else if(err.response.status === 404){
         setError("User not found, check your username or sign up!");

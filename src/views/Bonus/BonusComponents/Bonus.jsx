@@ -211,12 +211,12 @@ const handleSelect = (event) => {
                 onChange={handleSelect}
                 placeholder="Review Cycle"
               />
-<button
+              {isAdmin === "true" && <button
                 onClick={() => setModalShow(true)}
                 className="action_button_sec edit_button_sec"
               >
                 EDIT
-              </button>
+              </button>}
             </div>
             </div>
             </div>
@@ -224,7 +224,7 @@ const handleSelect = (event) => {
         </div>
         <div>
         <Details {...bonusData}/>
-        <div className="d-flex align-items-center justify-content-end">
+        { isAdmin === "true" && <div className="d-flex align-items-center justify-content-end">
           
           <div className="col-auto" style={{marginRight:15}}>
               <button
@@ -250,7 +250,7 @@ const handleSelect = (event) => {
                 Weighted Bonus
               </button>
               </div>
-          </div>
+          </div>}
         </div>
         {
           modalShow ? <BonusForm show={modalShow} onHide={()=>setModalShow(false)} bonusData={bonusData} showDeleteModal={handleDeleteModal}/> : <div></div>
