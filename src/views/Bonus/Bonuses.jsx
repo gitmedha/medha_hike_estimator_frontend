@@ -206,7 +206,7 @@ const isAdmin = localStorage.getItem('admin');
 
       const handleSearch = async(value)=>{
         try{
-        const data = await search(value.searchField, value.searchValue,pageSize,paginationPageIndex,value.reviewCycle);
+        const data = await search(value.searchField, value.searchValue,paginationPageIndex,pageSize,value.reviewCycle);
         setBonusData(data.data);
         setTotalCount(data.totalCount);
 
@@ -217,7 +217,7 @@ const isAdmin = localStorage.getItem('admin');
 
       const loadDefaultOptions = async(field)=>{
         try{
-          return await fetchSearchDropdown(field);
+          return await fetchSearchDropdown(field, reviewCycle ? reviewCycle : localStorage.getItem('review_cycle'));
 
         }catch(error){
             console.error(error);
@@ -321,9 +321,6 @@ const isAdmin = localStorage.getItem('admin');
           };
         
           
-          const hideExcelModal = ()=>{
-            setShowUploadExcelInput(false);
-          }
         
           const calculateBulkIncrement = async ()=>{
             setShowConfirmationModal(true);

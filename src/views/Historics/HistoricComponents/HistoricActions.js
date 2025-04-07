@@ -10,13 +10,9 @@ export const getHistoric = async (id) =>{
     }
 }
 
-export const searchHistorics = async (searchValue, from = null, to = null,paginationPageSize=25,paginationPageIndex=0) => {
+export const searchHistorics = async (searchField,searchValue,paginationPageSize=25,paginationPageIndex=0) => {
     try {
-        const body = { searchValue, limit:paginationPageSize,page:paginationPageIndex };
-        if (from && to) {
-            body.from = from;
-            body.to = to;
-        }
+        const body = { searchField,searchValue, limit:paginationPageSize,page:paginationPageIndex };
                 
         const response = await api.post('/api/historical_data/search_historics', body, {
             headers: { 'Content-Type': 'application/json' }

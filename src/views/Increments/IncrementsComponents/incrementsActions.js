@@ -77,9 +77,9 @@ export const applyFilterActions = async(filterData,offset,limit)=>{
     }
 }
 
-export const fetchSearchDropdown = async(field)=>{
+export const fetchSearchDropdown = async(field,reviewCycle)=>{
     try{
-        const response = await api.get(`/api/increments/search-dropdowns/${field}`);
+        const response = await api.get(`/api/increments/search-dropdowns/${field}/${reviewCycle}`);
         return response.data;
     }catch(error){
         console.error(error);

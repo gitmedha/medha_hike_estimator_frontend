@@ -111,7 +111,7 @@ function SearchBar(props) {
   const filterSearchValue = async (newValue) => {
     const matchedObjects = searchValueOptions.filter(
       (obj) =>
-        obj.label && obj.label.toLowerCase().includes(newValue.toLowerCase())
+        obj?.label && obj?.label?.toLowerCase()?.includes(newValue?.toLowerCase())
     );
     if (!matchedObjects.length) {
       return searchNotFound(newValue);

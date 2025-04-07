@@ -221,7 +221,7 @@ console.error(e.message);
 
       const loadDefaultOptions = async(field)=>{
         try{
-          return await fetchSearchDropdown(field);
+          return await fetchSearchDropdown(field,reviewCycle || localStorage.getItem('appraisal_cycle'));
 
         }catch(error){
             console.error(error);
@@ -439,7 +439,6 @@ console.error(e.message);
       
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    console.log("file",file)
     setSelectedFile(file);
   };
 
@@ -474,10 +473,6 @@ console.error(e.message);
     }
   };
 
-  
-  const hideExcelModal = ()=>{
-    setShowUploadExcelInput(false);
-  }
 
   const calculateBulkIncrement = async ()=>{
     setShowConfirmationModal(true);
