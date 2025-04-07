@@ -29,11 +29,11 @@ const Styled = styled.div`
 const customStyles = {
   container: (provided) => ({
     ...provided,
-    width: "150px",
+    width: "250px",
   }),
   control: (provided) => ({
     ...provided,
-    width: "150px",
+    width: "250px",
   }),
 };
 function IncrementEmployee() {
@@ -50,7 +50,6 @@ function IncrementEmployee() {
   const { review_cycle } = location.state || {};
 
   const [historics,setHistorics] = useState([]);
-
 
   
 useEffect(()=>{
@@ -183,7 +182,6 @@ const handleSelect = (event) => {
   setSelectedCycle(event.value);
 };
 
-console.log(historics,"historics")
 
   return (
     <Styled>
@@ -218,7 +216,13 @@ console.log(historics,"historics")
               <ReactSelect
                 styles={customStyles}
                 options={reviewCycles}
-                value={selectedCycle}
+                value={
+                  reviewCycles
+                    ? reviewCycles.find(option =>
+                        option.value === (selectedCycle && selectedCycle !== "" ? selectedCycle : review_cycle)
+                      )
+                    : null
+                }   
                 onChange={handleSelect}
                 placeholder="Review Cycle"
               />

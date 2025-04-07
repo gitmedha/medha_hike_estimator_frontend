@@ -36,11 +36,11 @@ const Styled = styled.div`
 const customStyles = {
   container: (provided) => ({
     ...provided,
-    width: "150px",
+    width: "200px",
   }),
   control: (provided) => ({
     ...provided,
-    width: "150px",
+    width: "200px",
   }),
 };
 function Bonus() {
@@ -53,6 +53,7 @@ function Bonus() {
   const [isLoading,setIsLoading] = useState(true);
   const [isAdmin] = useState(localStorage.getItem('admin'));
   const location = useLocation();
+  const { review_cycle } = location.state || {};
 
   
 useEffect(()=>{
@@ -207,7 +208,13 @@ const handleSelect = (event) => {
               <ReactSelect
                 styles={customStyles}
                 options={reviewCycles}
-                value={selectedCycle}
+                value={
+                  reviewCycles
+                    ? reviewCycles.find(option =>
+                        option.value === (selectedCycle && selectedCycle !== "" ? selectedCycle : review_cycle)
+                      )
+                    : null
+                }                
                 onChange={handleSelect}
                 placeholder="Review Cycle"
               />
