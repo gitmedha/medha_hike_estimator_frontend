@@ -4,17 +4,8 @@ import {getEmployeeHistoricsData, deleteHistoric} from "./EmployeeActions";
 
 
 const HistoricDetails = (props) => {
-  let { firstName, lastName} = props;
-  const [historicalData, setHistoricalData] =useState([]);
-
-  useEffect(() => {
-    getEmployeeHistoricsData(firstName,lastName).then((data)=>{
-setHistoricalData(data);
-    }).catch((error) => {
-        console.log("Error fetching historical data: ", error);
-    });
-    
-  },[]);
+  let { firstName, lastName, historics} = props;
+  const [historicalData, setHistoricalData] =useState(historics);
 
 const fetchData = useCallback((pageSize,paginationPageSize,sortBy)=>{
 if(sortBy.length){
@@ -42,7 +33,7 @@ if(sortBy.length){
         accessor: "reviewer",
       },
       {
-        Header: "KRA VS GOALS",
+        Header: "KRA",
         accessor: "kra_vs_goals",
       },
       {

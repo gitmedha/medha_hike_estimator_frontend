@@ -8,14 +8,9 @@ export const getEmployee = async (id)=>{
     }
 }
 
-export const searchEmployees = async (searchValue, from = null, to = null,paginationPageSize=25,paginationPageIndex=0) => {
+export const searchEmployees = async (searchField,searchValue,paginationPageSize=25,paginationPageIndex=0) => {
     try {
-        const body = { searchValue, limit:paginationPageSize,page:paginationPageIndex };
-        if (from && to) {
-            body.from = from;
-            body.to = to;
-        }
-                
+        const body = { searchField,searchValue, limit:paginationPageSize,page:paginationPageIndex }; 
         const response = await api.post('/api/employees/search_employees', body, {
             headers: { 'Content-Type': 'application/json' }
         });

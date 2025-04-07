@@ -1,27 +1,17 @@
-import { useState, useMemo, useEffect,useCallback } from "react";
+import { useState, useMemo,useCallback } from "react";
 import Table from "../../../components/content/Table";
 import {getHistoricsData} from "./incrementsActions";
 
 
 const HistoricDetails = (props) => {
-  let { fullName} = props;
-  const [historicalData, setHistoricalData] =useState([]);
-
-  useEffect(() => {
-    getHistoricsData(fullName).then((data)=>{
-setHistoricalData(data);
-    }).catch((error) => {
-        console.log("Error fetching historical data: ", error);
-    });
-    
-  },[]);
+  const [historicalData, setHistoricalData] =useState(props.historics);
 
 const fetchData = useCallback(async (pageIndex,pageSize,sortBy) => {
   try {
    if(sortBy.length){
     let sortField = sortBy[0].id;
     let sortOrder = sortBy[0].desc ? "desc" : "asc";
-    const response = await getHistoricsData(fullName,sortField,sortOrder);
+    const response = await getHistoricsData(props.fullName,sortField,sortOrder);
     setHistoricalData(response);
   }
   } catch (error) {
@@ -64,6 +54,7 @@ const fetchData = useCallback(async (pageIndex,pageSize,sortBy) => {
     []
   );
 
+  console.log(historicalData, "historicalData");
   return (
     <div className="container-fluid my-3">
       <Table

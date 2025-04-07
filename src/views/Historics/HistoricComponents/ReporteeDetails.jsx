@@ -3,14 +3,8 @@ import Table from "../../../components/content/Table";
 import {getReportee} from "./HistoricActions";
 function ReporteeDetails(props) {
 
-    const [reporteeData, setReporteeData] = useState([]);
+    const [reporteeData] = useState(props.managerData);
 
-    useEffect(() => {
-        getReportee(props.managerData.reviewer).then((data) => {
-            setReporteeData(data);
-        });
-    }, []);
-    
   const columns = useMemo(
     () => [
       {

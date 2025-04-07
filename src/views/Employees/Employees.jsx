@@ -265,10 +265,10 @@ catch(error){
   const search =async (SearchProps)=>{
     let employees;
     if(SearchProps.from && SearchProps.to){
-      employees = await  searchEmployees(SearchProps.searchValue,SearchProps.from,SearchProps.to,paginationPageSize,paginationPageIndex)
+      employees = await  searchEmployees(SearchProps.searchField,{from:SearchProps.from,to:SearchProps.to},paginationPageSize,paginationPageIndex)
     }
     else {
-      employees= await searchEmployees(SearchProps.searchValue,paginationPageSize,paginationPageIndex);
+      employees= await searchEmployees(SearchProps.searchField,SearchProps.searchValue,paginationPageSize,paginationPageIndex);
     }
     setStudents(employees.data);
     setStudentsAggregate(employees.total);
@@ -307,9 +307,6 @@ const ToastOnSuccess = ()=>{
 const ToastOnFailure = (value)=>{
   toaster.error("Failed to create employee!",{ position: "bottom-center" })
 }
-  const hideExcelModal = ()=>{
-    setShowUploadExcelInput(false);
-  }
   return (
    <>
     <div className="d-flex justify-content-between align-items-center">

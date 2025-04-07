@@ -30,16 +30,17 @@ const Styles = styled.div`
   table {
     box-sizing: border-box;
     width: 100%;
-    table-layout: auto; /* Ensure table takes up available space */
+    table-layout: auto;
 
     thead {
       th {
         color: #787b96;
-        overflow: hidden; /* Prevent overflow in header cells */
+        overflow: hidden;
         text-overflow: ellipsis;
-        white-space: nowrap; /* Prevent wrapping in header cells */
+        white-space: nowrap;
       }
     }
+
     tr {
       :last-child {
         td {
@@ -56,10 +57,14 @@ const Styles = styled.div`
       color: #787b96;
       border-bottom: 1px solid #bfbfbf;
       height: 60px;
-      overflow: hidden; /* Prevent overflow in cells */
-      text-overflow: ellipsis; /* Add ellipsis to overflowed content */
-      white-space: nowrap; /* Prevent wrapping in cells */
-      // max-width: 150px; /* Set a maximum width for cells */
+    }
+
+    .ellipsis-header,
+    .ellipsis-cell {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 150px;
     }
   }
 
@@ -94,7 +99,7 @@ const Styles = styled.div`
   }
 
   @media screen and (max-width:431px){
-    min-height:180px
+    min-height:180px;
   }
 `;
 
@@ -107,13 +112,13 @@ const Table = ({
   loading,
   showPagination = true,
   onRowClick = null,
-  indexes = true,
+  indexes = false,
   paginationPageSize = 10,
   onPageSizeChange = () => {},
   paginationPageIndex = 0,
   onPageIndexChange = () => {},
   collapse_tab_name = null,
-  reviewCycle=null
+  reviewCycle = null,
 }) => {
   const tableInstance = useTable(
     {
@@ -151,12 +156,7 @@ const Table = ({
   };
 
   React.useEffect(() => {
-    fetchData(
-      pageIndex,
-      pageSize,
-      sortBy,
-      reviewCycle
-    );
+    fetchData(pageIndex, pageSize, sortBy, reviewCycle);
   }, [fetchData, pageIndex, pageSize, sortBy]);
 
   React.useEffect(() => {
@@ -175,7 +175,6 @@ const Table = ({
     gotoPage(paginationPageIndex);
   }, [paginationPageIndex]);
 
-
   return (
     <>
       <Styles>
@@ -184,12 +183,11 @@ const Table = ({
             <thead>
               {headerGroups.map((headerGroup) => (
                 <tr {...headerGroup.getHeaderGroupProps()}>
-                  {indexes && <th style={{width:'1.5rem'}}>#</th>}
-                  {headerGroup.headers.map((column) => 
-                     (
-                    
+                  {indexes && <th style={{ width: "1.5rem" }}>#</th>}
+                  {headerGroup.headers.map((column) => (
                     <th
                       {...column.getHeaderProps(column.getSortByToggleProps())}
+                      className={column.Header === "Title" ? "ellipsis-header" : ""}
                     >
                       {column.render("Header")}
                       <span>
@@ -212,19 +210,13 @@ const Table = ({
               {loading ? (
                 <>
                   <tr>
-                    <td colSpan={columns.length}>
-                      <Skeleton height="100%" />
-                    </td>
+                    <td colSpan={columns.length}><Skeleton height="100%" /></td>
                   </tr>
                   <tr>
-                    <td colSpan={columns.length}>
-                      <Skeleton height="100%" />
-                    </td>
+                    <td colSpan={columns.length}><Skeleton height="100%" /></td>
                   </tr>
                   <tr>
-                    <td colSpan={columns.length}>
-                      <Skeleton height="100%" />
-                    </td>
+                    <td colSpan={columns.length}><Skeleton height="100%" /></td>
                   </tr>
                 </>
               ) : page.length ? (
@@ -234,52 +226,35 @@ const Table = ({
                     <tr
                       {...row.getRowProps()}
                       onClick={() => handleRowClick(row)}
-                      className={`${
-                        row.original.href || rowClickFunctionExists
-                          ? "clickable"
-                          : ""
-                      }`}
+                      className={row.original.href || rowClickFunctionExists ? "clickable" : ""}
                     >
                       {indexes && (
-                        <td
-                          style={{ color: "#787B96", fontFamily: "Latto-Bold" }}
-                        >
+                        <td style={{ color: "#787B96", fontFamily: "Latto-Bold" }}>
                           {row.original.href && !rowClickFunctionExists ? (
-                            <a
-                              className="table-row-link"
-                              href={row.original.href}
-                            >
-                              {pageIndex && pageSize
-                                ? pageIndex * pageSize + index + 1
-                                : index + 1}
-                              .
+                            <a className="table-row-link" href={row.original.href}>
+                              {pageIndex * pageSize + index + 1}.
                             </a>
                           ) : (
                             <>
-                              {pageIndex && pageSize
-                                ? pageIndex * pageSize + index + 1
-                                : index + 1}
-                              .
+                              {pageIndex * pageSize + index + 1}.
                             </>
                           )}
                         </td>
                       )}
-                      {row.cells.map((cell) => {
-                        return (
-                          <td {...cell.getCellProps()}>
-                            {row.original.href ? (
-                              <a
-                                className="table-row-link"
-                                href={row.original.href}
-                              >
-                                {cell.render("Cell")}
-                              </a>
-                            ) : (
-                              cell.render("Cell")
-                            )}
-                          </td>
-                        );
-                      })}
+                      {row.cells.map((cell) => (
+                        <td
+                          {...cell.getCellProps()}
+                          className={cell.column.Header === "Title" ? "ellipsis-cell" : ""}
+                        >
+                          {row.original.href ? (
+                            <a className="table-row-link" href={row.original.href}>
+                              {cell.render("Cell")}
+                            </a>
+                          ) : (
+                            cell.render("Cell")
+                          )}
+                        </td>
+                      ))}
                     </tr>
                   );
                 })
@@ -307,44 +282,34 @@ const Table = ({
             </tbody>
           </table>
         </div>
+
         <div className="d-md-none mobile">
           {loading ? (
-            <>
-              <Skeleton count={3} height="60px" />
-            </>
+            <Skeleton count={3} height="60px" />
           ) : (
             page.map((row, index) => {
               prepareRow(row);
               return (
                 <div
                   key={index}
-                  className={`row ${
-                    row.original.href || rowClickFunctionExists
-                      ? "clickable"
-                      : ""
-                  }`}
+                  className={`row ${row.original.href || rowClickFunctionExists ? "clickable" : ""}`}
                   onClick={() => {}}
                 >
-                  {row.cells.map((cell, cellIndex) => {
-                    return (
-                      <div
-                        key={cellIndex}
-                        className={`cell ${
-                          cellIndex === row.cells.length - 1 && collapse_tab_name === "Attandance"
-                            ? "d-flex justify-content-end"
-                            : ""
-                        }`}
-                      >
-                        {cell.render("Cell")}
-                      </div>
-                    );
-                  })}
+                  {row.cells.map((cell, cellIndex) => (
+                    <div
+                      key={cellIndex}
+                      className={`cell ${cellIndex === row.cells.length - 1 && collapse_tab_name === "Attandance" ? "d-flex justify-content-end" : ""}`}
+                    >
+                      {cell.render("Cell")}
+                    </div>
+                  ))}
                 </div>
               );
             })
           )}
         </div>
       </Styles>
+
       {showPagination && (
         <StickyPagination>
           <Pagination

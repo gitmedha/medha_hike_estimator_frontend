@@ -2,7 +2,7 @@ import React,{useEffect,useState} from 'react'
 import { useParams,useLocation } from "react-router-dom";
 import SweetAlert from "react-bootstrap-sweetalert";
 import styled from 'styled-components';
-import {fetchIncrement,deleteIncrement,calculateNormalizedRating,calculateIncrement,getIncrementDataByReviewCycle,weightedIncrement,getReviewCycles} from "./incrementsActions";
+import {fetchIncrement,deleteIncrement,calculateNormalizedRating,calculateIncrement,getIncrementDataByReviewCycle,weightedIncrement,getReviewCycles,getHistoricsData} from "./incrementsActions";
 import Collapsible from "../../../components/content/CollapsiblePanels";
 import IncrementDataForm from './IncrementDataForm';
 import Details from "./Details";
@@ -49,6 +49,8 @@ function IncrementEmployee() {
 
   const { review_cycle } = location.state || {};
 
+  const [historics,setHistorics] = useState([]);
+
 
   
 useEffect(()=>{
@@ -57,8 +59,19 @@ useEffect(()=>{
     await setEmployeeData(data[0]);
     await setReviewCycles(await getReviewCycles(id));
     setIsLoading(false);
+    return data[0];
   }
-  componentMount();
+  componentMount().then((data)=>{
+    getHistoricsData(data.full_name).then((historicsData)=>{
+      setHistorics(historicsData);
+    }).catch((error)=>{
+      console.error("Error fetching historical data: ", error);
+    })
+  })
+  .catch(error=>{
+    console.error(error)
+  })
+
 }, [])
 
 useEffect(()=>{
@@ -170,6 +183,8 @@ const handleSelect = (event) => {
   setSelectedCycle(event.value);
 };
 
+console.log(historics,"historics")
+
   return (
     <Styled>
      {isLoading ?<div className="spinner">
@@ -253,8 +268,8 @@ const handleSelect = (event) => {
           modalShow ? <IncrementDataForm show={modalShow} onHide={()=>setModalShow(false)} IncrementData={employeeData} showDeleteModal={handleDeleteModal}/> : <div></div>
         }
         
-        <Collapsible title="Historic Details">
-          <HistoricDetails fullName={employeeData ?employeeData.full_name: ''}/>
+        <Collapsible title="Historic Details" opened={true}>
+         { historics.length ?<HistoricDetails historics={historics} fullName={employeeData.full_name}/> : <div></div>}
         </Collapsible>
         {
           showDeleteAlert ? 
