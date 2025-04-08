@@ -29,7 +29,8 @@ const {id} = useParams();
   const [modalShow, setModalShow] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [isAdmin] = useState(localStorage.getItem('admin'));
-
+  const  [reportee,setReporteeData] = useState([]);
+ 
 
 
 useEffect(()=>{
@@ -38,9 +39,20 @@ useEffect(()=>{
         // const reportee = await getReportee(id);
         // console.log("reportee",reportee);
         setHistoric(data.data[0]);
+        return data.data[0];
     }
-    getHistoricDetails(id);  
+    getHistoricDetails(id).then((historic)=>{
+      getReportee(historic.reviewer).then((data) => {
+        setReporteeData(data);
+      }).catch(err=>{
+        console.error("Error fetching reportee details:", err);
+      })
+    }).catch((error)=>{
+      console.error("Error fetching historic data:", error);
+    })
 },[])
+
+console.log("reportee",reportee)
 
 const handleDelete = async () => {
   try{
@@ -85,8 +97,8 @@ if (isLoading) {
           </div>
         </div>
         <Details {...historic}/>
-        <Collapsible title="Reportee Details">
-          <ReporteeDetails managerData={historic}/>
+        <Collapsible title="Reportee Details" opened = {true}>
+          {reportee.length ? <ReporteeDetails managerData={reportee}/> : <div></div>}
         </Collapsible>
         {
           modalShow ? <HistoricForm 

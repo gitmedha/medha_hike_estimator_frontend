@@ -6,7 +6,7 @@ import SweetAlert from "react-bootstrap-sweetalert";
 import Details from "./EmployeeComponents/Details";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import Collapsible from "../../components/content/CollapsiblePanels";
-import {getEmployee,deleteEmployee} from "./EmployeeComponents/EmployeeActions";
+import {getEmployee,deleteEmployee,getEmployeeHistoricsData} from "./EmployeeComponents/EmployeeActions";
 import HistoricDetails from "./EmployeeComponents/HistoricDetails";
 import EmployeeForm from "./EmployeeComponents/EmployeeForm";
 import styled from 'styled-components';
@@ -30,18 +30,27 @@ const {id} = useParams();
   const [modalShow, setModalShow] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [isAdmin] = useState(localStorage.getItem('admin'));
+  const [historicalData, setHistoricalData] = useState([]);
   
-  console.log("isAdmin",isAdmin)
-  // console.log(typeof isAdmin)
 
 
 useEffect(()=>{
     async function getEmployeeDetails(id){
         const data = await getEmployee(id);
         setEmployee(data.data[0]);
+        return data;
     }
-    getEmployeeDetails(id);  
+    getEmployeeDetails(id).then((employee)=>{
+      getEmployeeHistoricsData(employee.data[0].first_name,employee.data[0].last_name)
+      .then((data)=>{
+        setHistoricalData(data);
+      }).catch((error) => {
+        console.log("Error fetching historical data: ", error);
+      });
+    })
 },[])
+
+console.log("historicalData",historicalData)
 
 const handleDelete = async ()=>{
   try{
@@ -106,8 +115,8 @@ if (isLoading) {
           </div>
         </div>
         <Details {...employee}/>
-        <Collapsible title="Historic Details">
-          <HistoricDetails firstName={employee.first_name} lastName = {employee.last_name}/>
+        <Collapsible title="Historic Details" opened={true}>
+          {historicalData.length ?<HistoricDetails historics={historicalData} firstName={employee.first_name} lastName={employee.last_name}/>:<div></div>}
         </Collapsible>
         {
           modalShow ? <EmployeeForm show={modalShow} onHide={()=>setModalShow(false)} employeeData={employee} triggerToast={toaster}                         showDeleteModal={handleDeleteModal}

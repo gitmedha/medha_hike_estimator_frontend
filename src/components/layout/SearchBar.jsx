@@ -2,6 +2,7 @@ import React, {useState, useEffect } from 'react'
 import { Formik, Form, useFormik } from "formik";
 import styled from "styled-components";
 import { Input } from "../../utils/Form";
+import moment from "moment";
 const Section = styled.div`
   &:not(:first-child) {
     border-top: 1px solid #c4c4c4;
@@ -22,7 +23,7 @@ const Section = styled.div`
 
 
 function SearchBar(props) {
-  const {handleSearch,handleSearchPicklist,clearFilters,isClearDisabled,setClearDisabled,reviewCycle={},setReviewCycle=()=>{}} = props;
+  const {handleSearch,handleSearchPicklist,clearFilters,isClearDisabled,reviewCycle={},setReviewCycle=()=>{}} = props;
   const [searchValueOptions, setSearchValueOptions] = useState([]);
   const [defaultSearchArray, setDefaultSearchArray] = useState([]);
   const [searchFieldOptions] = useState(props.searchFieldOptions);
@@ -30,7 +31,6 @@ function SearchBar(props) {
   const [searchField,setSearchField] = useState(null);
   const [searchValue,setSearchValue] = useState(null);
   const [isDisable,setIsDisable] = useState(!props.isClearDisabled ?false:true);
-  console.log("reviewCycle",reviewCycle)
   
 
   let today = new Date();
@@ -45,7 +45,9 @@ function SearchBar(props) {
   const handleSubmit = async(values)=>{
     const searchObj = {};    
     if(searchField === "date_of_joining"){
-
+      searchObj.from = moment(values.search_by_value_date).format("YYYY-MM-DD");
+      searchObj.to = moment(values.search_by_value_date_to).format("YYYY-MM-DD");
+      searchObj.searchField = searchField;
     }
     else {
       searchObj.searchValue = searchValue;
@@ -109,7 +111,7 @@ function SearchBar(props) {
   const filterSearchValue = async (newValue) => {
     const matchedObjects = searchValueOptions.filter(
       (obj) =>
-        obj.label && obj.label.toLowerCase().includes(newValue.toLowerCase())
+        obj?.label && obj?.label?.toLowerCase()?.includes(newValue?.toLowerCase())
     );
     if (!matchedObjects.length) {
       return searchNotFound(newValue);
@@ -172,7 +174,9 @@ function SearchBar(props) {
                   name="search_by_field"
                   label="Search Field"
                   control="lookup"
-                  options={searchFieldOptions}
+                  options={searchFieldOptions.sort((a, b) =>
+                    a.label.localeCompare(b.label)
+                  )}
                   style={{maxWidth: 'fit-content'}}
                   className="form-control"
                   onChange={(e) => {
@@ -230,7 +234,7 @@ function SearchBar(props) {
               )}
 
               {searchField === "date_of_joining" && (
-                <div className="col-lg-2 col-md-4 col-sm-12 mb-2 p-0">
+                <div className="col-lg-4 col-md-4 col-sm-12 mb-2 p-0">
                   <div className="d-flex justify-content-between align-items-center">
                     <div className="mr-3">
                       <Input
@@ -240,7 +244,6 @@ function SearchBar(props) {
                         control="datepicker"
                         className="form-control "
                         autoComplete="off"
-                        // disabled={isDisabled ? true : false}
                       />
                     </div>
                     <div className="ml-2">
@@ -251,7 +254,6 @@ function SearchBar(props) {
                         control="datepicker"
                         className="form-control"
                         autoComplete="off"
-                        // disabled={isDisabled ? true : false}
                       />
                     </div>
                   </div>

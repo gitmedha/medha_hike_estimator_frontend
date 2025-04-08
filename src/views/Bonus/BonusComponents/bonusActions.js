@@ -10,9 +10,9 @@ export const fetchAllBonuses = async (offset,limit,sortBy='employee_id',sortOrde
     }
 }
 
-export const fetchSearchDropdown = async(field)=>{
+export const fetchSearchDropdown = async(field,reviewCycle)=>{
     try{
-        const response = await api.get(`/api/bonuses/search-dropdown/${field}`);
+        const response = await api.get(`/api/bonuses/search-dropdown/${field}/${reviewCycle}`);
         return response.data;
     }catch(error){
         console.error(error);

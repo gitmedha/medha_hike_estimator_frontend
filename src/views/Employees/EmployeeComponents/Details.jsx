@@ -79,15 +79,10 @@ const Styled = styled.div`
 
 const Details = (props) => {
   const {
-    first_name,
-    last_name,
-    department,
     experience,
-    employee_status,
     employee_id,
     current_band,
     email_id,
-    title,
     date_of_joining,
     employee_type
   } = props;

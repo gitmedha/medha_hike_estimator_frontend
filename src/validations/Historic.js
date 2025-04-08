@@ -3,7 +3,7 @@ import * as Yup from "yup";
 export const historicValidations = Yup.object({
     employee: Yup.string().required("Employee name is required"),
     reviewer:Yup.string().required("Reviewer name is required"),
-    kra_vs_goals:Yup.number().required("Kra vs goals are required"),
+    kra_vs_goals:Yup.number().required("Kra score is required"),
     competency: Yup.number().required("Competency is required"),
     final_score: Yup.number().required("Final score is required"),
     start_month: Yup.date(),

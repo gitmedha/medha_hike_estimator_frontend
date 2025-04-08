@@ -179,12 +179,8 @@ const isAdmin = localStorage.getItem('admin');
   ]
   const search =async (SearchProps)=>{
     let historics;
-    if(SearchProps.from && SearchProps.to){
-      historics = await  searchHistorics(SearchProps.searchValue,SearchProps.from,SearchProps.to,paginationPageSize)
-    }
-    else {
-      historics= await searchHistorics(SearchProps.searchValue,paginationPageSize);
-    }
+    historics= await searchHistorics(SearchProps.searchField,SearchProps.searchValue,paginationPageSize);
+  
     setEmployers(historics.data);
     setEmployersAggregate(historics.total);
   }
@@ -237,9 +233,6 @@ const isAdmin = localStorage.getItem('admin');
   };
 
   
-  const hideExcelModal = ()=>{
-    setShowUploadExcelInput(false);
-  }
   return (
     <>
     <div className="d-flex justify-content-between align-items-center p-2">
