@@ -74,10 +74,15 @@ function Bonuses(props) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [reviewData,setReviewData] = useState(null);         
   const [reviewCycle,setReviewCycle] = useState(null);
-const isAdmin = localStorage.getItem('admin');
-
+  const isAdmin = localStorage.getItem('admin');
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
-  const [isConfirm,setIsConfirm] = useState(false);
+  const [lastClicked, setLastClicked] = useState(null);
+
+  const handleClick = (e, itemId) => {
+    e.preventDefault();
+    setLastClicked(itemId);
+  };
+  
 
     const columns = useMemo(
         () => [
@@ -231,7 +236,7 @@ const isAdmin = localStorage.getItem('admin');
         
          setBonusData(data.data);
          setTotalCount(data.totalCount);
-         await localStorage.setItem('review_cycle', data.data[0].review_cycle);
+         await localStorage.setItem('review_cycle', data?.data[0]?.review_cycle);
         }
         mountApis();
       },[])
@@ -263,27 +268,24 @@ const isAdmin = localStorage.getItem('admin');
 
      const bulkRatings = async () =>{
       setShowConfirmationModal(true);
-      if(isConfirm){
-        try{
-          setIsBulkLoading(true);
-          if(reviewCycle){
-           await calculateBulkNormalizeRating(reviewCycle);
-          }
-          else {
-           
-           await calculateBulkNormalizeRating(await localStorage.getItem('review_cycle'));
-          }
-          const data = await fetchAllBonuses(paginationPageIndex, pageSize);
-          setBonusData(data?.data);
-          setTotalCount(data?.totalCount);
-          setIsConfirm(false);
-
-        }catch(e){
-          console.error(e.message);
-        }finally {
-          setIsBulkLoading(false);
-          window.location.reload();
+      try{
+        setIsBulkLoading(true);
+        if(reviewCycle){
+         await calculateBulkNormalizeRating(reviewCycle);
         }
+        else {
+         
+         await calculateBulkNormalizeRating(await localStorage.getItem('review_cycle'));
+        }
+        const data = await fetchAllBonuses(paginationPageIndex, pageSize);
+        setBonusData(data?.data);
+        setTotalCount(data?.totalCount);
+
+      }catch(e){
+        console.error(e.message);
+      }finally {
+        setIsBulkLoading(false);
+        window.location.reload();
       }
            }
 
@@ -324,56 +326,50 @@ const isAdmin = localStorage.getItem('admin');
         
           const calculateBulkIncrement = async ()=>{
             setShowConfirmationModal(true);
-            if(isConfirm){
-              try{
-                setIsBulkLoading(true);
-                if(reviewCycle){
-                  await bulkBonus(reviewCycle);
-  
-                }
-                else {
-                  await bulkBonus(await localStorage.getItem('review_cycle'));
-                }
-                const data = await fetchAllBonuses(paginationPageIndex, pageSize);
-                setBonusData(data.data);
-                setTotalCount(data.totalCount);
-                setIsConfirm(false);
-
-                
-            }
-            catch(e){
-          console.error(e);
-            }finally {
-              setIsBulkLoading(false);
-              window.location.reload();
-            }
-            }
-           
-        }
-        const bulkWeightedBonus = async ()=>{
-          setShowConfirmationModal(true);
-          if(isConfirm){
             try{
               setIsBulkLoading(true);
               if(reviewCycle){
-                await WeightedBonus(reviewCycle);
+                await bulkBonus(reviewCycle);
+
               }
               else {
-                await WeightedBonus(await localStorage.getItem('review_cycle'));
+                await bulkBonus(await localStorage.getItem('review_cycle'));
               }
               const data = await fetchAllBonuses(paginationPageIndex, pageSize);
               setBonusData(data.data);
               setTotalCount(data.totalCount);
-              setIsConfirm(false);
 
-            }
-            catch(e){
-              console.error(e);
+              
           }
-          finally {
-              setIsBulkLoading(false);
-              window.location.reload();
+          catch(e){
+        console.error(e);
+          }finally {
+            setIsBulkLoading(false);
+            window.location.reload();
+          }
+           
+        }
+        const bulkWeightedBonus = async ()=>{
+          setShowConfirmationModal(true);
+          try{
+            setIsBulkLoading(true);
+            if(reviewCycle){
+              await WeightedBonus(reviewCycle);
             }
+            else {
+              await WeightedBonus(await localStorage.getItem('review_cycle'));
+            }
+            const data = await fetchAllBonuses(paginationPageIndex, pageSize);
+            setBonusData(data.data);
+            setTotalCount(data.totalCount);
+
+          }
+          catch(e){
+            console.error(e);
+        }
+        finally {
+            setIsBulkLoading(false);
+            window.location.reload();
           }
       }
       const getReviews = async ()=>{
@@ -406,6 +402,25 @@ const isAdmin = localStorage.getItem('admin');
         fetchByReview();
 
       },[reviewCycle])
+
+      const handleBulkOperations = (lastClicked) => {
+        switch (lastClicked) {
+          case "BulkRatings":
+            bulkRatings(reviewCycle || localStorage.getItem('review_cycle'));
+            setShowConfirmationModal(false);
+            break;
+          case "BulkBonus":
+            calculateBulkIncrement(reviewCycle || localStorage.getItem('review_cycle'));
+            setShowConfirmationModal(false);
+            break;
+          case "BulkWeightedBonus":
+            bulkWeightedBonus(reviewCycle || localStorage.getItem('review_cycle'));
+            setShowConfirmationModal(false);
+            break;
+          default:
+            break;
+        }
+      }
   return (
     <>
      <div className="d-flex justify-content-between align-items-center p-2">
@@ -445,17 +460,34 @@ const isAdmin = localStorage.getItem('admin');
                                             Download Excel
                                         </Dropdown.Item>
                                         <Dropdown.Item
-                                          onClick={() => bulkRatings()}
+                                          onClick={(e) => 
+                                            {
+                                              setShowConfirmationModal(true)
+                                              handleClick(e, "BulkRatings")
+            
+                                            }}
                                         >
                                             Bulk Ratings
                                         </Dropdown.Item>
                                         <Dropdown.Item
-                                          onClick={() => calculateBulkIncrement()}
+                                          onClick={(e) => 
+                                            {
+                                              setShowConfirmationModal(true)
+                                              handleClick(e, "BulkBonus")
+            
+                                            }}
                                         >
                                             Bulk Bonus
                                         </Dropdown.Item>
                                         <Dropdown.Item
-                                          onClick={() => bulkWeightedBonus()}
+                                          onClick={
+                                            (e) => 
+                                              {
+                                                setShowConfirmationModal(true)
+                                                handleClick(e, "BulkWeightedBonus")
+              
+                                              }
+                                            }
                                         >
                                             Bulk Weighted Bonus
                                         </Dropdown.Item>
@@ -571,7 +603,7 @@ const isAdmin = localStorage.getItem('admin');
             showCancel
             btnSize="md"
             show={true}
-            onConfirm={() => setIsConfirm(true)}
+            onConfirm={() => handleBulkOperations(lastClicked)}
             onCancel={() => setShowConfirmationModal(false)}
             title={
               <span className="text--primary latto-bold">Run this action?</span>

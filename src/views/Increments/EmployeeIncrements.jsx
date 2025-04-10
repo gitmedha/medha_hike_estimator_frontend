@@ -87,8 +87,31 @@ function EmployeeIncrements(props) {
   const [reviewData,setReviewData] = useState(null);
   const isAdmin = localStorage.getItem('admin');
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
-  const [isConfirm,setIsConfirm] = useState(false);
+  const [lastClicked, setLastClicked] = useState(null);
 
+  const handleClick = (e, itemId) => {
+    e.preventDefault();
+    setLastClicked(itemId);
+  };
+
+  const handleBulkOperations = (lastClicked) => {
+    switch (lastClicked) {
+      case "bulkRatings":
+        bulkRatings(reviewCycle || localStorage.getItem('appraisal_cycle'));
+        setShowConfirmationModal(false);
+        break;
+      case "BulkIncrement":
+        calculateBulkIncrement();
+        setShowConfirmationModal(false);
+        break;
+      case "BulkWeightedIncrement":
+        calculateBulkWeightedIncrement();
+        setShowConfirmationModal(false);
+        break;
+      default:
+        break;
+    }
+  }
 
 const fetchIncrementByReview = async(pageSize,pageIndex,sortBy,sortOrder,review_cycle)=>{
         try{
@@ -414,25 +437,22 @@ console.error(e.message);
         toaster.error("Failed to create entry!",{ position: "bottom-center" })
       }
 
-      const bulkRatings = async () =>{
-        setShowConfirmationModal(true);
-        if(isConfirm){
-          try{
-            setIsBulkLoading(true);
-            await calculateBulkNormalizeRating();
-            const data = await fetchAllIncrements(paginationPageIndex, pageSize);
-            setIncrementData(data.data);
-            setTotalCount(data.totalCount);
-            setIsConfirm(false);
-            
-  
-          }catch(e){
-            console.error(e.message);
-          }finally {
-            setIsBulkLoading(false);
-            window.location.reload();
-          }
+      const bulkRatings = async (reviewCycle) =>{
+        try{
+          setIsBulkLoading(true);
+          await calculateBulkNormalizeRating(reviewCycle);
+          const data = await fetchAllIncrements(paginationPageIndex, pageSize);
+          setIncrementData(data.data);
+          setTotalCount(data.totalCount);
+          
+
+        }catch(e){
+          console.error(e.message);
+        }finally {
+          setIsBulkLoading(false);
+          window.location.reload();
         }
+        
         
       }
 
@@ -475,49 +495,41 @@ console.error(e.message);
 
 
   const calculateBulkIncrement = async ()=>{
-    setShowConfirmationModal(true);
-    if(isConfirm){
-      try{
-      
-        setIsBulkLoading(true);
-        await bulkIncrement();
-        const data = await fetchAllIncrements(paginationPageIndex, pageSize);
-        setIncrementData(data.data);
-        setTotalCount(data.totalCount);
-        setIsConfirm(false)
-    }
-    catch(e){
-  console.error(e);
-    }finally {
-      setIsBulkLoading(false);
-      window.location.reload();
-  
-    }
-        
-    }
-  
-}
-const calculateBulkWeightedIncrement =  async ()=>{
-  setShowConfirmationModal(true);
-  if(isConfirm){
     try{
+      
       setIsBulkLoading(true);
-      await bulkWeightedIncrement();
+      await bulkIncrement();
       const data = await fetchAllIncrements(paginationPageIndex, pageSize);
       setIncrementData(data.data);
       setTotalCount(data.totalCount);
-      setIsConfirm(false)
-
   }
   catch(e){
-      console.error(e);
-}
-  finally {
+console.error(e);
+  }finally {
     setIsBulkLoading(false);
     window.location.reload();
 
   }
-  }
+  
+}
+const calculateBulkWeightedIncrement =  async ()=>{
+  setShowConfirmationModal(true);
+  try{
+    setIsBulkLoading(true);
+    await bulkWeightedIncrement();
+    const data = await fetchAllIncrements(paginationPageIndex, pageSize);
+    setIncrementData(data.data);
+    setTotalCount(data.totalCount);
+
+}
+catch(e){
+    console.error(e);
+}
+finally {
+  setIsBulkLoading(false);
+  window.location.reload();
+
+}
   
 }
 
@@ -589,17 +601,32 @@ useEffect(()=>{
                                   Download Excel
                               </Dropdown.Item>
                               <Dropdown.Item
-                                onClick={() => bulkRatings()}
+                                onClick={(e) => {
+                                  setShowConfirmationModal(true)
+                                  handleClick(e, "bulkRatings")
+                                }
+                                }
                               >
                                   Bulk Ratings
                               </Dropdown.Item>
                               <Dropdown.Item
-                                onClick={() => calculateBulkIncrement()}
+                                onClick={(e) => 
+                                {
+                                  setShowConfirmationModal(true)
+                                  handleClick(e, "BulkIncrement")
+                                }
+                                }
                               >
                                   Bulk Increment
                               </Dropdown.Item>
                               <Dropdown.Item
-                                onClick={() => calculateBulkWeightedIncrement()}
+                                onClick={(e) => 
+                                {
+                                  setShowConfirmationModal(true)
+                                  handleClick(e, "BulkWeightedIncrement")
+
+                                }
+                                }
                               >
                                   Bulk Weighted Increment
                               </Dropdown.Item>
@@ -713,7 +740,7 @@ useEffect(()=>{
     showCancel
     btnSize="md"
     show={true}
-    onConfirm={() => setIsConfirm(true)}
+    onConfirm={() => handleBulkOperations(lastClicked)}
     onCancel={() => setShowConfirmationModal(false)}
     title={
       <span className="text--primary latto-bold">Run this action?</span>
