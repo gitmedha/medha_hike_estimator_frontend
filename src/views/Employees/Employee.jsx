@@ -50,7 +50,6 @@ useEffect(()=>{
     })
 },[])
 
-console.log("historicalData",historicalData)
 
 const handleDelete = async ()=>{
   try{

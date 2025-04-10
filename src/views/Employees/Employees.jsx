@@ -100,11 +100,11 @@ console.log("isAdmin",isAdmin === "true");
         accessor: "date_of_joining",
       },
       {
-        Header: "Employee Status",
+        Header: "Status",
         accessor: "employee_status",
       },
       {
-        Header: "Employee Type",
+        Header: "Type",
         accessor: "employee_type",
       },
     ],
@@ -123,7 +123,7 @@ const optionsForSearch = [
     key: 1,
   },{
   key:2,
-  label: "Employee Type",
+  label: "Type",
   value: "employee_type",
 },
 {
@@ -150,7 +150,7 @@ const optionsForSearch = [
 }, 
 {
   key:8,
-  label: "Employee Status",
+  label: "Status",
   value: "employee_status",
 }
 ]

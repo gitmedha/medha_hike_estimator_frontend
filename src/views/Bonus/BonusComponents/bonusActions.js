@@ -222,3 +222,4 @@ export const fetchBonusesByReview = async(pageSize,pageIndex,sortBy,sortOrder,re
         console.error(error);
     }
 }
+
