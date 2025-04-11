@@ -158,9 +158,9 @@ export const getIncrementDataByReviewCycle = async (employeeId,reviewCycle)=>{
     }
 }
 
-export const calculateBulkNormalizeRating = async()=>{
+export const calculateBulkNormalizeRating = async(reviewCycle)=>{
     try{
-        const response = await api.get('/api/increments/calculate_bulk_normalized_rating');
+        const response = await api.get('/api/increments/calculate_bulk_normalized_rating?reviewCycle='+reviewCycle);
         return response.data;
     }catch(error){
         console.error(error);

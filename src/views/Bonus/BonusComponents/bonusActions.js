@@ -153,7 +153,6 @@ export const downloadTableExcel  = async (reviewCycle)=>{
 }
 
 export const bulkBonus = async (reviewCycle)=>{
-    console.log(reviewCycle);
     try{
         const response = await api.get('/api/bonuses/calculate_bulk_bonus', {
             params: {
@@ -223,3 +222,4 @@ export const fetchBonusesByReview = async(pageSize,pageIndex,sortBy,sortOrder,re
         console.error(error);
     }
 }
+
