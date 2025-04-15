@@ -507,7 +507,7 @@ console.error(e.message);
 console.error(e);
   }finally {
     setIsBulkLoading(false);
-    // window.location.reload();
+    window.location.reload();
 
   }
   
