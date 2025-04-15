@@ -188,18 +188,18 @@ export const downloadTableExcel  = async ()=>{
     }
 }
 
-export const bulkIncrement = async ()=>{
+export const bulkIncrement = async (reviewCycle)=>{
     try{
-        const response = await api.get('/api/increments/calculate_bulk_increment');
+        const response = await api.get(`/api/increments/calculate_bulk_increment?reviewCycle=${reviewCycle}`);
         return response.data;
     }catch(error){
         console.error(error);
     }
 }
 
-export const bulkWeightedIncrement = async ()=>{
+export const bulkWeightedIncrement = async (reviewCycle)=>{
     try{
-        const response = await api.get('/api/increments/calculate_bulk_weighted_increment');
+        const response = await api.get(`/api/increments/calculate_bulk_weighted_increment?reviewCycle=${reviewCycle}`);
         return response.data;
     }catch(error){
         console.error(error);

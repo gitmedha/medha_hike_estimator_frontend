@@ -101,11 +101,11 @@ function EmployeeIncrements(props) {
         setShowConfirmationModal(false);
         break;
       case "BulkIncrement":
-        calculateBulkIncrement();
+        calculateBulkIncrement(reviewCycle || localStorage.getItem('appraisal_cycle'));
         setShowConfirmationModal(false);
         break;
       case "BulkWeightedIncrement":
-        calculateBulkWeightedIncrement();
+        calculateBulkWeightedIncrement(reviewCycle || localStorage.getItem('appraisal_cycle'));
         setShowConfirmationModal(false);
         break;
       default:
@@ -494,11 +494,11 @@ console.error(e.message);
   };
 
 
-  const calculateBulkIncrement = async ()=>{
+  const calculateBulkIncrement = async (reviewCycle)=>{
     try{
       
       setIsBulkLoading(true);
-      await bulkIncrement();
+      await bulkIncrement(reviewCycle);
       const data = await fetchAllIncrements(paginationPageIndex, pageSize);
       setIncrementData(data.data);
       setTotalCount(data.totalCount);
@@ -507,16 +507,16 @@ console.error(e.message);
 console.error(e);
   }finally {
     setIsBulkLoading(false);
-    window.location.reload();
+    // window.location.reload();
 
   }
   
 }
-const calculateBulkWeightedIncrement =  async ()=>{
+const calculateBulkWeightedIncrement =  async (reviewCycle)=>{
   setShowConfirmationModal(true);
   try{
     setIsBulkLoading(true);
-    await bulkWeightedIncrement();
+    await bulkWeightedIncrement(reviewCycle);
     const data = await fetchAllIncrements(paginationPageIndex, pageSize);
     setIncrementData(data.data);
     setTotalCount(data.totalCount);
