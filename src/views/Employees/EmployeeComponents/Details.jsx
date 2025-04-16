@@ -84,7 +84,8 @@ const Details = (props) => {
     current_band,
     email_id,
     date_of_joining,
-    employee_type
+    employee_type,
+    employee_status
   } = props;
 
 
@@ -121,8 +122,12 @@ const Details = (props) => {
               </div>
             </div>
             <div className="col-3">
+              
               <div className="row">
               <DetailField label="Type" className="capitalize" value={employee_type?.toLowerCase()} />
+              </div>
+              <div className="row">
+              <DetailField label="Status" value={<a target="_blank" href={`mailto:${email_id}`} rel="noreferrer">{employee_status}</a>} />
               </div>
             </div>
             

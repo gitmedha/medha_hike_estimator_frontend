@@ -125,26 +125,30 @@ const Details = (props) => {
               <div className="col-2">
               <DetailField label="Review Cycle" value={appraisal_cycle} />
               </div>
-              <div className="col-2">
-              <DetailField label="Average Rating" value={average} />
-              </div>
+              
             </div>
             <div className="row">
-              <div className="col-2">
-              <DetailField label="Compentency" value={compentency} />
-              </div>
-              <div className="col-2">
-              <DetailField label="Increment adjustments" value={inc_adjustments} />
-              </div>
-              <div className="col-2">
-              <DetailField label="Increment" value={increment} />
-              </div>
-              <div className="col-2">
+            <div className="col-2">
               <DetailField label="KRA" value={kra_vs_goals} />
               </div>
               <div className="col-2">
-              <DetailField label="Long tenure" value={long_tenure? "Yes":"No"} />
+              
+              <DetailField label="Compentency" value={compentency} />
               </div>
+              <div className="col-2">
+              <DetailField label="Average Rating" value={average} />
+              </div>
+              <div className="col-2">
+              <DetailField label="Normalized Rating" value={normalize_rating} />
+              </div>
+              
+              <div className="col-2">
+              <DetailField label="Increment" value={increment} />
+              </div>
+              
+              <div className="col-2">
+              <DetailField label="Weighted Increment" value={weighted_increment} />
+              </div>  
             </div>
             <div className="row">
               <div className="col-2">
@@ -153,14 +157,16 @@ const Details = (props) => {
               <div className="col-2">
               <DetailField label="New Salary" value={new_salary} />
               </div>
-              <div className="col-2">
-              <DetailField label="Normalized Rating" value={normalize_rating} />
-              </div>
+             
               <div className="col-2">
             <DetailField label="Tenure" value={tenure} />
               </div>
+              
               <div className="col-2">
-              <DetailField label="Weighted Increment" value={weighted_increment} />
+              <DetailField label="Long tenure" value={long_tenure? "Yes":"No"} />
+              </div>
+              <div className="col-2">
+              <DetailField label="Increment adjustments" value={inc_adjustments} />
               </div>
             </div>
             <div className="row">

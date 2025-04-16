@@ -94,7 +94,7 @@ useEffect(()=>{
 
 },[selectedCycle])
 
-
+console.log(employeeData,"employeeData")
 
 const handleDelete = async()=>{
   try{
@@ -198,9 +198,9 @@ const handleSelect = (event) => {
                 <div className="employee_name">
                   {employeeData ?employeeData.full_name: ''}
                 </div>
-                <div className={`employee_status ${employeeData.employee_status === 'Inactive'? 'disabled_label':''}`} style={{marginTop:7}}>
+                {/* <div className={`employee_status ${employeeData.employee_status === 'Inactive'? 'disabled_label':''}`} style={{marginTop:7}}>
                 {employeeData ?employeeData.employee_status: ''}
-                </div>
+                </div> */}
               </div>
               <div className="designation_sec">
                 {employeeData ? employeeData.title: '' }
@@ -241,6 +241,14 @@ const handleSelect = (event) => {
         <Details {...employeeData}/>
 
          {isAdmin === "true" && <div className="d-flex align-items-center justify-content-end">
+          <div className="col-auto" style={{marginRight:15}}>
+              <button
+                onClick={() => handleNormalizedRating()}
+                className="btn custom_actions_bottons action_button_sec"
+              >
+                Normalize Rating
+              </button>
+            </div>
           
             <div className="col-auto" style={{marginRight:15}}>
               <button
@@ -250,18 +258,12 @@ const handleSelect = (event) => {
                 Increment
               </button>
             </div>
-            <div className="col-auto" style={{marginRight:15}}>
-              <button
-                onClick={() => handleNormalizedRating()}
-                className="btn custom_actions_bottons action_button_sec"
-              >
-                Normalize Rating
-              </button>
-            </div>
+           
             <div className="col-auto" style={{marginRight:15}}>
               <button
                 onClick={() => handleWeightedIncrement()}
                 className="btn custom_actions_bottons action_button_sec"
+                disabled = {employeeData?.increment === null ? true : false}
               >
                 Weighted Increment
               </button>

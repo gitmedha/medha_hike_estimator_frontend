@@ -49,12 +49,12 @@ const Styled = styled.div`
 const customStyles = {
   container: (provided) => ({
     ...provided,
-    width: "150px",
+    width: "210px",
     marginRight:"15px"
   }),
   control: (provided) => ({
     ...provided,
-    width: "150px",
+    width: "210px",
   }),
 };
 
@@ -648,7 +648,12 @@ useEffect(()=>{
           <ReactSelect
               styles={customStyles}
               options={reviewData}
-              value={reviewData ? reviewData.find(option => option.value === reviewCycle) : null} // Prevent errors if reviewData is null
+              value={
+                reviewData
+                  ? reviewData.find(option => option.value === reviewCycle) ||
+                    reviewData.find(option => option.value === localStorage.getItem("appraisal_cycle"))
+                  : null
+              }// Prevent errors if reviewData is null
               onChange={(e)=>setReviewCycle(e.value)}
               placeholder="Review Cycle"
             />
