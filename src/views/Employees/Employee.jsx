@@ -94,9 +94,9 @@ if (isLoading) {
                 <div className="employee_name">
                   {employee ?employee.first_name: ''}
                 </div>
-                <div className={`employee_status ${employee.employee_status === 'Inactive' ?'disabled_label': ''}`}  style={{marginTop:7}}>
+                {/* <div className={`employee_status ${employee.employee_status === 'Inactive' ?'disabled_label': ''}`}  style={{marginTop:7}}>
                 {employee ?employee.employee_status: ''}
-                </div>
+                </div> */}
               </div>
               <div className="designation_sec">
                 {employee ? employee.title: '' }
