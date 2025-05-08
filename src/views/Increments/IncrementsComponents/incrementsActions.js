@@ -65,11 +65,12 @@ export const fetchFilterPicklist = async()=>{
     }
 }
 
-export const applyFilterActions = async(filterData,offset,limit)=>{
+export const applyFilterActions = async(filterData,offset,limit,reviewCycle)=>{
     try{
         const response = await api.post(`/api/increments/add-filter-increment-data/${offset}/${limit}`, 
             {"fields":filterData[0].fields,
-            "values":filterData[0].values
+            "values":filterData[0].values,
+            "reviewCycle":reviewCycle
             });
         return response.data;
     }catch(error){
@@ -167,9 +168,9 @@ export const calculateBulkNormalizeRating = async(reviewCycle)=>{
     }
 }
 
-export const downloadTableExcel  = async ()=>{
+export const downloadTableExcel  = async (reviewCycle)=>{
     try{
-        const response = await api.get('/api/increments/download_excel',{
+        const response = await api.get(`/api/increments/download_excel?reviewCycle=${reviewCycle}`,{
             responseType: 'blob',
         });
 

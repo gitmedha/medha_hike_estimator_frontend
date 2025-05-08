@@ -398,7 +398,7 @@ console.error(e.message);
 
       const handleFilters = async(filters,offset,limit)=>{
         try {
-          const data = await applyFilterActions(filters,offset,limit);
+          const data = await applyFilterActions(filters,offset,limit, reviewCycle || localStorage.getItem('appraisal_cycle'));
           setIncrementData(data.data);
           setTotalCount(data.total);
         } catch (error) {
@@ -596,7 +596,7 @@ useEffect(()=>{
           
                               </Dropdown.Item>
                               <Dropdown.Item
-                                onClick={() => downloadTableExcel()}
+                                onClick={() => downloadTableExcel( reviewCycle || localStorage.getItem('appraisal_cycle'))}
                               >
                                   Download Excel
                               </Dropdown.Item>
