@@ -46,12 +46,12 @@ const Styled = styled.div`
 const customStyles = {
   container: (provided) => ({
     ...provided,
-    width: "150px",
+    width: "200px",
     marginRight:"15px"
   }),
   control: (provided) => ({
     ...provided,
-    width: "150px",
+    width: "200px",
   }),
 };
 
@@ -236,7 +236,7 @@ function Bonuses(props) {
         
          setBonusData(data.data);
          setTotalCount(data.totalCount);
-         await localStorage.setItem('review_cycle', data?.data[0]?.review_cycle);
+         localStorage.setItem('review_cycle', data?.data[0]?.review_cycle);
         }
         mountApis();
       },[])
@@ -509,7 +509,12 @@ function Bonuses(props) {
             <ReactSelect
               styles={customStyles}
               options={reviewData}
-              value={reviewData ? reviewData.find(option => option.value === reviewCycle) : null} // Prevent errors if reviewData is null
+              value={
+                reviewData
+                  ? reviewData.find(option => option.value === reviewCycle) ||
+                    reviewData.find(option => option.value === localStorage.getItem("review_cycle"))
+                  : null
+              }// Prevent errors if reviewData is null
               onChange={(e)=>setReviewCycle(e.value)}
               placeholder="Review Cycle"
             />
