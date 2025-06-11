@@ -36,7 +36,7 @@ padding-bottom: 30px;
 
 
 function BonusForm(props) {
-    const { show,onHide } = props;
+    const { reviewCycle,show,onHide } = props;
     const [increments,setIncrements] = useState([]);
     const [reviewers,setReviewers] = useState([]);
     const [IDs,setIDs] = useState([]);
@@ -93,16 +93,17 @@ function BonusForm(props) {
           console.error(error)
         }
     }
-
+console.log(reviewCycle);
     useEffect(()=>{
         async function setInitialFields(){
-            const data = await getBonusPickList();
+            const data = await getBonusPickList(reviewCycle);
             setIncrements(data.Names);
             setReviewers(data.Managers);
             setIDs(data.IDS);
         }
         setInitialFields()
     }, [])
+  
     return (
         <Modal
           centered

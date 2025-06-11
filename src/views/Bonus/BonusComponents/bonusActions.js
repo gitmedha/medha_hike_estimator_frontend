@@ -34,9 +34,9 @@ export const search = async (field,value,offset,limit,reviewCycle)=>{
     }
 };
 
-export const getBonusPickList = async ()=>{
+export const getBonusPickList = async (reviewCycle)=>{
     try{
-        const response = await api.get(`/api/bonuses/bonus-dropdowns`);
+        const response = await api.get(`/api/bonuses/bonus-dropdowns?reviewCycle=${reviewCycle}`);
         return response.data;
     }catch(error){
         console.error(error);

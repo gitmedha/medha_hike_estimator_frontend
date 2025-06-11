@@ -12,6 +12,7 @@ import moment from "moment";
 import nProgress from "nprogress";
 import {useHistory} from "react-router-dom";
 import toaster from 'react-hot-toast'
+import ReviewCycleInput  from "../IncrementsComponents/utils/layout/reviewCycleInput";
 
 
 
@@ -32,6 +33,15 @@ padding-bottom: 30px;
   line-height: 18px;
   margin-bottom: 15px;
 }
+.reviewCycleHeading {
+  color: #787B96;
+  font-family: 'Latto-Regular';
+  font-style: normal;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 18px;
+  margin-bottom: 5px;
+}
 `;
 
 
@@ -40,8 +50,6 @@ function IncrementDataForm(props) {
     const { show,onHide } = props;
     const [increments,setIncrements] = useState([]);
     const [reviewers,setReviewers] = useState([]);
-    const [kraScore,setKraScore] = useState(0.0);
-    const [compScore,setCompScore] = useState(0.0);
     const [newBands] = useState([{
       label:'I',
       value:'I'
@@ -83,7 +91,6 @@ function IncrementDataForm(props) {
     const [IDs,setIDs] = useState([]);
     let navigation = useHistory();
     const initialValues = {
-        appraisal_cycle:props?.IncrementData?.appraisal_cycle || "",
         average:props?.IncrementData?.average || 0,
         compentency:props?.IncrementData?.compentency || 0,
         current_band:props?.IncrementData?.current_band || "",
@@ -100,13 +107,15 @@ function IncrementDataForm(props) {
         normalize_rating:props?.IncrementData?.normalize_rating || 0,
         tenure:props?.IncrementData?.tenure || 0,
         weighted_increment:props?.IncrementData?.weighted_increment || "0",
-        review_type:props?.IncrementData?.review_type || "",
+        from_review_cycle:props?.IncrementData?.from_review_cycle || null,
+        to_review_cycle:props?.IncrementData?.to_review_cycle || null
     }
 
     const onSubmit = async (values)=>{
+      console.log("working")
       nProgress.start();
         try{
-        let newValues = values;
+        let newValues = {...values};
         
         newValues.long_tenure = values.long_tenure === "Yes" ? true : false;
         newValues.normalize_rating = parseFloat(values.normalize_rating);
@@ -114,22 +123,9 @@ function IncrementDataForm(props) {
         newValues.average = parseFloat(values.average);
         newValues.kra_vs_goals = parseFloat(values.kra_vs_goals);
         newValues.tenure = parseFloat(values.tenure);
+        newValues.from_review_cycle = moment(values.from_review_cycle).format("MMMM YYYY");
+        newValues.to_review_cycle = moment(values.to_review_cycle).format("MMM YYYY");
 
-        if(!newValues.current_salary.includes("₹")){
-            newValues.current_salary = `₹ ${values.current_salary}`;
-        }
-        if (!newValues.new_salary.includes("₹")){
-            newValues.new_salary = `₹ ${values.new_salary}`;
-        }
-        if (!newValues.inc_adjustments.includes("%")){
-            newValues.inc_adjustments = `${values.inc_adjustments}%`;
-        }
-        if (!newValues.weighted_increment.includes("%")){
-            newValues.weighted_increment = `${values.weighted_increment}%`;
-        }
-        if (!newValues.increment.includes("%")){
-            newValues.increment = `${parseFloat(values.increment)}%`;
-        }
 
           if(props.IncrementData){
             
@@ -142,11 +138,10 @@ function IncrementDataForm(props) {
 
           }
           else {
-            
            const{id} =  await createIncrement(newValues);
            onHide();
            props.ToastOnSuccess()
-           setTimeout(() => navigation.push(`/increment_employee/${id[0].employee_id}`),2000);
+          //  setTimeout(() => navigation.push(`/increment_employee/${id[0].employee_id}`),2000);
           nProgress.done();
 
           }
@@ -286,49 +281,25 @@ function IncrementDataForm(props) {
                       </div>
                       
                       <div className="col-md-6 col-sm-12 mt-2">
-                        <Input
-                          name="appraisal_cycle"
-                          label="Review Cycle"
+                        <label htmlFor="Review Cycle" className="reviewCycleHeading">
+                          Review Cycle <span style={{color:'red', fontSize:'16px'}}>*</span>
+                        </label>
+                        <div className="d-flex justify-content-between">
+                           <ReviewCycleInput
+                          name="from_review_cycle"
+                          label="From"
+                          className=""
                           required
-                          control="lookup"
-                          placeholder="Review Cycle"
-                          className="form-control"
-                          options = {[
-                            {
-                                key:0,
-                                value: 'April-March 2022',
-                                label: 'April-March 2022'
-                            },
-                            {
-                                key:1,
-                                value: 'April-March 2023',
-                                label: 'April-March 2023'
-                            }
-                          ]}
                         />
-                      </div>
-                      <div className='col-md-6 col-sm-12 mt-2'>
-                        <Input
-                          name="review_type"
-                          label="Review Type"
+                        <ReviewCycleInput
+                          name="to_review_cycle"
+                          label="To"
                           required
-                          control="lookup"
-                          options = {
-                            [{
-                                key:0,
-                                value: 'bi_annual_review',
-                                label: 'Bi Annual Review'
-                            },
-                            {
-                                key:1,
-                                value: 'annual_review',
-                                label: 'Annual Review'
-                            }]
-                          }
-                          placeholder="Review Type"
-                          className="form-control"
                         />
 
+                        </div>
+                       
+                       
                       </div>
                       <div className="col-md-6 col-sm-12 mt-2">
                         <Input
@@ -457,7 +428,7 @@ function IncrementDataForm(props) {
                        onClick={onHide} className='btn btn-secondary btn-regular collapse_form_buttons'>
                         CANCEL                    
                       </button>
-                      <button type='submit' className='btn btn-primary btn-regular collapse_form_buttons'>
+                      <button type='submit' className='btn btn-primary btn-regular collapse_form_buttons' >
                         SAVE
                       </button>
                     </div>

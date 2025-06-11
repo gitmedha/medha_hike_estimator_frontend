@@ -542,6 +542,7 @@ function Bonuses(props) {
         {
           modalShow && (
             <BonusForm
+              reviewCycle={reviewCycle ? reviewCycle : localStorage.getItem('review_cycle')}
               show={modalShow}
               onHide={() => setModalShow(false)}
               ToastOnSuccess={ToastOnSuccess}

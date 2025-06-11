@@ -150,7 +150,7 @@ export default function EmployeeForm(props) {
 
               const response = await createEmployee(dataToSubmit);
               onHide();
-              props.onSucess();
+              props.onSuccess();
               setTimeout(() => navigation.push(`/employee/${response.data.id}`),2000);
               nProgress.done();
               
