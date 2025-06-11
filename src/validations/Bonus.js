@@ -3,7 +3,6 @@ import * as Yup from "yup";
 // Define a schema for our form
 
 export const bonusValidations = Yup.object().shape({
-    review_cycle: Yup.string().required('Review cycle is required'),
     average: Yup.number()
       .typeError('Average must be a number')
       .min(0, 'Average cannot be less than 0')

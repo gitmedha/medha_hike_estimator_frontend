@@ -11,6 +11,7 @@ import moment from "moment";
 import nProgress from "nprogress";
 import {useHistory} from "react-router-dom";
 import toaster from 'react-hot-toast'
+import ReviewCycleInput  from "../../Increments/IncrementsComponents/utils/layout/reviewCycleInput";
 
 
 
@@ -31,6 +32,15 @@ padding-bottom: 30px;
   line-height: 18px;
   margin-bottom: 15px;
 }
+  .reviewCycleHeading {
+  color: #787B96;
+  font-family: 'Latto-Regular';
+  font-style: normal;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 18px;
+  margin-bottom: 5px;
+}
 `;
 
 
@@ -42,7 +52,6 @@ function BonusForm(props) {
     const [IDs,setIDs] = useState([]);
     let navigation = useHistory();
     const initialValues = {
-        review_cycle:props?.bonusData?.review_cycle || "",
         average:props?.bonusData?.average || 0,
         compentency:props?.bonusData?.compentency || 0,
         employee_id:props?.bonusData?.employee_id || "",
@@ -52,6 +61,8 @@ function BonusForm(props) {
         manager:props?.bonusData?.manager || "",
         normalized_ratings:props?.bonusData?.normalized_ratings || 0,
         weighted_bonus:props?.bonusData?.weighted_bonus || "0",
+        from_review_cycle:props?.bonusData?.from_review_cycle || null,
+        to_review_cycle:props?.bonusData?.to_review_cycle || null
     }
     const onSubmit = async (values)=>{
       nProgress.start();
@@ -217,26 +228,25 @@ console.log(reviewCycle);
                       </div>
                       
                       <div className="col-md-6 col-sm-12 mt-2">
-                        <Input
-                          name="review_cycle"
-                          label="Review Cycle"
+                        <label htmlFor="Review Cycle" className="reviewCycleHeading">
+                          Review Cycle <span style={{color:'red', fontSize:'16px'}}>*</span>
+                        </label>
+                        <div className="d-flex justify-content-between">
+                           <ReviewCycleInput
+                          name="from_review_cycle"
+                          label="From"
+                          className=""
                           required
-                          control="lookup"
-                          placeholder="Review Cycle"
-                          className="form-control"
-                          options = {[
-                            {
-                                key:0,
-                                value: 'April-March 2022',
-                                label: 'April-March 2022'
-                            },
-                            {
-                                key:1,
-                                value: 'April-March 2023',
-                                label: 'April-March 2023'
-                            }
-                          ]}
                         />
+                        <ReviewCycleInput
+                          name="to_review_cycle"
+                          label="To"
+                          required
+                        />
+
+                        </div>
+                       
+                       
                       </div>
                       <div className="col-md-6 col-sm-12 mt-2">
                         <Input
