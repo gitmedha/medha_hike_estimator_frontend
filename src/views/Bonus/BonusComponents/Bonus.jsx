@@ -260,7 +260,7 @@ const handleSelect = (event) => {
           </div>}
         </div>
         {
-          modalShow ? <BonusForm show={modalShow} onHide={()=>setModalShow(false)} bonusData={bonusData} showDeleteModal={handleDeleteModal}/> : <div></div>
+          modalShow ? <BonusForm  reviewCycle={review_cycle} show={modalShow} onHide={()=>setModalShow(false)} bonusData={bonusData} showDeleteModal={handleDeleteModal}/> : <div></div>
         }
         
         {/* <Collapsible title="Historic Details">
