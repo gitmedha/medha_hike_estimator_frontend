@@ -259,7 +259,6 @@ export const getIncrementDataByAppraisalCycle = async(pageSize,pageIndex,sortBy,
 export const moveToHistoricalCycle = async (reviewCycle) => {
     try {
         const response = await api.get(`/api/increments/transfer_increment_to_historical/${reviewCycle}`);
-        console.log(response);
         return response.data;
     } catch (error) {
         console.error(error);
