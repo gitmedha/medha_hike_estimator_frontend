@@ -253,3 +253,15 @@ export const getIncrementDataByAppraisalCycle = async(pageSize,pageIndex,sortBy,
         console.error(error);
     }
 }
+
+
+// function to move the current increment to the historical cycle
+export const moveToHistoricalCycle = async (reviewCycle) => {
+    try {
+        const response = await api.get(`/api/increments/transfer_increment_to_historical/${reviewCycle}`);
+        console.log(response);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+    }
+}
