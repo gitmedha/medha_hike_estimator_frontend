@@ -18,7 +18,8 @@ import {
   bulkIncrement,
   bulkWeightedIncrement,
   getAllReviewCycles,
-  getIncrementDataByAppraisalCycle
+  getIncrementDataByAppraisalCycle,
+  moveToHistoricalCycle
 } from "./IncrementsComponents/incrementsActions";
 import toaster from 'react-hot-toast'
 import CurrentBandDropdown from "./IncrementsComponents/CurrentBandFilter";
@@ -94,7 +95,7 @@ function EmployeeIncrements(props) {
     setLastClicked(itemId);
   };
 
-  const handleBulkOperations = (lastClicked) => {
+  const handleBulkOperations = async(lastClicked) => {
     switch (lastClicked) {
       case "bulkRatings":
         bulkRatings(reviewCycle || localStorage.getItem('appraisal_cycle'));
@@ -106,6 +107,11 @@ function EmployeeIncrements(props) {
         break;
       case "BulkWeightedIncrement":
         calculateBulkWeightedIncrement(reviewCycle || localStorage.getItem('appraisal_cycle'));
+        setShowConfirmationModal(false);
+        break;
+      case "moveToHistorical":
+        const response = await moveToHistoricalCycle(reviewCycle || localStorage.getItem('appraisal_cycle'));
+        toaster.success(`${response.message}`, { position: "bottom-center" });
         setShowConfirmationModal(false);
         break;
       default:
@@ -629,6 +635,17 @@ useEffect(()=>{
                                 }
                               >
                                   Bulk Weighted Increment
+                              </Dropdown.Item>
+                              <Dropdown.Item
+                                onClick={(e) => 
+                                {
+                                  setShowConfirmationModal(true)
+                                  handleClick(e, "moveToHistorical")
+
+                                }
+                                }
+                              >
+                                 Move to Historical
                               </Dropdown.Item>
                             </Dropdown.Menu>
                             </Dropdown>

@@ -94,11 +94,10 @@ useEffect(()=>{
 
 },[selectedCycle])
 
-console.log(employeeData,"employeeData")
 
 const handleDelete = async()=>{
   try{
-    await deleteIncrement(id);
+    await deleteIncrement(employeeData.id);
     toaster.success("Increment details deleted successfully",{ position: "bottom-center" })
     setTimeout(()=>window.location.href = "/employee_increments",2000);
   }catch(error){

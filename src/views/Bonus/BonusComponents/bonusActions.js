@@ -223,3 +223,11 @@ export const fetchBonusesByReview = async(pageSize,pageIndex,sortBy,sortOrder,re
     }
 }
 
+export const moveToHistoricalCycle = async (reviewCycle) => {
+    try {
+        const response = await api.get(`/api/bonuses/transfer_bonus_to_historical/${reviewCycle}`);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+    }
+}

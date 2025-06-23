@@ -14,7 +14,8 @@ import {
   downloadTableExcel,
   WeightedBonus,
   getAllReviewCycles,
-  fetchBonusesByReview
+  fetchBonusesByReview,
+  moveToHistoricalCycle
 } from "./BonusComponents/bonusActions";
 import toaster from 'react-hot-toast'
 import Modal from "react-bootstrap/Modal";
@@ -403,7 +404,7 @@ function Bonuses(props) {
 
       },[reviewCycle])
 
-      const handleBulkOperations = (lastClicked) => {
+      const handleBulkOperations = async(lastClicked) => {
         switch (lastClicked) {
           case "BulkRatings":
             bulkRatings(reviewCycle || localStorage.getItem('review_cycle'));
@@ -417,6 +418,11 @@ function Bonuses(props) {
             bulkWeightedBonus(reviewCycle || localStorage.getItem('review_cycle'));
             setShowConfirmationModal(false);
             break;
+          case "moveToHistorical":
+                  const response = await moveToHistoricalCycle(reviewCycle || localStorage.getItem('appraisal_cycle'));
+                  toaster.success(`${response.message}`, { position: "bottom-center" });
+                  setShowConfirmationModal(false);
+                  break;
           default:
             break;
         }
@@ -480,16 +486,15 @@ function Bonuses(props) {
                                             Bulk Bonus
                                         </Dropdown.Item>
                                         <Dropdown.Item
-                                          onClick={
-                                            (e) => 
-                                              {
-                                                setShowConfirmationModal(true)
-                                                handleClick(e, "BulkWeightedBonus")
-              
-                                              }
-                                            }
+                                          onClick={(e) => 
+                                          {
+                                            setShowConfirmationModal(true)
+                                            handleClick(e, "moveToHistorical")
+
+                                          }
+                                          }
                                         >
-                                            Bulk Weighted Bonus
+                                          Move to Historical
                                         </Dropdown.Item>
                                       </Dropdown.Menu>
                                       </Dropdown>
