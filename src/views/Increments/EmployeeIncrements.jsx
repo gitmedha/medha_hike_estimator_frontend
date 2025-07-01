@@ -1,10 +1,11 @@
 import nProgress from "nprogress";
+import * as XLSX from "xlsx";
 import styled from "styled-components";
 import { useState, useEffect, useMemo, useCallback,} from "react";
 import { useHistory } from "react-router-dom";
 import Table from "../../components/content/Table";
-import { FaListUl, FaThLarge } from "react-icons/fa";
-import Switch from "@material-ui/core/Switch";
+// import { FaListUl, FaThLarge } from "react-icons/fa";
+// import Switch from "@material-ui/core/Switch";
 import SearchBar from "../../components/layout/SearchBar";
 import IncrementDataForm from "./IncrementsComponents/IncrementDataForm";  
 import {
@@ -89,6 +90,7 @@ function EmployeeIncrements(props) {
   const isAdmin = localStorage.getItem('admin');
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [lastClicked, setLastClicked] = useState(null);
+  const [uploadStatus, setUploadStatus] = useState("");
 
   const handleClick = (e, itemId) => {
     e.preventDefault();
@@ -463,41 +465,105 @@ console.error(e.message);
       }
 
       
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    setSelectedFile(file);
-  };
+  const handleFileChange = async (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
 
-  const handleUploadFile = async () => {
-    if (!selectedFile) {
-      toaster.error("No file selected!", { position: "bottom-center" });
+  const allowedTypes = [
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "application/vnd.ms-excel"
+  ];
+
+  if (!allowedTypes.includes(file.type)) {
+    toaster.error("Only Excel files (.xls, .xlsx) are allowed", { position: "bottom-center" });
+    return;
+  }
+
+  setUploadStatus("");
+  setSelectedFile(file);
+};
+
+
+const handleUploadFile = async () => {
+  if (!selectedFile) {
+    toaster.error("No file selected!", { position: "bottom-center" });
+    return;
+  }
+
+  setUploadStatus("Verifying...");
+
+  try {
+    const data = await selectedFile.arrayBuffer();
+    const workbook = XLSX.read(data);
+    const sheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[sheetName];
+    const json = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
+
+    if (!json.length) {
+      toaster.error("Excel file is empty!", { position: "bottom-center" });
+      setUploadStatus("");
       return;
     }
+
+    const requiredColumns = ["Employee", "Reviewer", "KRA vs GOALS", "Competency","Final Score","Appraisal Cycle"];
+    const firstRow = Object.keys(json[0]);
+
+    // Check for missing columns
+    const missingColumns = requiredColumns.filter(col => !firstRow.includes(col));
+    if (missingColumns.length > 0) {
+      toaster.error(`Missing required columns: ${missingColumns.join(", ")}`, { position: "bottom-center" });
+      setUploadStatus("");
+      return;
+    }
+
+    // Validate data types and empty cells
+    const hasErrors = json.some((row, i) => {
+      return requiredColumns.some((col) => {
+        const value = row[col];
+        if (value === "") return true;
+        if (col === "KRA vs GOALS" || col === "Competency" || col === "Final Score") {
+          return isNaN(value); // should be numeric
+        }
+        return false;
+      });
+    });
+
+    if (hasErrors) {
+      toaster.error("Invalid data found: empty or wrong types", { position: "bottom-center" });
+      setUploadStatus("");
+      return;
+    }
+
+    // Passed all checks
+    setUploadStatus("Uploading...");
+    nProgress.start();
 
     const formData = new FormData();
     formData.append("file", selectedFile);
 
-    try {
-      nProgress.start();
-      const response = await api.post("/api/increments/upload_excel", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      if (response.status === 200) {
-        toaster.success("File uploaded successfully!", { position: "bottom-center" });
-        setTimeout(()=>{
-          window.location.reload();
-        },3000)
-      } else {
-        toaster.error("File upload failed!", { position: "bottom-center" });
-      }
-    } catch (error) {
+    const response = await api.post("/api/increments/upload_excel", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+
+    if (response.status === 200) {
+      toaster.success("File uploaded successfully!", { position: "bottom-center" });
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
+    } else {
       toaster.error("File upload failed!", { position: "bottom-center" });
-    } finally {
-      nProgress.done();
-      setShowUploadExcelInput(false);
-      setSelectedFile(null);
     }
-  };
+  } catch (error) {
+    console.error(error);
+    toaster.error("Error processing file!", { position: "bottom-center" });
+  } finally {
+    nProgress.done();
+    setUploadStatus("");
+    setShowUploadExcelInput(false);
+    setSelectedFile(null);
+  }
+};
+
 
 
   const calculateBulkIncrement = async (reviewCycle)=>{
@@ -713,10 +779,28 @@ useEffect(()=>{
     keyboard={false}
     animation={true}
   >
-    <Modal.Body className="d-flex justify-content-center align-items-center">
-      <Spinner />
-      <span className="ml-3">Calculating...</span>
-    </Modal.Body>
+    <Modal.Body>
+  <div className="uploader-container">
+    <input
+      accept=".xlsx, .xls"
+      type="file"
+      name="file-uploader"
+      onChange={handleFileChange}
+      className="form-control mb-3"
+    />
+    {selectedFile && (
+      <p className="text-center text-primary">
+        Selected File: <strong>{selectedFile.name}</strong>
+      </p>
+    )}
+    {uploadStatus && (
+      <p className="text-center text-secondary"><strong>{uploadStatus}</strong></p>
+    )}
+    <Button variant="primary" className="w-100" onClick={handleUploadFile}>
+      Upload File
+    </Button>
+  </div>
+</Modal.Body>
   </Modal>
 
 
