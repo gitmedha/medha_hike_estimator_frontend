@@ -529,6 +529,7 @@ const handleUploadFile = async () => {
     });
 
     if (hasErrors) {
+      console.log("Error", hasErrors);
       toaster.error("Invalid data found: empty or wrong types", { position: "bottom-center" });
       setUploadStatus("");
       return;
