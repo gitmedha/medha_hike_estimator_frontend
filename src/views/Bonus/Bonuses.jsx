@@ -1,4 +1,5 @@
 import nProgress from "nprogress";
+import * as XLSX from "xlsx";
 import styled from "styled-components";
 import { useState, useEffect, useMemo, useCallback,} from "react";
 import { useHistory } from "react-router-dom";
@@ -78,6 +79,7 @@ function Bonuses(props) {
   const isAdmin = localStorage.getItem('admin');
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [lastClicked, setLastClicked] = useState(null);
+  const [uploadStatus, setUploadStatus] = useState("");
 
   const handleClick = (e, itemId) => {
     e.preventDefault();
@@ -290,10 +292,23 @@ function Bonuses(props) {
       }
            }
 
-           const handleFileChange = (event) => {
-            const file = event.target.files[0];
-            setSelectedFile(file);
-          };
+  const handleFileChange = async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const allowedTypes = [
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "application/vnd.ms-excel"
+      ];
+
+      if (!allowedTypes.includes(file.type)) {
+        toaster.error("Only Excel files (.xls, .xlsx) are allowed", { position: "bottom-center" });
+        return;
+      }
+
+      setUploadStatus("");
+      setSelectedFile(file);
+    };
         
           const handleUploadFile = async () => {
             if (!selectedFile) {
@@ -301,11 +316,63 @@ function Bonuses(props) {
               return;
             }
         
-            const formData = new FormData();
-            formData.append("file", selectedFile);
+              setUploadStatus("Verifying...");
+
         
             try {
+              
+                  const data = await selectedFile.arrayBuffer();
+                  const workbook = XLSX.read(data);
+                  const sheetName = workbook.SheetNames[0];
+                  const worksheet = workbook.Sheets[sheetName];
+                  const json = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
+
+                  if (!json.length) {
+                        toaster.error("Excel file is empty!", { position: "bottom-center" });
+                        setUploadStatus("");
+                        return;
+                      }
+                
+    const requiredColumns = ["Employee", "Reviewer", "KRA vs GOALS", "Competency","Final Score","Appraisal Cycle"];
+    const firstRow = Object.keys(json[0]);
+
+    // Check for missing columns
+        const missingColumns = requiredColumns.filter(col => !firstRow.includes(col));
+        if (missingColumns.length > 0) {
+          toaster.error(`Missing required columns: ${missingColumns.join(", ")}`, { position: "bottom-center" });
+          setUploadStatus("");
+          return;
+        }
+
+      
+    // Validate data types and empty cells
+    const hasErrors = json.some((row, i) => {
+      return requiredColumns.some((col) => {
+        const value = row[col];
+        if (value === "") return true;
+        if (col === "KRA vs GOALS" || col === "Competency" || col === "Final Score") {
+          return isNaN(value); // should be numeric
+        }
+        return false;
+      });
+    });
+
+    if (hasErrors) {
+          console.log("Error", hasErrors);
+          toaster.error("Invalid data found: empty or wrong types", { position: "bottom-center" });
+          setUploadStatus("");
+          return;
+        }
+
+        
+    // Passed all checks
+    setUploadStatus("Uploading...");
+
               nProgress.start();
+
+              
+    const formData = new FormData();
+    formData.append("file", selectedFile);
               const response = await api.post("/api/bonuses/upload_bonus_data", formData, {
                 headers: { "Content-Type": "multipart/form-data" },
               });
@@ -318,6 +385,8 @@ function Bonuses(props) {
               toaster.error("File upload failed!", { position: "bottom-center" });
             } finally {
               nProgress.done();
+                  setUploadStatus("");
+
               setShowUploadExcelInput(false);
               setSelectedFile(null);
             }
@@ -599,6 +668,9 @@ function Bonuses(props) {
                     Selected File: <strong>{selectedFile.name}</strong>
                   </p>
                 )}
+                 {uploadStatus && (
+                    <p className="text-center text-secondary"><strong>{uploadStatus}</strong></p>
+                  )}
                 <Button variant="primary" className="w-100" onClick={handleUploadFile}>
                   Upload File
                 </Button>
