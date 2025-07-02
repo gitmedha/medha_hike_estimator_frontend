@@ -69,7 +69,7 @@ const Login = () => {
             <Form onSubmit={handleLogin}>
               <img src={logo} alt="Medha Logo"  className="w-100 login_logo"/>
               <div className="text-center text-success login_form_header">
-                 Performence &nbsp; <br/> &nbsp; &nbsp; &nbsp; &nbsp; Review App
+                 Performance &nbsp; <br/> &nbsp; &nbsp; &nbsp; &nbsp; Review App
                 </div>
 
               <Form.Group controlId="username" className="mt-3">
