@@ -64,19 +64,25 @@ function SearchBar(props) {
   });
 
   const clear = async (formik) => {
-    formik.resetForm();
-    // setSelectedSearchField(null);
-    // setIsSearchEnable(false);
-    if(clearFilters){
-      clearFilters()
-      setSearchValueOptions([]);
-      setReviewCycle(null)
-    }else {
-
+    formik.resetForm({
+      values: {
+        ...initialValues,
+        search_by_value_date: new Date(new Date(today).setDate(today.getDate())),
+        search_by_value_date_to: new Date(new Date(today).setDate(today.getDate()))
+      }
+    });
+    
+    setSearchField(null);
+    setSearchValue(null);
+    setSearchValueOptions([]);
+    
+    if (clearFilters) {
+      clearFilters(); // This will call the clearSearch from Employees
+    } else {
       setIsDisable(true);
-      setSearchValueOptions([]);
-      setReviewCycle(null);
     }
+    
+    setReviewCycle(null);
   };
 
   //search values in the table when it is not there in the default array
