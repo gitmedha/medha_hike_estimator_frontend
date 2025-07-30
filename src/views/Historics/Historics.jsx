@@ -246,12 +246,12 @@ const isAdmin = localStorage.getItem('admin');
           setIsDisable={setIsDisable}
           />
         </div>
-        {isAdmin === "true" && <div className="col-auto mt-4">
+        {isAdmin === "true" && <div className="col-4 d-flex justify-content-end mt-4">
         <Dropdown className="d-inline">
           <Dropdown.Toggle
                     variant="secondary"
                     id="dropdown-basic"
-                    className="btn--primary action_button_sec"
+                    className="bulk_action_button_sec"
                   >
                     ACTIONS
                   </Dropdown.Toggle>
@@ -272,7 +272,7 @@ const isAdmin = localStorage.getItem('admin');
                   </Dropdown>
 
         <button
-            className="btn btn-primary add_button_sec"
+            className="btn btn-primary add_button_sec ml-2"
             onClick={() => setModalShow(true)}
           >
             Add New
