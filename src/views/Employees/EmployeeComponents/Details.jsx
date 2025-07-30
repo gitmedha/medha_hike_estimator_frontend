@@ -90,7 +90,6 @@ const Details = (props) => {
 
 
 
-
   return (
     <Styled>
       <div className="container-fluid my-3">
@@ -127,7 +126,7 @@ const Details = (props) => {
               <DetailField label="Type" className="capitalize" value={employee_type?.toLowerCase()} />
               </div>
               <div className="row">
-              <DetailField label="Status" value={<a target="_blank" href={`mailto:${email_id}`} rel="noreferrer">{employee_status}</a>} />
+              <DetailField label="Status" value={employee_status} className="active_status"/>
               </div>
             </div>
             

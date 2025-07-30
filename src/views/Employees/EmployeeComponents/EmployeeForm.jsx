@@ -168,7 +168,6 @@ export default function EmployeeForm(props) {
 
       }
   };
-
     return (
         <Modal
           centered
@@ -226,6 +225,7 @@ export default function EmployeeForm(props) {
                           control="input"
                           placeholder="Employee ID"
                           className="form-control"
+                          disabled={props?.employeeData?.employee_id ? true : false}
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mt-2">
