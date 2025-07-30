@@ -156,8 +156,15 @@ const Table = ({
   };
 
   React.useEffect(() => {
-    fetchData(pageIndex, pageSize, sortBy, reviewCycle);
-  }, [fetchData, pageIndex, pageSize, sortBy]);
+    if(isSearchEnable){
+      fetchData(pageIndex, pageSize, sortBy,isSearchEnable);
+
+    }else {
+      fetchData(pageIndex, pageSize, sortBy,reviewCycle);
+
+    }
+
+  }, [fetchData, pageIndex, pageSize, sortBy,isSearchEnable]);
 
   React.useEffect(() => {
     onPageSizeChange(pageSize);
