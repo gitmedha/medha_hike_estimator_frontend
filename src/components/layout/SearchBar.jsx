@@ -23,7 +23,7 @@ const Section = styled.div`
 
 
 function SearchBar(props) {
-  const {handleSearch,handleSearchPicklist,clearFilters,isClearDisabled,reviewCycle={},setReviewCycle=()=>{}} = props;
+  const {handleSearch,handleSearchPicklist,clearFilters,isClearDisabled,reviewCycle={},setReviewCycle=()=>{}, refreshOnClear=()=>{}} = props;
   const [searchValueOptions, setSearchValueOptions] = useState([]);
   const [defaultSearchArray, setDefaultSearchArray] = useState([]);
   const [searchFieldOptions] = useState(props.searchFieldOptions);
@@ -83,6 +83,7 @@ function SearchBar(props) {
     }
     
     setReviewCycle(null);
+    refreshOnClear()
   };
 
   //search values in the table when it is not there in the default array

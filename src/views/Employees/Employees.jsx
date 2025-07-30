@@ -157,6 +157,13 @@ const optionsForSearch = [
 }
 ]
 
+const refreshOnClear = async(pageIndex,pageSize)=>{
+  try {
+    await getEmployees(pageSize,pageIndex)
+  } catch (error) {
+    console.error("error", error)
+  }
+}
   const getEmployees = async (
     limit = paginationPageSize,
     offset = 0,
@@ -322,6 +329,7 @@ const ToastOnFailure = (value)=>{
           handleSearchPicklist = {loadDefaultOptions}
           isDisable={isDisable}
           setIsDisable={setIsDisable}
+          refreshOnClear={()=>refreshOnClear(paginationPageIndex,paginationPageSize)}
           />
         </div>
         {isAdmin === "true" && <div className="col-auto mt-4">
