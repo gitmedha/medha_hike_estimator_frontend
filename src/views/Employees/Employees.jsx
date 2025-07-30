@@ -359,12 +359,12 @@ console.log("value", value)
           storeValue={(e)=>setValue(e)}
           />
         </div>
-        {isAdmin === "true" && <div className="col-auto mt-4">
+        {isAdmin === "true" && <div className="col-2 d-flex justify-content-end mr-2 mt-4">
           <Dropdown className="d-inline">
           <Dropdown.Toggle
                     variant="secondary"
                     id="dropdown-basic"
-                    className="btn--primary action_button_sec"
+                    className="bulk_action_button_sec mr-3"
                   >
                     ACTIONS
                   </Dropdown.Toggle>
