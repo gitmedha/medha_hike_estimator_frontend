@@ -65,6 +65,8 @@ const Employees = (props) => {
   const [originalData, setOriginalData] = useState([]);
   const [originalTotal, setOriginalTotal] = useState(0);
   const [isSearchActive, setIsSearchActive] = useState(false);
+  const [Field,setField]=useState(null);
+  const [value,setValue] = useState(null);
 
 
 
@@ -164,92 +166,54 @@ const refreshOnClear = async(pageIndex,pageSize)=>{
     console.error("error", error)
   }
 }
-  const getEmployees = async (
-    limit = paginationPageSize,
-    offset = 0,
-    sortBy = "employee_id",
-    sortOrder = "asc"
-  ) => {
-    nProgress.start();
-    setLoading(true);
-try {
-  const params = {
-    limit: limit,
-    offset: offset,
-    sortBy: sortBy,
-    sortOrder: sortOrder
-  };
-  
-  const data = await api.get('/api/employees/get_employees', {params});
-  if(data.status === 200){
-    setStudents(data?.data?.data);
-    setStudentsAggregate(data?.data?.total);
+const getEmployees = async (
+  limit = paginationPageSize,
+  offset = 0,
+  sortBy = "employee_id",
+  sortOrder = "asc"
+) => {
+  nProgress.start();
+  setLoading(true);
+  try {
+    const params = {
+      limit: limit,
+      offset: offset,
+      sortBy: sortBy,
+      sortOrder: sortOrder
+    };
+
+    // Add search parameters if search is active
+    if (isSearchActive && Field && value) {
+      params.searchField = Field;
+      params.searchValue = value;
+      
+      // Handle date range search differently
+      if (Field === "date_of_joining" && typeof value === 'object') {
+        params.from = value.from;
+        params.to = value.to;
+      }
+    }
+
+    const data = await api.get('/api/employees/get_employees', {params});
+    if(data.status === 200){
+      setStudents(data?.data?.data);
+      setStudentsAggregate(data?.data?.total);
+      
+      // Store original data only if not in search mode
+      if (!isSearchActive) {
+        setOriginalData(data?.data?.data);
+        setOriginalTotal(data?.data?.total);
+      }
+    }
+  } catch(error) {
+    console.error("Error fetching employees:", error);
+    toaster.error("Failed to load employees");
+  } finally {
     setLoading(false);
     nProgress.done();
   }
+};
 
-}
-catch(error){
-    setLoading(false);
-    nProgress.done();
-    return Promise.reject(error);
-}
-  };
-
-  const fetchData = useCallback(
-    (
-      pageIndex,
-      pageSize,
-      sortBy,
-      isSearchEnable,
-    ) => {
-      let sortByField = "employee_id";
-      let sortOrder = "asc";
-      if (sortBy.length) {
-        sortByField = sortBy[0].id;
-        sortOrder = sortBy[0].desc === true ? "desc" : "asc";
-        if (isSearchEnable) {
-          // getEmployeesBySearchFilter(
-          //   activeStatus,
-          //   activeTab.key,
-          //   pageSize,
-          //   pageSize * pageIndex,
-          //   selectedSearchedValue,
-          //   selectedSearchField,
-          //   sortByField,
-          //   sortOrder
-          // );
-        } else {
-          getEmployees(
-            pageSize,
-            pageSize * pageIndex,
-            sortByField,
-            sortOrder
-          );
-        }
-      } else {
-        if (isSearchEnable) {
-          // getEmployeesBySearchFilter(
-          //   activeStatus,
-          //   activeTab.key,
-          //   pageSize,
-          //   pageSize * pageIndex,
-          //   selectedSearchedValue,
-          //   selectedSearchField
-          // );
-        } else {
-          getEmployees(
-            pageSize,
-            pageSize * pageIndex,
-            sortByField,
-            sortOrder
-
-          );
-        }
-      }
-    },
-    [activeTab.key, activeStatus]
-  );
 
   useEffect(() => {
     fetchData(0, paginationPageSize, []);
@@ -258,6 +222,15 @@ catch(error){
   useEffect(() => {
     setPaginationPageIndex(0);
   }, [activeTab.key, activeStatus]);
+  
+  
+  // Update the useEffect for search
+  useEffect(() => {
+    if (isSearchActive) {
+      getEmployees();
+    }
+  }, [paginationPageSize, paginationPageIndex, isSearchActive, Field, value]);
+
 
   const onRowClick = (row)=>{
     history.push(`/employee/${row.id}`);
@@ -272,17 +245,25 @@ catch(error){
     const file = event.target.files[0];
     setSelectedFile(file);
   };
-  const search =async (SearchProps)=>{
-    let employees;
-    if(SearchProps.from && SearchProps.to){
-      employees = await  searchEmployees(SearchProps.searchField,{from:SearchProps.from,to:SearchProps.to},paginationPageSize,paginationPageIndex)
+  const search = async (SearchProps) => {
+    try {
+      setIsSearchActive(true);
+      setField(SearchProps.searchField);
+      
+      // Store the search value appropriately
+      if (SearchProps.from && SearchProps.to) {
+        setValue({ from: SearchProps.from, to: SearchProps.to });
+      } else {
+        setValue(SearchProps.searchValue);
+      }
+      
+      // Trigger the search with current pagination
+      await getEmployees();
+    } catch (error) {
+      console.error("Search error:", error);
+      toaster.error("Search failed");
     }
-    else {
-      employees= await searchEmployees(SearchProps.searchField,SearchProps.searchValue,paginationPageSize,paginationPageIndex);
-    }
-    setStudents(employees.data);
-    setStudentsAggregate(employees.total);
-  }
+  };
   const handleUploadFile = async () => {
     if (!selectedFile) {
       toaster.error("No file selected!", { position: "bottom-center" });
@@ -317,6 +298,49 @@ const ToastOnSuccess = ()=>{
 const ToastOnFailure = (value)=>{
   toaster.error("Failed to create employee!",{ position: "bottom-center" })
 }
+const fetchData = useCallback(
+  (pageIndex, pageSize, sortBy,isSearchActive) => {
+    let sortByField = "employee_id";
+    let sortOrder = "asc";
+
+    console.log("isSearch",isSearchActive)
+
+    if (sortBy.length) {
+      sortByField = sortBy[0].id;
+      sortOrder = sortBy[0].desc ? "desc" : "asc";
+    }
+
+    const offset = pageIndex * pageSize;
+
+    if (isSearchActive) {
+      const searchParams = {
+        limit: pageSize,
+        offset,
+        sortBy: sortByField,
+        sortOrder,
+        searchField: Field,
+        searchValue: value,
+      };
+console.log("Field",Field)
+console.log("value", value)
+      if (Field === "date_of_joining" && typeof value === "object") {
+        searchParams.from = value.from;
+        searchParams.to = value.to;
+      }
+
+      getEmployees(
+        searchParams.limit,
+        searchParams.offset,
+        searchParams.sortBy,
+        searchParams.sortOrder
+      );
+    } else {
+      getEmployees(pageSize, offset, sortByField, sortOrder);
+    }
+  },
+  [isSearchActive, Field, value]
+);
+
   return (
    <>
     <div className="d-flex justify-content-between align-items-center">
@@ -329,7 +353,10 @@ const ToastOnFailure = (value)=>{
           handleSearchPicklist = {loadDefaultOptions}
           isDisable={isDisable}
           setIsDisable={setIsDisable}
+          turnSearchOff={()=>setIsSearchActive(false)}
           refreshOnClear={()=>refreshOnClear(paginationPageIndex,paginationPageSize)}
+          storeField = {(e)=>setField(e)}
+          storeValue={(e)=>setValue(e)}
           />
         </div>
         {isAdmin === "true" && <div className="col-auto mt-4">
@@ -377,7 +404,7 @@ const ToastOnFailure = (value)=>{
               onPageSizeChange={setPaginationPageSize}
               paginationPageIndex={paginationPageIndex}
               onPageIndexChange={setPaginationPageIndex}
-              isSearchEnable={isSearchEnable}
+              isSearchEnable={isSearchActive}
               selectedSearchField={selectedSearchField}
               selectedSearchedValue={selectedSearchedValue}
               onRowClick={onRowClick}
