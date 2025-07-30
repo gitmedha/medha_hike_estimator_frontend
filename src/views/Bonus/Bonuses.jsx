@@ -556,6 +556,16 @@ function Bonuses(props) {
                                         </Dropdown.Item>
                                         <Dropdown.Item
                                           onClick={(e) => 
+                                            {
+                                              setShowConfirmationModal(true)
+                                              handleClick(e, "BulkWeightedBonus")
+                                            }
+                                          }
+                                        >
+                                          Bulk Weighted Bonus
+                                        </Dropdown.Item>
+                                        <Dropdown.Item
+                                          onClick={(e) => 
                                           {
                                             setShowConfirmationModal(true)
                                             handleClick(e, "moveToHistorical")

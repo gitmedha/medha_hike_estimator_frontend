@@ -390,7 +390,7 @@ function IncrementDataForm(props) {
                           control="input"
                           placeholder="Increment %"
                           className="form-control"
-                          disabled={true}
+                          // disabled={true}
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mt-2">
@@ -400,7 +400,7 @@ function IncrementDataForm(props) {
                           control="input"
                           placeholder="Normalize Rating"
                           className="form-control"
-                          disabled={true}
+                          // disabled={true}
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mt-2">
