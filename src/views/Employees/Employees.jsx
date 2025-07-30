@@ -62,10 +62,12 @@ const Employees = (props) => {
   const [isDisable,setIsDisable] = useState(true);
   const [showUploadExcelInput,setShowUploadExcelInput] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [originalData, setOriginalData] = useState([]);
+  const [originalTotal, setOriginalTotal] = useState(0);
+  const [isSearchActive, setIsSearchActive] = useState(false);
 
 
 
-console.log("isAdmin",isAdmin === "true");
 
   const columns = useMemo(
     () => [
@@ -154,6 +156,7 @@ const optionsForSearch = [
   value: "employee_status",
 }
 ]
+
   const getEmployees = async (
     limit = paginationPageSize,
     offset = 0,
