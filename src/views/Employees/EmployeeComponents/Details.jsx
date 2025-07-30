@@ -113,7 +113,7 @@ const Details = (props) => {
             </div>
             <div className="col-3">
               <div className="row">
-                <DetailField label="Experience" className="capitalize" value={`${experience?.toLowerCase()} Years`} />
+                <DetailField label="Experience" className="capitalize" value={`${experience?.toLowerCase()}`} />
               </div>
               
               <div className="row">
