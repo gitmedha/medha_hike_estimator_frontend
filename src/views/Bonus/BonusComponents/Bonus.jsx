@@ -174,7 +174,7 @@ const handleSelect = (event) => {
 
   // setSelectedCycle(event.value);
 };
-
+console.log("bonusData", bonusData);
   return (
     <Styled>
      {isLoading ?<div className="spinner">
@@ -232,16 +232,7 @@ const handleSelect = (event) => {
         <div>
         <Details {...bonusData}/>
         { isAdmin === "true" && <div className="d-flex align-items-center justify-content-end">
-          
-          <div className="col-auto" style={{marginRight:15}}>
-              <button
-                onClick={() => handleBonus()}
-                className="btn custom_actions_bottons action_button_sec"
-              >
-                Bonus
-              </button>
-            </div>
-            <div className="col-auto" style={{marginRight:15}}>
+           <div className="col-auto" style={{marginRight:15}}>
               <button
                 onClick={() => handleNormalizedRating()}
                 className="btn custom_actions_bottons action_button_sec"
@@ -249,10 +240,22 @@ const handleSelect = (event) => {
                 Normalize Rating
               </button>
             </div>
+          
+          <div className="col-auto" style={{marginRight:15}}>
+              <button
+                onClick={() => handleBonus()}
+                className="btn custom_actions_bottons action_button_sec"
+                disabled={!bonusData?.normalized_ratings}
+              >
+                Bonus
+              </button>
+            </div>
+           
             <div className="col-auto" style={{marginRight:15}}>
               <button
                 onClick={() => handleWeightedBonus()}
                 className="btn custom_actions_bottons action_button_sec"
+                disabled={!bonusData?.bonus}
               >
                 Weighted Bonus
               </button>
