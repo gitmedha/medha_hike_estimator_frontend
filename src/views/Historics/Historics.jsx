@@ -247,7 +247,7 @@ const isAdmin = localStorage.getItem('admin');
           />
         </div>
         {isAdmin === "true" && <div className="col-4 d-flex justify-content-end mt-4">
-        <Dropdown className="d-inline">
+        <Dropdown className="d-inline" style={{marginRight: '10px'}}>
           <Dropdown.Toggle
                     variant="secondary"
                     id="dropdown-basic"
