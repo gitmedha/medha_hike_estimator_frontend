@@ -222,14 +222,7 @@ const getEmployees = async (
   useEffect(() => {
     setPaginationPageIndex(0);
   }, [activeTab.key, activeStatus]);
-  
-  
-  // Update the useEffect for search
-  useEffect(() => {
-    if (isSearchActive) {
-      getEmployees();
-    }
-  }, [paginationPageSize, paginationPageIndex, isSearchActive, Field, value]);
+
 
 
   const onRowClick = (row)=>{
@@ -321,8 +314,6 @@ const fetchData = useCallback(
         searchField: Field,
         searchValue: value,
       };
-console.log("Field",Field)
-console.log("value", value)
       if (Field === "date_of_joining" && typeof value === "object") {
         searchParams.from = value.from;
         searchParams.to = value.to;
