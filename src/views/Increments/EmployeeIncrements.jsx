@@ -457,7 +457,7 @@ console.error(e.message);
         }catch(e){
           console.error(e.message);
         }finally {
-          // window.location.reload();
+          window.location.reload();
         }
         
         
@@ -576,7 +576,7 @@ const handleUploadFile = async () => {
   catch(e){
 console.error(e);
   }finally {
-    // window.location.reload();
+    window.location.reload();
 
   }
   
@@ -594,7 +594,7 @@ catch(e){
     console.error(e);
 }
 finally {
-  // window.location.reload();
+  window.location.reload();
 
 }
   
