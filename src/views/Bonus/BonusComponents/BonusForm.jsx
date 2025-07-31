@@ -104,7 +104,6 @@ function BonusForm(props) {
           console.error(error)
         }
     }
-console.log(reviewCycle);
     useEffect(()=>{
         async function setInitialFields(){
             const data = await getBonusPickList(reviewCycle);
@@ -114,6 +113,8 @@ console.log(reviewCycle);
         }
         setInitialFields()
     }, [])
+
+    console.log("props.bonusData",props.bonusData)
   
     return (
         <Modal
@@ -168,6 +169,7 @@ console.log(reviewCycle);
                           placeholder="Employee ID"
                           className="form-control"
                           options={IDs}
+                          isDisabled={props.bonusData ? true : false}
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mt-2">
