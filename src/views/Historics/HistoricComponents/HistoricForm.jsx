@@ -145,6 +145,8 @@ function HistoricForm(props) {
                               placeholder="Full Name"
                               className="form-control"
                               options={employees}
+                              value={values.employee} 
+                              onChange={(e) => handleInputChange("employee", e.target.value)}
                             />
                           </div>
                           <div className="col-md-6 col-sm-12 mt-2">
