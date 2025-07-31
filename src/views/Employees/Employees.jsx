@@ -2,20 +2,17 @@ import nProgress from "nprogress";
 import styled from "styled-components";
 import api from "../../apis";
 import { connect } from "react-redux";
-import { useState, useEffect, useMemo, useCallback,} from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import Table from "../../components/content/Table";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-import { FaListUl, FaThLarge } from "react-icons/fa";
-import Switch from "@material-ui/core/Switch";
+
 import EmployeesGrid from "./EmployeeComponents/EmployeesGrid";
 import SearchBar from "../../components/layout/SearchBar";
-import {searchEmployees,LoadSearchPicklist,downloadTableExcel} from "./EmployeeComponents/EmployeeActions";
+import { searchEmployees, LoadSearchPicklist, downloadTableExcel } from "./EmployeeComponents/EmployeeActions";
 import EmployeeForm from "./EmployeeComponents/EmployeeForm";  
 import toaster from 'react-hot-toast'
-import { Dropdown,Modal,Button } from 'react-bootstrap';
-
-
+import { Dropdown, Modal, Button } from 'react-bootstrap';
 
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
@@ -26,7 +23,6 @@ const tabPickerOptions = [
 
 const Styled = styled.div`
   .MuiSwitch-root {
-    // material switch
     margin-left: 5px;
     margin-right: 5px;
 
@@ -45,7 +41,7 @@ const Employees = (props) => {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [students, setStudents] = useState([]);
-  const [studentsAggregate, setStudentsAggregate] = useState([]);
+  const [studentsAggregate, setStudentsAggregate] = useState(0);
   const [layout, setLayout] = useState("list");
   const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
   const [activeStatus, setActiveStatus] = useState("All");
@@ -53,23 +49,17 @@ const Employees = (props) => {
   const isAdmin = localStorage.getItem("admin");
   const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
   const [paginationPageIndex, setPaginationPageIndex] = useState(0);
-  const [selectedSearchField, setSelectedSearchField] = useState(null);
-  const [isSearchEnable, setIsSearchEnable] = useState(false);
-  const [selectedSearchedValue, setSelectedSearchedValue] = useState(null);
-  const [defaultSearchOptions,setDefaultSearchOptions] = useState([]);
-  const [modalShow,setModalShow] = useState(false);
-  const [isCreatedSuccess,setIsCreatedSuccess] = useState(false);
-  const [isDisable,setIsDisable] = useState(true);
-  const [showUploadExcelInput,setShowUploadExcelInput] = useState(false);
+  const [defaultSearchOptions, setDefaultSearchOptions] = useState([]);
+  const [modalShow, setModalShow] = useState(false);
+  const [showUploadExcelInput, setShowUploadExcelInput] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [originalData, setOriginalData] = useState([]);
-  const [originalTotal, setOriginalTotal] = useState(0);
-  const [isSearchActive, setIsSearchActive] = useState(false);
-  const [Field,setField]=useState(null);
-  const [value,setValue] = useState(null);
-
-
-
+  
+  // Search related state
+  const [searchParams, setSearchParams] = useState({
+    isActive: false,
+    field: null,
+    value: null
+  });
 
   const columns = useMemo(
     () => [
@@ -115,148 +105,111 @@ const Employees = (props) => {
     []
   );
 
-const optionsForSearch = [
-  {
-    label: "Employee ID",
-    value: "employee_id",
-    key: 0,
-  },
-  {
-    label: "First Name",
-    value: "first_name",
-    key: 1,
-  },{
-  key:2,
-  label: "Type",
-  value: "employee_type",
-},
-{
-  key:3,
-  label: "Last Name",
-  value: "last_name",
-},
-{
-  key:4,
-  label: "Email",
-  value: "email_id",
-}, {
-  key:5,
-  label: "Department",
-  value: "department",
-}, {
-  key:6,
-  label: "Title",
-  value: "title",
-}, {
-  key:7,
-  label: "Date of Joining",
-  value: "date_of_joining",
-}, 
-{
-  key:8,
-  label: "Status",
-  value: "employee_status",
-}
-]
+  const optionsForSearch = [
+    { label: "Employee ID", value: "employee_id", key: 0 },
+    { label: "First Name", value: "first_name", key: 1 },
+    { key: 2, label: "Type", value: "employee_type" },
+    { key: 3, label: "Last Name", value: "last_name" },
+    { key: 4, label: "Email", value: "email_id" },
+    { key: 5, label: "Department", value: "department" },
+    { key: 6, label: "Title", value: "title" },
+    { key: 7, label: "Date of Joining", value: "date_of_joining" },
+    { key: 8, label: "Status", value: "employee_status" }
+  ];
 
-const refreshOnClear = async(pageIndex,pageSize)=>{
-  try {
-    await getEmployees(pageSize,pageIndex)
-  } catch (error) {
-    console.error("error", error)
-  }
-}
-const getEmployees = async (
-  limit = paginationPageSize,
-  offset = 0,
-  sortBy = "employee_id",
-  sortOrder = "asc"
-) => {
+  const getEmployees = useCallback(async (limit, offset, sortBy, sortOrder) => {
   nProgress.start();
   setLoading(true);
   try {
     const params = {
-      limit: limit,
-      offset: offset,
-      sortBy: sortBy,
-      sortOrder: sortOrder
+      limit,
+      offset,
+      sortBy,
+      sortOrder
     };
 
-    // Add search parameters if search is active
-    if (isSearchActive && Field && value) {
-      params.searchField = Field;
-      params.searchValue = value;
+    if (searchParams.isActive && searchParams.field) {
+      params.searchField = searchParams.field;
       
-      // Handle date range search differently
-      if (Field === "date_of_joining" && typeof value === 'object') {
-        params.from = value.from;
-        params.to = value.to;
+      if (searchParams.field === "date_of_joining" && typeof searchParams.value === 'object') {
+        params.from = searchParams.value.from;
+        params.to = searchParams.value.to;
+      } else {
+        params.searchValue = searchParams.value;
       }
     }
 
-    const data = await api.get('/api/employees/get_employees', {params});
-    if(data.status === 200){
+    const data = await api.get('/api/employees/get_employees', { params });
+    if (data.status === 200) {
       setStudents(data?.data?.data);
       setStudentsAggregate(data?.data?.total);
-      
-      // Store original data only if not in search mode
-      if (!isSearchActive) {
-        setOriginalData(data?.data?.data);
-        setOriginalTotal(data?.data?.total);
-      }
     }
-  } catch(error) {
+  } catch (error) {
     console.error("Error fetching employees:", error);
     toaster.error("Failed to load employees");
   } finally {
     setLoading(false);
     nProgress.done();
   }
-};
+}, [searchParams]);
 
+  const fetchData = useCallback(
+    (pageIndex, pageSize, sortBy) => {
+      let sortByField = "employee_id";
+      let sortOrder = "asc";
 
-  useEffect(() => {
-    fetchData(0, paginationPageSize, []);
-  }, []);
+      if (sortBy.length) {
+        sortByField = sortBy[0].id;
+        sortOrder = sortBy[0].desc ? "desc" : "asc";
+      }
 
-  useEffect(() => {
-    setPaginationPageIndex(0);
-  }, [activeTab.key, activeStatus]);
+      const offset = pageIndex * pageSize;
+      getEmployees(pageSize, offset, sortByField, sortOrder);
+    },
+    [getEmployees]
+  );
 
-
-
-  const onRowClick = (row)=>{
+  const onRowClick = (row) => {
     history.push(`/employee/${row.id}`);
-  }
-  const loadDefaultOptions = async(dropDownField)=>{
-    const searchPickList = await LoadSearchPicklist(dropDownField)
-    // setDefaultSearchOptions(searchPickList);
-    return searchPickList;
+  };
 
-  }
+  const loadDefaultOptions = async (dropDownField) => {
+    const searchPickList = await LoadSearchPicklist(dropDownField);
+    return searchPickList;
+  };
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     setSelectedFile(file);
   };
+
   const search = async (SearchProps) => {
     try {
-      setIsSearchActive(true);
-      setField(SearchProps.searchField);
+      setSearchParams({
+        isActive: true,
+        field: SearchProps.searchField,
+        value: SearchProps.from && SearchProps.to 
+          ? { from: SearchProps.from, to: SearchProps.to }
+          : SearchProps.searchValue
+      });
       
-      // Store the search value appropriately
-      if (SearchProps.from && SearchProps.to) {
-        setValue({ from: SearchProps.from, to: SearchProps.to });
-      } else {
-        setValue(SearchProps.searchValue);
-      }
-      
-      // Trigger the search with current pagination
-      await getEmployees();
+      // Reset to first page when searching
+      setPaginationPageIndex(0);
     } catch (error) {
       console.error("Search error:", error);
       toaster.error("Search failed");
     }
   };
+
+  const clearSearch = () => {
+    setSearchParams({
+      isActive: false,
+      field: null,
+      value: null
+    });
+    setPaginationPageIndex(0);
+  };
+
   const handleUploadFile = async () => {
     if (!selectedFile) {
       toaster.error("No file selected!", { position: "bottom-center" });
@@ -273,6 +226,8 @@ const getEmployees = async (
       });
       if (response.status === 200) {
         toaster.success("File uploaded successfully!", { position: "bottom-center" });
+        // Refresh data after upload
+        fetchData(0, paginationPageSize, []);
       } else {
         toaster.error("File upload failed!", { position: "bottom-center" });
       }
@@ -285,102 +240,54 @@ const getEmployees = async (
     }
   };
 
-const ToastOnSuccess = ()=>{
-  toaster.success("Employee created successfully!",{ position: "bottom-center" })
-}
-const ToastOnFailure = (value)=>{
-  toaster.error("Failed to create employee!",{ position: "bottom-center" })
-}
-const fetchData = useCallback(
-  (pageIndex, pageSize, sortBy,isSearchActive) => {
-    let sortByField = "employee_id";
-    let sortOrder = "asc";
+  const ToastOnSuccess = () => {
+    toaster.success("Employee created successfully!", { position: "bottom-center" });
+  };
 
-    console.log("isSearch",isSearchActive)
+  const ToastOnFailure = (value) => {
+    toaster.error("Failed to create employee!", { position: "bottom-center" });
+  };
 
-    if (sortBy.length) {
-      sortByField = sortBy[0].id;
-      sortOrder = sortBy[0].desc ? "desc" : "asc";
-    }
-
-    const offset = pageIndex * pageSize;
-
-    if (isSearchActive) {
-      const searchParams = {
-        limit: pageSize,
-        offset,
-        sortBy: sortByField,
-        sortOrder,
-        searchField: Field,
-        searchValue: value,
-      };
-      if (Field === "date_of_joining" && typeof value === "object") {
-        searchParams.from = value.from;
-        searchParams.to = value.to;
-      }
-
-      getEmployees(
-        searchParams.limit,
-        searchParams.offset,
-        searchParams.sortBy,
-        searchParams.sortOrder
-      );
-    } else {
-      getEmployees(pageSize, offset, sortByField, sortOrder);
-    }
-  },
-  [isSearchActive, Field, value]
-);
+  useEffect(() => {
+    fetchData(0, paginationPageSize, []);
+  }, [fetchData, paginationPageSize]);
 
   return (
-   <>
-    <div className="d-flex justify-content-between align-items-center">
+    <>
+      <div className="d-flex justify-content-between align-items-center">
         <div className="col">
           <SearchBar
-          searchFieldOptions={optionsForSearch}
-          defaultSearchOptions={defaultSearchOptions}
-          searchValueOptions={[]}
-          handleSearch = {search}
-          handleSearchPicklist = {loadDefaultOptions}
-          isDisable={isDisable}
-          setIsDisable={setIsDisable}
-          turnSearchOff={()=>setIsSearchActive(false)}
-          refreshOnClear={()=>refreshOnClear(paginationPageIndex,paginationPageSize)}
-          storeField = {(e)=>setField(e)}
-          storeValue={(e)=>setValue(e)}
+            searchFieldOptions={optionsForSearch}
+            defaultSearchOptions={defaultSearchOptions}
+            searchValueOptions={[]}
+            handleSearch={search}
+            handleSearchPicklist={loadDefaultOptions}
+            isDisable={!searchParams.isActive}
+            turnSearchOff={clearSearch}
+            storeField={(e) => setSearchParams(prev => ({...prev, field: e}))}
+            storeValue={(e) => setSearchParams(prev => ({...prev, value: e}))}
           />
         </div>
-        {isAdmin === "true" && <div className="col-2 d-flex justify-content-end mr-2 mt-4">
-          <Dropdown className="d-inline">
-          <Dropdown.Toggle
-                    variant="secondary"
-                    id="dropdown-basic"
-                    className="bulk_action_button_sec mr-3"
-                  >
-                    ACTIONS
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    <Dropdown.Item
-                      onClick={() => setShowUploadExcelInput(true)}
-                      className="d-flex align-items-center"
-                      >
-                      Upload Excel
-
-                    </Dropdown.Item>
-                    <Dropdown.Item
-                      onClick={() => downloadTableExcel()}
-                    >
-                        Download Excel
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                  </Dropdown>
-        <button
-            className="btn btn-primary add_button_sec"
-            onClick={() => setModalShow(true)}
-          >
-            Add New
-          </button>
-        </div>}
+        {isAdmin === "true" && (
+          <div className="col-2 d-flex justify-content-end mr-2 mt-4">
+            <Dropdown className="d-inline">
+              <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="bulk_action_button_sec mr-3">
+                ACTIONS
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Item onClick={() => setShowUploadExcelInput(true)} className="d-flex align-items-center">
+                  Upload Excel
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => downloadTableExcel()}>
+                  Download Excel
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+            <button className="btn btn-primary add_button_sec" onClick={() => setModalShow(true)}>
+              Add New
+            </button>
+          </div>
+        )}
       </div>
       <Styled>
         <div className="row m-1">
@@ -395,9 +302,7 @@ const fetchData = useCallback(
               onPageSizeChange={setPaginationPageSize}
               paginationPageIndex={paginationPageIndex}
               onPageIndexChange={setPaginationPageIndex}
-              isSearchEnable={isSearchActive}
-              selectedSearchField={selectedSearchField}
-              selectedSearchedValue={selectedSearchedValue}
+              isSearchEnable={searchParams.isActive}
               onRowClick={onRowClick}
             />
           </div>
@@ -407,7 +312,7 @@ const fetchData = useCallback(
             <EmployeesGrid
               data={students}
               isSidebarOpen={isSidebarOpen}
-              totalRecords={studentsAggregate.count}
+              totalRecords={studentsAggregate}
               fetchData={() => {}}
               paginationPageSize={paginationPageSize}
               onPageSizeChange={setPaginationPageSize}
@@ -416,16 +321,15 @@ const fetchData = useCallback(
             />
           </div>
         </div>
-        {
-          modalShow && (
-            <EmployeeForm
-              show={modalShow}
-              onHide={() => setModalShow(false)}
-              onSuccess={ToastOnSuccess}
-              onFailure={ToastOnFailure}
-            />
-          )
-        }
+        {modalShow && (
+          <EmployeeForm
+            show={modalShow}
+            onHide={() => setModalShow(false)}
+            onSuccess={ToastOnSuccess}
+            onFailure={ToastOnFailure}
+            refreshData={() => fetchData(paginationPageIndex, paginationPageSize, [])}
+          />
+        )}
         {showUploadExcelInput && (
           <Modal
             centered
@@ -459,9 +363,8 @@ const fetchData = useCallback(
             </Modal.Body>
           </Modal>
         )}
-
       </Styled>
-   </>
+    </>
   );
 };
 

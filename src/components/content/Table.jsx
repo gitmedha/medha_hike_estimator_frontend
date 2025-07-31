@@ -11,8 +11,8 @@ const StickyPagination = styled.div`
   background: white;
   padding: 10px;
   border-top: 1px solid #d7d7e0;
-  @media screen and (max-width:431px){
-    padding-bottom:10px;
+  @media screen and (max-width: 431px) {
+    padding-bottom: 10px;
   }
 `;
 
@@ -69,7 +69,7 @@ const Styles = styled.div`
   }
 
   .mobile {
-    border:1.5px solid #d7d7e0;
+    border: 1.5px solid #d7d7e0;
     .row {
       padding-top: 15px;
       padding-bottom: 15px;
@@ -98,13 +98,12 @@ const Styles = styled.div`
     padding-right: 15px;
   }
 
-  @media screen and (max-width:431px){
-    min-height:180px;
+  @media screen and (max-width: 431px) {
+    min-height: 180px;
   }
 `;
 
 const Table = ({
-  isSearchEnable,
   columns,
   data,
   fetchData,
@@ -118,7 +117,7 @@ const Table = ({
   paginationPageIndex = 0,
   onPageIndexChange = () => {},
   collapse_tab_name = null,
-  reviewCycle = null,
+  isSearchEnable = false,
 }) => {
   const tableInstance = useTable(
     {
@@ -150,21 +149,14 @@ const Table = ({
   const rowClickFunctionExists = typeof onRowClick === "function";
 
   const handleRowClick = (row) => {
-    if (typeof onRowClick === "function") {
+    if (rowClickFunctionExists) {
       onRowClick(row.original);
     }
   };
 
   React.useEffect(() => {
-    if(isSearchEnable){
-      fetchData(pageIndex, pageSize, sortBy,isSearchEnable);
-
-    }else {
-      fetchData(pageIndex, pageSize, sortBy,reviewCycle);
-
-    }
-
-  }, [fetchData, pageIndex, pageSize, sortBy,isSearchEnable]);
+    fetchData(pageIndex, pageSize, sortBy);
+  }, [pageIndex, pageSize, sortBy, isSearchEnable]);
 
   React.useEffect(() => {
     onPageSizeChange(pageSize);
