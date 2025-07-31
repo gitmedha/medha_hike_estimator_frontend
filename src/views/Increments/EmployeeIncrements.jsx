@@ -98,6 +98,7 @@ function EmployeeIncrements(props) {
   };
 
   const handleBulkOperations = async(lastClicked) => {
+    console.log("Last Clicked:", lastClicked);
     switch (lastClicked) {
       case "bulkRatings":
         bulkRatings(reviewCycle || localStorage.getItem('appraisal_cycle'));
@@ -447,7 +448,6 @@ console.error(e.message);
 
       const bulkRatings = async (reviewCycle) =>{
         try{
-          setIsBulkLoading(true);
           await calculateBulkNormalizeRating(reviewCycle);
           const data = await fetchAllIncrements(paginationPageIndex, pageSize);
           setIncrementData(data.data);
@@ -457,7 +457,6 @@ console.error(e.message);
         }catch(e){
           console.error(e.message);
         }finally {
-          setIsBulkLoading(false);
           window.location.reload();
         }
         
@@ -569,8 +568,6 @@ const handleUploadFile = async () => {
 
   const calculateBulkIncrement = async (reviewCycle)=>{
     try{
-      
-      setIsBulkLoading(true);
       await bulkIncrement(reviewCycle);
       const data = await fetchAllIncrements(paginationPageIndex, pageSize);
       setIncrementData(data.data);
@@ -579,7 +576,6 @@ const handleUploadFile = async () => {
   catch(e){
 console.error(e);
   }finally {
-    setIsBulkLoading(false);
     window.location.reload();
 
   }
@@ -588,7 +584,6 @@ console.error(e);
 const calculateBulkWeightedIncrement =  async (reviewCycle)=>{
   setShowConfirmationModal(true);
   try{
-    setIsBulkLoading(true);
     await bulkWeightedIncrement(reviewCycle);
     const data = await fetchAllIncrements(paginationPageIndex, pageSize);
     setIncrementData(data.data);
@@ -599,7 +594,6 @@ catch(e){
     console.error(e);
 }
 finally {
-  setIsBulkLoading(false);
   window.location.reload();
 
 }
