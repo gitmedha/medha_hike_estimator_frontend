@@ -1,40 +1,35 @@
 import nProgress from "nprogress";
-import { useState,useMemo, useCallback, useRef } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import Table from "../../components/content/Table";
 import { useHistory } from "react-router-dom";
 import toaster from "react-hot-toast";
 import api from "../../apis";
-
-import { setAlert } from "../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
 import SearchBar from "../../components/layout/SearchBar";
-import {searchHistorics,LoadSearchPicklist,downloadTableExcel} from "./HistoricComponents/HistoricActions";
+import { searchHistorics, LoadSearchPicklist, downloadTableExcel } from "./HistoricComponents/HistoricActions";
 import HistoricForm from "./HistoricComponents/HistoricForm";
-import { Dropdown,Modal,Button } from 'react-bootstrap';
-
-const tabPickerOptions = [
-  { title: "My Data", key: "my_data" },
-  { title: "My Area", key: "my_area" },
-  { title: "My State", key: "my_state" },
-  { title: "All Medha", key: "all_medha" },
-];
+import { Dropdown, Modal, Button } from 'react-bootstrap';
+import { setAlert } from "../../store/reducers/Notifications/actions";
 
 const Historics = (props) => {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
-  const [employersAggregate, setEmployersAggregate] = useState([]);
   const [employers, setEmployers] = useState([]);
+  const [employersAggregate, setEmployersAggregate] = useState(0);
   const [modalShow, setModalShow] = useState(false);
   const pageSize = parseInt(localStorage.getItem("tablePageSize")) || 25;
+  const isAdmin = localStorage.getItem('admin');
   const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
-  const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
-  const [isSearchEnable, setIsSearchEnable] = useState(false);
-  const [isDisable,setIsDisable] = useState(true);
-  
-  const [showUploadExcelInput,setShowUploadExcelInput] = useState(false);
+  const [paginationPageIndex, setPaginationPageIndex] = useState(0);
+  const [showUploadExcelInput, setShowUploadExcelInput] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
-const isAdmin = localStorage.getItem('admin');
-
+  
+  // Search related state
+  const [searchParams, setSearchParams] = useState({
+    isActive: false,
+    field: null,
+    value: null
+  });
 
   const columns = useMemo(
     () => [
@@ -70,135 +65,113 @@ const isAdmin = localStorage.getItem('admin');
     []
   );
 
+  const optionsForSearch = [
+    { label: "Employee", value: "employee", key: 0 },
+    { label: "Reviewer", value: "reviewer", key: 1 },
+    { key: 2, label: "Kra", value: "kra_vs_goals" },
+    { key: 3, label: "Competency", value: "competency" },
+    { key: 4, label: "Average", value: "final_score" },
+    { key: 5, label: "Start Month", value: "start_month" },
+    { key: 6, label: "Ending Month", value: "ending_month" }
+  ];
 
-  const getEmployers = async (
-    selectedTab,
-    limit = paginationPageSize,
-    offset = 0,
-    sortBy = "employee",
-    sortOrder = "asc"
-  ) => {
+  const getEmployers = useCallback(async (limit, offset, sortBy, sortOrder) => {
     nProgress.start();
     setLoading(true);
     try {
       const params = {
-        limit: limit,
-        offset: offset,
-        sortBy:sortBy,
-        sortOrder:sortOrder
+        limit,
+        offset,
+        sortBy,
+        sortOrder
       };
-      
-      const data = await api.get('/api/historical_data/get_historical_data', {params});
-      if(data.status === 200){
+
+      if (searchParams.isActive && searchParams.field) {
+        params.searchField = searchParams.field;
+        
+        if (searchParams.field === "start_month" || searchParams.field === "ending_month") {
+          if (typeof searchParams.value === 'object') {
+            params.from = searchParams.value.from;
+            params.to = searchParams.value.to;
+          } else {
+            params.searchValue = searchParams.value;
+          }
+        } else {
+          params.searchValue = searchParams.value;
+        }
+      }
+
+      const data = await api.get('/api/historical_data/get_historical_data', { params });
+      if (data.status === 200) {
         setEmployers(data?.data?.data);
         setEmployersAggregate(data?.data?.total);
-        setLoading(false);
-        nProgress.done();
       }
-    
+    } catch (error) {
+      console.error("Error fetching historical data:", error);
+      toaster.error("Failed to load historical data");
+    } finally {
+      setLoading(false);
+      nProgress.done();
     }
-    catch(error){
-        setLoading(false);
-        nProgress.done();
-        return Promise.reject(error);
+  }, [searchParams]);
+
+  const fetchData = useCallback(
+    (pageIndex, pageSize, sortBy) => {
+      let sortByField = "employee";
+      let sortOrder = "asc";
+
+      if (sortBy.length) {
+        sortByField = sortBy[0].id;
+        sortOrder = sortBy[0].desc ? "desc" : "asc";
+      }
+
+      const offset = pageIndex * pageSize;
+      getEmployers(pageSize, offset, sortByField, sortOrder);
+    },
+    [getEmployers]
+  );
+
+  const search = async (SearchProps) => {
+    try {
+      setSearchParams({
+        isActive: true,
+        field: SearchProps.searchField,
+        value: (SearchProps.from && SearchProps.to) 
+          ? { from: SearchProps.from, to: SearchProps.to }
+          : SearchProps.searchValue
+      });
+      
+      // Reset to first page when searching
+      setPaginationPageIndex(0);
+    } catch (error) {
+      console.error("Search error:", error);
+      toaster.error("Search failed");
     }
   };
 
-  const fetchData = useCallback(
-    (
-      pageIndex,
-      pageSize,
-      sortBy,
-      isSearchEnable,
-    ) => {
-      if (sortBy.length) {
-        let sortByField = "employee_id";
-        let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
-        if(sortBy[0].id){
-          sortByField = sortBy[0].id;
-        }
-        if (isSearchEnable) {
-         
-        } else {
-          getEmployers(
-            activeTab.key,
-            pageSize,
-            pageSize * pageIndex,
-            sortByField,
-            sortOrder
-          );
-        }
-      } else {
-        if (isSearchEnable) {
-         
-        } else {
-          getEmployers(activeTab.key, pageSize, pageSize * pageIndex);
-        }
-      }
-    },
-    [activeTab.key]
-  );
+  const clearSearch = () => {
+    setSearchParams({
+      isActive: false,
+      field: null,
+      value: null
+    });
+    setPaginationPageIndex(0);
+  };
 
-  const onRowClick = (row)=>{
-    history.push(`/historic/${row.id}`);
-  }
-
-  const optionsForSearch = [
-    {
-      label: "Employee",
-      value: "employee",
-      key: 0,
-    },
-    {
-      label: "Reviewer",
-      value: "reviewer",
-      key: 1,
-    },{
-    key:2,
-    label: "Kra",
-    value: "kra_vs_goals",
-  },
-  {
-    key:3,
-    label: "Competency",
-    value: "competency",
-  },
-  {
-    key:4,
-    label: "Average",
-    value: "final_score",
-  }, {
-    key:5,
-    label: "Start Month",
-    value: "start_month",
-  }, {
-    key:6,
-    label: "Ending Month",
-    value: "ending_month",
-  }
-  ]
-  const search =async (SearchProps)=>{
-    let historics;
-    historics= await searchHistorics(SearchProps.searchField,SearchProps.searchValue,paginationPageSize);
-  
-    setEmployers(historics.data);
-    setEmployersAggregate(historics.total);
-  }
-
-  const loadDefaultOptions = async(dropDownField)=>{
-    const searchPickList = await LoadSearchPicklist(dropDownField)
+  const loadDefaultOptions = async (dropDownField) => {
+    const searchPickList = await LoadSearchPicklist(dropDownField);
     return searchPickList;
+  };
 
-  }
+  const onFailure = () => {
+    toaster.error("Failed to create historic data", { position: "bottom-center" });
+  };
 
-  const onFailure = ()=>{
-    toaster.error("Failed to create historic data",{ position: "bottom-center" });
-  }
-  const onSuccess = ()=>{
-    toaster.success("Created the historic data successfully!",{ position: "bottom-center" })
-  }
+  const onSuccess = () => {
+    toaster.success("Created the historic data successfully!", { position: "bottom-center" });
+    fetchData(paginationPageIndex, paginationPageSize, []);
+  };
 
-  
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     setSelectedFile(file);
@@ -220,6 +193,7 @@ const isAdmin = localStorage.getItem('admin');
       });
       if (response.status === 200) {
         toaster.success("File uploaded successfully!", { position: "bottom-center" });
+        fetchData(0, paginationPageSize, []);
       } else {
         toaster.error("File upload failed!", { position: "bottom-center" });
       }
@@ -232,110 +206,109 @@ const isAdmin = localStorage.getItem('admin');
     }
   };
 
-  
+  const onRowClick = (row) => {
+    history.push(`/historic/${row.id}`);
+  };
+
+  useEffect(() => {
+    fetchData(0, paginationPageSize, []);
+  }, [fetchData, paginationPageSize]);
+
   return (
     <>
-    <div className="d-flex justify-content-between align-items-center p-2">
+      <div className="d-flex justify-content-between align-items-center p-2">
         <div className="col">
           <SearchBar
-          searchFieldOptions={optionsForSearch}
-          searchValueOptions={[]}
-          handleSearch = {search}
-          handleSearchPicklist = {loadDefaultOptions}
-          isDisable={isDisable}
-          setIsDisable={setIsDisable}
+            searchFieldOptions={optionsForSearch}
+            searchValueOptions={[]}
+            handleSearch={search}
+            handleSearchPicklist={loadDefaultOptions}
+            isDisable={!searchParams.isActive}
+            turnSearchOff={clearSearch}
+            storeField={(e) => setSearchParams(prev => ({...prev, field: e}))}
+            storeValue={(e) => setSearchParams(prev => ({...prev, value: e}))}
           />
         </div>
-        {isAdmin === "true" && <div className="col-4 d-flex justify-content-end mt-4">
-        <Dropdown className="d-inline" style={{marginRight: '10px'}}>
-          <Dropdown.Toggle
-                    variant="secondary"
-                    id="dropdown-basic"
-                    className="bulk_action_button_sec"
-                  >
-                    ACTIONS
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    <Dropdown.Item
-                      onClick={() => setShowUploadExcelInput(true)}
-                      className="d-flex align-items-center"
-                      >
-                      Upload Excel
-
-                    </Dropdown.Item>
-                    <Dropdown.Item
-                      onClick={() => downloadTableExcel()}
-                    >
-                        Download Excel
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                  </Dropdown>
-
-        <button
-            className="btn btn-primary add_button_sec ml-2"
-            onClick={() => setModalShow(true)}
-          >
-            Add New
-          </button>
-        </div>}
+        {isAdmin === "true" && (
+          <div className="col-4 d-flex justify-content-end mt-4">
+            <Dropdown className="d-inline" style={{marginRight: '10px'}}>
+              <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="bulk_action_button_sec">
+                ACTIONS
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Item onClick={() => setShowUploadExcelInput(true)} className="d-flex align-items-center">
+                  Upload Excel
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => downloadTableExcel()}>
+                  Download Excel
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+            <button
+              className="btn btn-primary add_button_sec ml-2"
+              onClick={() => setModalShow(true)}
+            >
+              Add New
+            </button>
+          </div>
+        )}
       </div>
       <div style={{ padding: "0 17px" }}>
         <Table
           columns={columns}
           data={employers}
-          paginationPageSize={paginationPageSize}
           totalRecords={employersAggregate}
           fetchData={fetchData}
           loading={loading}
+          paginationPageSize={paginationPageSize}
           onPageSizeChange={setPaginationPageSize}
-          isSearchEnable={isSearchEnable}
+          paginationPageIndex={paginationPageIndex}
+          onPageIndexChange={setPaginationPageIndex}
+          isSearchEnable={searchParams.isActive}
           onRowClick={onRowClick}
         />
       </div>
-      {
-        modalShow && (
-          <HistoricForm
-            show={modalShow}
-            onHide={() => setModalShow(false)}
-            onFailure={onFailure}
-            onSuccess={onSuccess}
-          />
-        )
-      }
+      {modalShow && (
+        <HistoricForm
+          show={modalShow}
+          onHide={() => setModalShow(false)}
+          onFailure={onFailure}
+          onSuccess={onSuccess}
+        />
+      )}
       {showUploadExcelInput && (
-          <Modal
-            centered
-            size="sm"
-            show={true}
-            onHide={() => setShowUploadExcelInput(false)}
-            animation={false}
-            aria-labelledby="contained-modal-title-vcenter"
-          >
-            <Modal.Header closeButton>
-              <Modal.Title>Upload Excel</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <div className="uploader-container">
-                <input
-                  accept=".xlsx, .xls"
-                  type="file"
-                  name="file-uploader"
-                  onChange={handleFileChange}
-                  className="form-control mb-3"
-                />
-                {selectedFile && (
-                  <p className="text-center text-primary">
-                    Selected File: <strong>{selectedFile.name}</strong>
-                  </p>
-                )}
-                <Button variant="primary" className="w-100" onClick={handleUploadFile}>
-                  Upload File
-                </Button>
-              </div>
-            </Modal.Body>
-          </Modal>
-        )}
-
+        <Modal
+          centered
+          size="sm"
+          show={true}
+          onHide={() => setShowUploadExcelInput(false)}
+          animation={false}
+          aria-labelledby="contained-modal-title-vcenter"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Upload Excel</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="uploader-container">
+              <input
+                accept=".xlsx, .xls"
+                type="file"
+                name="file-uploader"
+                onChange={handleFileChange}
+                className="form-control mb-3"
+              />
+              {selectedFile && (
+                <p className="text-center text-primary">
+                  Selected File: <strong>{selectedFile.name}</strong>
+                </p>
+              )}
+              <Button variant="primary" className="w-100" onClick={handleUploadFile}>
+                Upload File
+              </Button>
+            </div>
+          </Modal.Body>
+        </Modal>
+      )}
     </>
   );
 };
