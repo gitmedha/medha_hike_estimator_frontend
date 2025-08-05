@@ -118,6 +118,7 @@ const Table = ({
   onPageIndexChange = () => {},
   collapse_tab_name = null,
   isSearchEnable = false,
+  isFilterApplied = false,
 }) => {
   const tableInstance = useTable(
     {
@@ -155,8 +156,8 @@ const Table = ({
   };
 
   React.useEffect(() => {
-    fetchData(pageIndex, pageSize, sortBy);
-  }, [pageIndex, pageSize, sortBy, isSearchEnable]);
+    fetchData(pageIndex, pageSize, sortBy,isSearchEnable,isFilterApplied);
+  }, [pageIndex, pageSize, sortBy, isSearchEnable,isFilterApplied]);
 
   React.useEffect(() => {
     onPageSizeChange(pageSize);

@@ -1,14 +1,39 @@
 import api from "../../../apis";
 
 
-export const fetchAllIncrements = async(offset,limit,sortBy='employee_id',sortOrder='asc')=>{
-    try{
-        const response = await api.get(`/api/increments/get-increment-data/${limit}/${offset}/${sortBy}/${sortOrder}`);
-        return response.data;
-    }catch(error){
-        console.error(error);
-    }
-}
+export const fetchAllIncrements = async (
+  offset,
+  limit,
+  sortBy = 'employee_id',
+  sortOrder = 'asc',
+  searchField = '',
+  searchValue = '',
+  filters = {}
+) => {
+    console.log("searchField:", searchField);
+    console.log("searchValue:", searchValue);
+    console.log("filters:", filters);
+  try {
+    const params = {
+      ...filters,
+      ...(searchField && searchValue && { 
+        searchField, 
+        searchValue 
+      })
+    };
+    console.log("Fetching increments with params:", params);
+
+    const response = await api.get(
+      `/api/increments/get-increment-data/${limit}/${offset}/${sortBy}/${sortOrder}`,
+      { params }
+    );
+    
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching increments:', error);
+    throw error; // Re-throw to allow error handling by the caller
+  }
+};
 
 export const fetchIncrement = async(incrementId,review_cycle) => {
     try{
@@ -115,6 +140,9 @@ export const calculateIncrement = async(employeeId,reviewCycle,normalizedRating)
 }
 
 export const search = async(field,value,limit,page, reviewCycle)=>{
+    console.log("Searching for:", field, value, limit, page, reviewCycle);
+
+    
     try{
         const response = await api.post(`/api/increments/search-increment-data`, {
             "field": field,
