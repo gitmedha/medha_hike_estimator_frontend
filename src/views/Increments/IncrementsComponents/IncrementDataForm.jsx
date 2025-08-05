@@ -89,6 +89,7 @@ function IncrementDataForm(props) {
       value:'VI'
      }])
     const [IDs,setIDs] = useState([]);
+    console.log("props.IncrementData", props.IncrementData);
     let navigation = useHistory();
     const initialValues = {
         average:props?.IncrementData?.average || 0,
@@ -100,65 +101,64 @@ function IncrementDataForm(props) {
         inc_adjustments:props?.IncrementData?.inc_adjustments || "0",
         increment:props?.IncrementData?.increment || "0",
         kra_vs_goals:props?.IncrementData?.kra_vs_goals || 0,
-        long_tenure:props?.IncrementData?.long_tenure || "No",
+        long_tenure:props?.IncrementData?.long_tenure ? "Yes" :"No",
         manager:props?.IncrementData?.manager || "",
         new_band:props?.IncrementData?.new_band || "",
         new_salary:props?.IncrementData?.new_salary || "",
         normalize_rating:props?.IncrementData?.normalize_rating || 0,
         tenure:props?.IncrementData?.tenure || 0,
         weighted_increment:props?.IncrementData?.weighted_increment || "0",
-        from_review_cycle:props?.IncrementData?.from_review_cycle || null,
-        to_review_cycle:props?.IncrementData?.to_review_cycle || null
+        from_review_cycle:props?.IncrementData?.appraisal_cycle?.split('-')[0] || null,
+        to_review_cycle:props?.IncrementData?.appraisal_cycle?.split('-')[1] || null
     }
 
-    const onSubmit = async (values)=>{
-      console.log("working")
-      nProgress.start();
-        try{
-        let newValues = {...values};
-        
-        newValues.long_tenure = values.long_tenure === "Yes" ? true : false;
-        newValues.normalize_rating = parseFloat(values.normalize_rating);
-        newValues.compentency = parseFloat(values.compentency);
-        newValues.average = parseFloat(values.average);
-        newValues.kra_vs_goals = parseFloat(values.kra_vs_goals);
-        newValues.tenure = parseFloat(values.tenure);
-        newValues.from_review_cycle = moment(values.from_review_cycle).format("MMMM YYYY");
-        newValues.to_review_cycle = moment(values.to_review_cycle).format("MMM YYYY");
 
+const onSubmit = async (values) => {
+  nProgress.start();
+  try {
+    let newValues = { ...values };
+    
+    // Process boolean field
+    newValues.long_tenure = values.long_tenure === "Yes" ? true : false;
+    
+    // Process numeric fields
+    newValues.normalize_rating = parseFloat(values.normalize_rating);
+    newValues.compentency = parseFloat(values.compentency);
+    newValues.average = parseFloat(values.average);
+    newValues.kra_vs_goals = parseFloat(values.kra_vs_goals);
+    newValues.tenure = parseFloat(values.tenure);
+    
+    // Combine review cycles into appraisal_cycle
+    newValues.appraisal_cycle = `${moment(values.from_review_cycle).format("MMMM YYYY")}-${moment(values.to_review_cycle).format("MMM YYYY")}`;
+    
+    // Remove the individual cycle fields
+    delete newValues.from_review_cycle;
+    delete newValues.to_review_cycle;
 
-          if(props.IncrementData){
-            
-            await updateIncrement(newValues,props.IncrementData.id);
-            onHide();
-            toaster.success('Details updated successfully!',{ position: "bottom-center" })
+    if (props.IncrementData) {
+      await updateIncrement(newValues, props.IncrementData.id);
+      onHide();
+      toaster.success('Details updated successfully!', { position: "bottom-center" });
+      nProgress.done();
+      setTimeout(() =>window.location.href = `/increment_employee/${props.IncrementData.employee_id}`,2000);
 
-            setTimeout(() =>window.location.href = `/increment_employee/${props.IncrementData.employee_id}`,2000);
-            nProgress.done();
-
-          }
-          else {
-           const{id} =  await createIncrement(newValues);
-           onHide();
-           props.ToastOnSuccess()
-          //  setTimeout(() => navigation.push(`/increment_employee/${id[0].employee_id}`),2000);
-          nProgress.done();
-
-          }
-
-        }catch(error){
-          onHide();
-          nProgress.done();
-          if(props.ToastOnFailure){
-            props.ToastOnFailure();
-          }
-          else {
-            toaster.error('Failed to update details!',{ position: "bottom-center" })
-          }
-          console.error(error)
-        }
+    } else {
+      const { id } = await createIncrement(newValues);
+      onHide();
+      props.ToastOnSuccess();
+      nProgress.done();
     }
-
+  } catch (error) {
+    onHide();
+    nProgress.done();
+    if (props.ToastOnFailure) {
+      props.ToastOnFailure();
+    } else {
+      toaster.error('Failed to update details!', { position: "bottom-center" });
+    }
+    console.error(error);
+  }
+};
     useEffect(()=>{
         async function setInitialFields(){
             const data = await fetchIncrementPickList();
@@ -285,18 +285,16 @@ function IncrementDataForm(props) {
                           Review Cycle <span style={{color:'red', fontSize:'16px'}}>*</span>
                         </label>
                         <div className="d-flex justify-content-between">
-                           <ReviewCycleInput
+                          <ReviewCycleInput
                           name="from_review_cycle"
                           label="From"
-                          className=""
-                          required
-                        />
-                        <ReviewCycleInput
-                          name="to_review_cycle"
-                          label="To"
                           required
                         />
 
+                        <ReviewCycleInput
+                          name="to_review_cycle"
+                          label="To"
+/>
                         </div>
                        
                        
@@ -327,6 +325,8 @@ function IncrementDataForm(props) {
                             label: 'Yes'}
                           ]}
                           className="form-control"
+                          defaultValue={props.IncrementData ? props.IncrementData.long_tenure ? 'Yes' : 'No' : 'No'}
+                          onChange={(e) => handleInputChange("long_tenure", e.value === 'Yes' ? "Yes" : "No")}
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mt-2">

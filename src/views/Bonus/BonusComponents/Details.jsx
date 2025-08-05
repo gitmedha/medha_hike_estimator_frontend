@@ -1,9 +1,10 @@
+
+
 import moment from 'moment';
 import DetailField from "../../../components/content/DetailField";
 import styled from "styled-components";
 import { Dropdown } from 'react-bootstrap';
 import profileImage from '../../../assets/images/profile-user.png'
-
 
 const Styled = styled.div`
   p, label {
@@ -92,6 +93,10 @@ const Details = (props) => {
     weighted_bonus
   } = props;
 
+  // Helper function to display value or #
+  const displayValue = (value) => {
+    return value === undefined || value === null || value === '' ? '#' : value;
+  };
 
   return (
     <Styled>
@@ -102,44 +107,59 @@ const Details = (props) => {
               <div className="status-icon">
                 <i className="far fa-circle text-success"></i>
               </div>
-              <img className="img-profile" src={profileImage} alt={full_name} />
+              <img className="img-profile" src={profileImage} alt={displayValue(full_name)} />
             </div>
           </div>
           <div className="col">
             <div className="row">
               <div className="col-2">
-              <DetailField label="Name" className="capitalize" value={`${full_name}`?.toLowerCase()} />
+                <DetailField 
+                  label="Employee ID" 
+                  className="capitalize" 
+                  value={displayValue(employee_id)?.toLowerCase()} 
+                />
               </div>
               <div className="col-2">
-              <DetailField label="Employee ID" className="capitalize" value={employee_id?.toLowerCase()} />
+                <DetailField 
+                  label="Name" 
+                  className="capitalize" 
+                  value={displayValue(full_name)?.toLowerCase()} 
+                />
               </div>
               <div className="col-2">
-              <DetailField label="Reviewer" className="capitalize" value={manager}/>
+                <DetailField 
+                  label="Reviewer" 
+                  className="capitalize" 
+                  value={displayValue(manager)}
+                />
               </div>
-              <div className="col-2">
-              <DetailField label="Review Cycle" value={review_cycle} />
-              </div>
-              <div className="col-2">
-              <DetailField label="Average Rating" value={average} />
+              <div className="col-auto">
+                <DetailField 
+                  label="Review Cycle" 
+                  value={displayValue(review_cycle)} 
+                />
               </div>
             </div>
             <div className="row">
               <div className="col-2">
-              <DetailField label="Compentency" value={compentency} />
+                <DetailField label="KRA" value={displayValue(kra)} />
               </div>
               <div className="col-2">
-              <DetailField label="Bonus" value={bonus} />
+                <DetailField label="Competency" value={displayValue(compentency)} />
               </div>
               <div className="col-2">
-              <DetailField label="KRA" value={kra} />
+                <DetailField label="Average Rating" value={displayValue(average)} />
+              </div>
+              <div className="col-auto">
+                <DetailField label="Normalized Rating" value={displayValue(normalized_ratings)} />
               </div>
             </div>
             <div className="row">
               <div className="col-2">
-              <DetailField label="Normalized Rating" value={normalized_ratings} />
+                <DetailField label="Bonus" value={displayValue(bonus)} />
               </div>
               <div className="col-2">
-              <DetailField label="Weighted Bonus" value={weighted_bonus} />
+                <DetailField label="Weighted Bonus" value={displayValue(weighted_bonus)} />
               </div>
             </div>
           </div>
@@ -150,3 +170,4 @@ const Details = (props) => {
 };
 
 export default Details;
+

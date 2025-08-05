@@ -98,6 +98,10 @@ const Details = (props) => {
     weighted_increment
   } = props;
 
+  // Helper function to display value or #
+  const displayValue = (value) => {
+    return value === undefined || value === null || value === '' ? '#' : value;
+  };
 
   return (
     <Styled>
@@ -114,71 +118,81 @@ const Details = (props) => {
           <div className="col">
             <div className="row">
               <div className="col-2">
-              <DetailField label="Name" className="capitalize" value={`${full_name}`?.toLowerCase()} />
+                <DetailField 
+                  label="Name" 
+                  className="capitalize" 
+                  value={displayValue(full_name)?.toLowerCase()} 
+                />
               </div>
               <div className="col-2">
-              <DetailField label="Employee ID" className="capitalize" value={employee_id?.toLowerCase()} />
+                <DetailField 
+                  label="Employee ID" 
+                  className="capitalize" 
+                  value={displayValue(employee_id)?.toLowerCase()} 
+                />
               </div>
               <div className="col-2">
-              <DetailField label="Reviewer" className="capitalize" value={manager}/>
+                <DetailField 
+                  label="Reviewer" 
+                  className="capitalize" 
+                  value={displayValue(manager)}
+                />
               </div>
-              <div className="col-2">
-              <DetailField label="Review Cycle" value={appraisal_cycle} />
+              <div className="col-auto">
+                <DetailField 
+                  label="Review Cycle" 
+                  value={displayValue(appraisal_cycle)} 
+                />
               </div>
-              
             </div>
             <div className="row">
-            <div className="col-2">
-              <DetailField label="KRA" value={kra_vs_goals} />
+              <div className="col-2">
+                <DetailField label="KRA" value={displayValue(kra_vs_goals)} />
               </div>
               <div className="col-2">
-              
-              <DetailField label="Compentency" value={compentency} />
+                <DetailField label="Compentency" value={displayValue(compentency)} />
               </div>
               <div className="col-2">
-              <DetailField label="Average Rating" value={average} />
+                <DetailField label="Average Rating" value={displayValue(average)} />
               </div>
               <div className="col-2">
-              <DetailField label="Normalized Rating" value={normalize_rating} />
+                <DetailField label="Normalized Rating" value={displayValue(normalize_rating)} />
               </div>
-              
               <div className="col-2">
-              <DetailField label="Increment" value={increment} />
+                <DetailField label="Increment" value={displayValue(increment)} />
               </div>
-              
               <div className="col-2">
-              <DetailField label="Weighted Increment" value={weighted_increment} />
+                <DetailField label="Weighted Increment" value={displayValue(weighted_increment)} />
               </div>  
             </div>
             <div className="row">
               <div className="col-2">
-              <DetailField label="New band" value={new_band} />
+                <DetailField label="New band" value={displayValue(new_band)} />
               </div>
               <div className="col-2">
-              <DetailField label="New Salary" value={new_salary} />
-              </div>
-             
-              <div className="col-2">
-            <DetailField label="Tenure" value={tenure} />
-              </div>
-              
-              <div className="col-2">
-              <DetailField label="Long tenure" value={long_tenure? "Yes":"No"} />
+                <DetailField label="New Salary" value={displayValue(new_salary)} />
               </div>
               <div className="col-2">
-              <DetailField label="Increment adjustments" value={inc_adjustments} />
+                <DetailField label="Tenure" value={displayValue(tenure)} />
+              </div>
+              <div className="col-2">
+                <DetailField 
+                  label="Long tenure" 
+                  value={long_tenure === undefined || long_tenure === null ? '#' : (long_tenure ? "Yes" : "No")} 
+                />
+              </div>
+              <div className="col-2">
+                <DetailField label="Increment adjustments" value={displayValue(inc_adjustments)} />
               </div>
             </div>
             <div className="row">
-            <div className="col-2">
-              <DetailField label="Current Band" value={current_band} />
-              </div>
-              
               <div className="col-2">
-              <DetailField label="Current Salary" value={current_salary} />
+                <DetailField label="Current Band" value={displayValue(current_band)} />
+              </div>
+              <div className="col-2">
+                <DetailField label="Current Salary" value={displayValue(current_salary)} />
               </div>
             </div>
-            
           </div>
         </div>
       </div>
