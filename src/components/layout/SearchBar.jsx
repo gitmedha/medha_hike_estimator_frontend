@@ -3,6 +3,8 @@ import { Formik, Form, useFormik } from "formik";
 import styled from "styled-components";
 import { Input } from "../../utils/Form";
 import moment from "moment";
+import toaster from 'react-hot-toast';
+
 const Section = styled.div`
   &:not(:first-child) {
     border-top: 1px solid #c4c4c4;
@@ -21,7 +23,6 @@ const Section = styled.div`
   margin-left:10px
 `;
 
-
 function SearchBar(props) {
   const {
     handleSearch,
@@ -36,8 +37,8 @@ function SearchBar(props) {
   const [searchField,setSearchField] = useState(null);
   const [searchValue,setSearchValue] = useState(null);
   const [isDisable,setIsDisable] = useState(!props.isClearDisabled ?false:true);
+  const [dateError, setDateError] = useState(null);
   
-
   let today = new Date();
 
   const initialValues = {
@@ -47,9 +48,26 @@ function SearchBar(props) {
     search_by_value_date: new Date(new Date(today).setDate(today.getDate())),
   };
 
+  const validateDates = (values) => {
+    if (searchField === "date_of_joining") {
+      const fromDate = moment(values.search_by_value_date);
+      const toDate = moment(values.search_by_value_date_to);
+      
+      if (fromDate.isAfter(toDate)) {
+        setDateError("Start date must be before end date");
+        return false;
+      }
+      setDateError(null);
+    }
+    return true;
+  };
+
   const handleSubmit = async(values)=>{
     const searchObj = {};    
     if(searchField === "date_of_joining"){
+      // Validate dates but don't block submission
+      validateDates(values);
+      
       searchObj.from = moment(values.search_by_value_date).format("YYYY-MM-DD");
       searchObj.to = moment(values.search_by_value_date_to).format("YYYY-MM-DD");
       searchObj.searchField = searchField;
@@ -61,9 +79,8 @@ function SearchBar(props) {
     }
     handleSearch(searchObj);
   }
-  const formik = useFormik({
-    // Create a Formik reference using useFormik
 
+  const formik = useFormik({
     initialValues,
     onSubmit: handleSubmit,
   });
@@ -80,9 +97,10 @@ function SearchBar(props) {
     setSearchField(null);
     setSearchValue(null);
     setSearchValueOptions([]);
+    setDateError(null);
     
     if (clearFilters) {
-      clearFilters(); // This will call the clearSearch from Employees
+      clearFilters();
     } else {
       setIsDisable(true);
     }
@@ -92,11 +110,8 @@ function SearchBar(props) {
     await refreshOnClear()
   };
 
-  //search values in the table when it is not there in the default array
-
   const searchNotFound = async (newValue) => {
     let searchField = '';
-
     const query = `
     query GET_VALUE($query: String!) {
       studentsConnection(where: {
@@ -116,10 +131,7 @@ function SearchBar(props) {
       }
     }
   `;
-
   };
-
-  //setting the value of the value drop down
 
   const filterSearchValue = async (newValue) => {
     const matchedObjects = searchValueOptions.filter(
@@ -137,24 +149,19 @@ function SearchBar(props) {
     setProgress(0);
   };
 
-  
   useEffect(() => {
     const setSearchValueDropDown = async () => {
       try {
         const interval = setInterval(() => {
-          // Simulate progress update
           setProgress((prevProgress) =>
             prevProgress >= 90 ? 0 : prevProgress + 5
           );
         }, 1000);
 
-
         clearInterval(interval);
         handleLoaderForSearch();
 
-       const data = await handleSearchPicklist(searchField);
-       
-
+        const data = await handleSearchPicklist(searchField);
         await setSearchValueOptions(data);
         await setDefaultSearchArray(data);
       } catch (error) {
@@ -163,8 +170,8 @@ function SearchBar(props) {
     };
 
     if (searchField) {
-      if(!props.isClearDisabled){
-
+      if(!props.isClearDisabled) {
+        // Additional logic if needed
       }
       
       setIsDisable(false);
@@ -173,10 +180,10 @@ function SearchBar(props) {
   }, [searchField]);
 
   return (
-     <Formik 
-        initialValues={initialValues} 
-        onSubmit={handleSubmit}   
->
+    <Formik 
+      initialValues={initialValues} 
+      onSubmit={handleSubmit}   
+    >
       {(formik) => (
         <Form>
           <Section>
@@ -194,9 +201,9 @@ function SearchBar(props) {
                   className="form-control"
                   onChange={(e) => {
                     setSearchValueOptions([]);
-                    setSearchField(e.value)
+                    setSearchField(e.value);
+                    setDateError(null);
                   }}
-                  // isDisabled={isDisable}
                 />
               </div>
               {searchField !== "date_of_joining" &&(
@@ -255,8 +262,12 @@ function SearchBar(props) {
                         label="From"
                         placeholder="Start Date"
                         control="datepicker"
-                        className="form-control "
+                        className="form-control"
                         autoComplete="off"
+                        onChange={(date) => {
+                          formik.setFieldValue('search_by_value_date', date);
+                          validateDates(formik.values);
+                        }}
                       />
                     </div>
                     <div className="ml-2">
@@ -267,9 +278,16 @@ function SearchBar(props) {
                         control="datepicker"
                         className="form-control"
                         autoComplete="off"
+                        onChange={(date) => {
+                          formik.setFieldValue('search_by_value_date_to', date);
+                          validateDates(formik.values);
+                        }}
                       />
                     </div>
                   </div>
+                  {dateError && (
+                    <div className="text-danger small mt-1">{dateError}</div>
+                  )}
                 </div>
               )}
 
@@ -277,7 +295,7 @@ function SearchBar(props) {
                 <button
                   className="btn btn-primary action_button_sec search_bar_action_sec"
                   type="submit"
-                  disabled={isDisable? true : false}
+                  disabled={isDisable} // Removed dateError from disabled condition
                 >
                   FIND
                 </button>
@@ -285,7 +303,7 @@ function SearchBar(props) {
                   className="btn btn-secondary action_button_sec search_bar_action_sec"
                   type="button"
                   onClick={() => clear(formik)}
-                  disabled={isDisable || isClearDisabled ? true : false}
+                  disabled={isDisable || isClearDisabled}
                   style={{marginLeft:15}}
                 >
                   CLEAR
