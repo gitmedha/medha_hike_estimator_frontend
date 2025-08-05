@@ -66,11 +66,11 @@ function EmployeeIncrements(props) {
   const [loading, setLoading] = useState(false);
   const [incrementData, setIncrementData] = useState([]);
   const [totalCount, setTotalCount] = useState([]);
-  const [layout, setLayout] = useState("list");
+  const [layout] = useState("list");
   const pageSize = parseInt(localStorage.getItem("tablePageSize")) || 25;
   const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
   const [paginationPageIndex, setPaginationPageIndex] = useState(0);
-  const [defaultSearchOptions,setDefaultSearchOptions] = useState([]);
+  const [defaultSearchOptions] = useState([]);
   const [modalShow,setModalShow] = useState(false);
   const [newBandOptions,setNewBandOptions] = useState([]);
   const [currentBandOptions,setCurrentBandOptions] = useState([]);
@@ -91,14 +91,17 @@ function EmployeeIncrements(props) {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [lastClicked, setLastClicked] = useState(null);
   const [uploadStatus, setUploadStatus] = useState("");
-
+  const [isSearchable, setIsSearchable] = useState(false);
+  const [searchField, setSearchField] = useState(null);
+  const [searchValue, setSearchValue] = useState(null);
+  const [isFilterApplied, setIsFilterApplied] = useState(false);
+  
   const handleClick = (e, itemId) => {
     e.preventDefault();
     setLastClicked(itemId);
   };
 
   const handleBulkOperations = async(lastClicked) => {
-    console.log("Last Clicked:", lastClicked);
     switch (lastClicked) {
       case "bulkRatings":
         bulkRatings(reviewCycle || localStorage.getItem('appraisal_cycle'));
@@ -136,6 +139,7 @@ const fetchIncrementByReview = async(pageSize,pageIndex,sortBy,sortOrder,review_
     fields: [],
     values:[]
   }]);
+
     const columns = useMemo(
         () => [
           {
@@ -223,7 +227,7 @@ const fetchIncrementByReview = async(pageSize,pageIndex,sortBy,sortOrder,review_
 
       const fetchData = useCallback(async(pageIndex,
         pageSize,
-        sortBy,)=>{
+        sortBy,isSearchEnable,isFilterApplied)=>{
           let SortField='employee_id';
           let SortOrder='asc';
           if(sortBy.length){
@@ -233,15 +237,56 @@ const fetchIncrementByReview = async(pageSize,pageIndex,sortBy,sortOrder,review_
           }
         nProgress.start();
         setLoading(true);
+        console.log('isSearchEnable',isSearchEnable);
+        console.log('isFilterApplied',isFilterApplied);
+        if(isSearchEnable && isFilterApplied){
+          
+        const data = await fetchAllIncrements(paginationPageIndex, pageSize,SortField,SortOrder,searchField,searchValue,filters);
+        setIncrementData(data.data);
+        setTotalCount(data.totalCount);
+        setLoading(false);
+        nProgress.done();
+        }
+        else if (isSearchEnable){
+          const data = await search(searchField, searchValue,pageSize,paginationPageIndex,reviewCycle || localStorage.getItem('appraisal_cycle'));
+          setIncrementData(data.data);
+          setTotalCount(data.totalCount);
+          setLoading(false);
+          nProgress.done();
+
+        }
+        else if(isFilterApplied){
+          const data = await applyFilterActions(filters,paginationPageIndex,pageSize, reviewCycle || localStorage.getItem('appraisal_cycle'));
+          setIncrementData(data.data);
+          setTotalCount(data.total);
+          setLoading(false);
+          nProgress.done();
+        }
+        else {
+
         const data = await fetchAllIncrements(paginationPageIndex, pageSize,SortField,SortOrder);
         setIncrementData(data.data);
         setTotalCount(data.totalCount);
         setLoading(false);
         nProgress.done();
+        }
+        // if(isSearchEnable){
+        //   const data = await search(defaultSearchOptions.searchField, defaultSearchOptions.searchValue,pageSize,pageIndex,defaultSearchOptions.reviewCycle);
+        //   console.log('data',data);
+        //   setIncrementData(data.data);
+        //   setTotalCount(data.totalCount);
+        //   setLoading(false);
+        //   nProgress.done();
+        //   return;
+        // }
       },[paginationPageIndex,pageSize]);
 
       const handleSearch = async(value)=>{
+        setIsSearchable(true);
+        setSearchField(value.searchField);
+        setSearchValue(value.searchValue);
         try{
+
         const data = await search(value.searchField, value.searchValue,pageSize,paginationPageIndex,value.reviewCycle);
         setIncrementData(data.data);
         setTotalCount(data.totalCount);
@@ -250,6 +295,7 @@ const fetchIncrementByReview = async(pageSize,pageIndex,sortBy,sortOrder,review_
 console.error(e.message);
         }
       }
+
 
       const loadDefaultOptions = async(field)=>{
         try{
@@ -271,7 +317,7 @@ console.error(e.message);
       useEffect(()=>{
         async function mountApis(){
          const data = await fetchAllIncrements(paginationPageIndex,pageSize);
-        //  const {tenure} = await fetchFilterPicklist();
+      
          await getReviews();
 
          setNewBandOptions([{
@@ -528,7 +574,6 @@ const handleUploadFile = async () => {
     });
 
     if (hasErrors) {
-      console.log("Error", hasErrors);
       toaster.error("Invalid data found: empty or wrong types", { position: "bottom-center" });
       setUploadStatus("");
       return;
@@ -630,6 +675,7 @@ useEffect(()=>{
           selectedLongTenures={selectedLongTenures}
           setSelectedLongTenure={setSelectedLongTenure}
           setClearDisabled={setClearDisabled}
+          setIsFilterApplied={setIsFilterApplied}
           />
         </div>
         <div className="col">
@@ -747,7 +793,8 @@ useEffect(()=>{
               onPageSizeChange={setPaginationPageSize}
               paginationPageIndex={paginationPageIndex}
               onPageIndexChange={setPaginationPageIndex}
-            //   isSearchEnable={isSearchEnable}
+              isSearchEnable={isSearchable}
+              isFilterApplied={isFilterApplied}
             //   selectedSearchField={selectedSearchField}
             //   selectedSearchedValue={selectedSearchedValue}
               onRowClick={onRowClick}

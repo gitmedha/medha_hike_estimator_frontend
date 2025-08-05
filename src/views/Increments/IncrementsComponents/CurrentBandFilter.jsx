@@ -8,23 +8,27 @@ const CurrentBandDropdown = (props) => {
     selectedTenure,
     setSelectedTenure,
     selectedLongTenures,
-    setSelectedLongTenure
+    setSelectedLongTenure,
+    setIsFilterApplied
   } = props;
   const [tenures,setTenures] = useState([]);
   const [longTenures,setLongTenures] =useState([]);
   const [currentBands,setCurrentBands] = useState([]);
 
   const handleCurrentBandChange = (selectedOption)=>{
+    setIsFilterApplied(true);
     setSelectCurrentBand(selectedOption);
     updateFilters("current_band",selectedOption.value);
   }
 
   const handleTenureChange = (selectedOption) => {
+    setIsFilterApplied(true);
     setSelectedTenure(selectedOption);
     updateFilters("tenure", selectedOption.value);
   };
 
   const handleLongTenureChange = (selectedOption) => {
+    setIsFilterApplied(true);
     setSelectedLongTenure(selectedOption);
     updateFilters("long_tenure",selectedOption.value);
   };
