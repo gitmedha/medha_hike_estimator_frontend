@@ -247,14 +247,14 @@ const fetchIncrementByReview = async(pageSize,pageIndex,sortBy,sortOrder,review_
         setLoading(false);
         nProgress.done();
         }
-        else if (isSearchEnable){
-          const data = await search(searchField, searchValue,pageSize,paginationPageIndex,reviewCycle || localStorage.getItem('appraisal_cycle'));
-          setIncrementData(data.data);
-          setTotalCount(data.totalCount);
-          setLoading(false);
-          nProgress.done();
+        // else if (isSearchEnable){
+        //   const data = await search(searchField, searchValue,pageSize,paginationPageIndex,reviewCycle || localStorage.getItem('appraisal_cycle'));
+        //   setIncrementData(data.data);
+        //   setTotalCount(data.totalCount);
+        //   setLoading(false);
+        //   nProgress.done();
 
-        }
+        // }
         else if(isFilterApplied){
           const data = await applyFilterActions(filters,paginationPageIndex,pageSize, reviewCycle || localStorage.getItem('appraisal_cycle'));
           setIncrementData(data.data);

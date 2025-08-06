@@ -56,6 +56,8 @@ export const createIncrement = async(incrementData) => {
 
 export const updateIncrement = async(incrementData,incrementId) => {
     try{
+        console.log("incrementData", incrementData);
+        console.log("incrementId", incrementId);
         const response = await api.put(`/api/increments/edit-increment-data/${incrementId}`, incrementData);
         return response.data;
     }catch(error){
