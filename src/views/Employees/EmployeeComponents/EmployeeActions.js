@@ -113,3 +113,16 @@ export const uploadExcelData = async ()=>{
         console.error(error);
     }
 }
+
+export const syncEmployeesWithZoho = async () => {
+    try {
+        const response = await api.get("/auth/zoho/employees");
+        return response.data;
+    } catch (error) {
+        console.error("Error syncing employees:", error);
+        if (error.response && error.response.data) {
+            return error.response.data;
+        }
+        return { success: false, message: "Unexpected error occurred" };
+    }
+};

@@ -9,7 +9,7 @@ import { setAlert } from "../../store/reducers/Notifications/actions";
 
 import EmployeesGrid from "./EmployeeComponents/EmployeesGrid";
 import SearchBar from "../../components/layout/SearchBar";
-import { searchEmployees, LoadSearchPicklist, downloadTableExcel } from "./EmployeeComponents/EmployeeActions";
+import { searchEmployees, LoadSearchPicklist, downloadTableExcel,syncEmployeesWithZoho } from "./EmployeeComponents/EmployeeActions";
 import EmployeeForm from "./EmployeeComponents/EmployeeForm";  
 import toaster from 'react-hot-toast'
 import { Dropdown, Modal, Button } from 'react-bootstrap';
@@ -53,6 +53,8 @@ const Employees = (props) => {
   const [modalShow, setModalShow] = useState(false);
   const [showUploadExcelInput, setShowUploadExcelInput] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [lastRefreshed, setLastRefreshed] = useState(null);
+
   
   // Search related state
   const [searchParams, setSearchParams] = useState({
@@ -252,6 +254,37 @@ const Employees = (props) => {
     fetchData(0, paginationPageSize, []);
   }, [fetchData, paginationPageSize]);
 
+  
+
+const refreshEmployees = async () => {
+  try {
+    nProgress.start();
+    setLoading(true);
+
+    const response = await syncEmployeesWithZoho();
+
+    if (response.success) {
+      toaster.success(response.message, { position: "bottom-center" });
+    } else {
+      toaster.error(response.message || "Failed to sync employees", { position: "bottom-center" });
+    }
+
+    // Fetch updated employee data
+    await fetchData(paginationPageIndex, paginationPageSize, []);
+
+    setLastRefreshed(new Date());
+
+  } catch (error) {
+    console.error("Error syncing employees:", error);
+    toaster.error("Something went wrong while syncing", { position: "bottom-center" });
+  } finally {
+    setLoading(false);
+    nProgress.done();
+  }
+};
+
+
+
   return (
     <>
       <div className="d-flex justify-content-between align-items-center">
@@ -289,6 +322,26 @@ const Employees = (props) => {
           </div>
         )}
       </div>
+      <div className="d-flex align-items-center justify-content-end refresh_button_container">
+        <div>
+          <button
+          className="btn btn-outline-primary mr-3"
+          onClick={refreshEmployees}
+          disabled={loading}
+        >
+          {loading ? "Refreshing..." : "Refresh"}
+        </button>
+        {lastRefreshed && (
+          <span className="text-muted">
+            Last refreshed: {lastRefreshed.toLocaleString()}
+          </span>
+        )}
+          
+        </div>
+        
+      </div>
+
+
       <Styled>
         <div className="row m-1">
           <div className={`${layout !== "list" ? "d-none" : "p-0"}`}>

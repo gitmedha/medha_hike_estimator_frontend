@@ -37,12 +37,10 @@ const {id} = useParams();
 useEffect(()=>{
     async function getEmployeeDetails(id){
         const data = await getEmployee(id);
-        console.log("data--------",data)
         setEmployee(data.data);
         return data;
     }
     getEmployeeDetails(id).then((employee)=>{
-      console.log("employee--------",employee)
       getEmployeeHistoricsData(employee.data.first_name,employee.data.last_name)
       .then((data)=>{
         setHistoricalData(data);
