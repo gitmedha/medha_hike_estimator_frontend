@@ -116,7 +116,7 @@ export const uploadExcelData = async ()=>{
 
 export const syncEmployeesWithZoho = async () => {
     try {
-        const response = await api.get("/auth/zoho/employees");
+        const response = await api.get('/api/zoho/employees');
         return response.data;
     } catch (error) {
         console.error("Error syncing employees:", error);
