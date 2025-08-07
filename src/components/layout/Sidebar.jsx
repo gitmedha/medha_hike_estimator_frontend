@@ -77,20 +77,17 @@ const routes = [
 
 const Sidebar = ({ isOpen, toggleMenu }) => {
   const [activeFirstLevel, setActiveFirstLevel] = useState(() => {
-    let activeRoute = routes.filter((route) => {
-      if (route.children && route.children.length) {
-        for (let i = 0; i < route.children.length; i++) {
-          if (route.children[i].to === window.location.pathname) return true;
-        }
-      }
-      return route.to === window.location.pathname;
+    const currentPath = window.location.pathname;
+    const activeRoute = routes.find((route) => {
+      if (route.to === currentPath) return true;
+      if (route.aliases && route.aliases.some(alias => currentPath.includes(alias))) return true;
+      return false;
     });
-    return activeRoute.length ? activeRoute[0].title : "Dashboard"; // default to Dashboard
+    return activeRoute ? activeRoute.title : "";
   });
 
   const menuItemClickHandler = (menuItemTitle) => {
     setActiveFirstLevel(menuItemTitle);
-    // close the menu in the mobile
     if (window.innerWidth < 768) {
       toggleMenu();
     }
@@ -131,7 +128,13 @@ const Sidebar = ({ isOpen, toggleMenu }) => {
         />
         <>
           {routes.filter(route => route.show).map((route) => (
-            <MenuItem {...route} key={route.title} isOpen={isOpen} activeFirstLevel={activeFirstLevel} setActiveFirstLevel={setActiveFirstLevel} menuItemClickHandler={menuItemClickHandler}  />
+            <MenuItem 
+              {...route} 
+              key={route.title} 
+              isOpen={isOpen} 
+              isActive={activeFirstLevel === route.title}
+              menuItemClickHandler={menuItemClickHandler}  
+            />
           ))}
         </>
       </div>

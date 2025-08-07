@@ -12,37 +12,26 @@ const MenuEl = styled.div`
 
 const MenuItem = (props) => {
   const location = useLocation();
-
-  const { icon, to, title, isOpen, newTab = false, aliases=[] } = props;
-  const [isActiveFirstLevel, setIsActiveFirstLevel] = useState(location.pathname === to || props.activeFirstLevel === props.title);
-  const [subMenuCollapsed, setSubMenuCollapsed] = useState(!isActiveFirstLevel);
+  const { icon, to, title, isOpen, newTab = false, aliases = [], isActive } = props;
+  const [subMenuCollapsed, setSubMenuCollapsed] = useState(!isActive);
   const showSubMenuIcon = isOpen && props.children?.length;
 
-  useEffect(() => {
-    if (location.pathname === to) {
-      setIsActiveFirstLevel(true);
-    } else if (aliases.length) {
-      let aliasMatched = false;
-      aliases.forEach(alias => {
-        if (location.pathname.includes(alias)) {
-          aliasMatched = true;
-        }
-      });
-      setIsActiveFirstLevel(aliasMatched);
-    } else {
-      setIsActiveFirstLevel(false);
-    }
-  }, [location, to, aliases]);
+  const isActiveRoute = () => {
+    if (location.pathname === to) return true;
+    if (aliases.some(alias => location.pathname.includes(alias))) return true;
+    return false;
+  };
 
   return (
     <MenuEl isOpen={isOpen} className="w-100 d-flex flex-column align-items-center">
       <NavLink
         to={{ pathname: to }}
-        className={`menu-item-link d-flex align-items-center ${isOpen ? 'w-100 justify-content-between' : 'justify-content-center'}`}
-        style={{paddingLeft: isOpen ? '30px' : '', paddingRight: isOpen ? '30px' : ''}}
-        isActive={() => isActiveFirstLevel}
-        activeClassName="sidebar-link-active"
-        activeStyle={{borderRightColor: isOpen ? '#257b69' : 'transparent'}}
+        className={`menu-item-link d-flex align-items-center ${isOpen ? 'w-100 justify-content-between' : 'justify-content-center'} ${isActive ? 'sidebar-link-active' : ''}`}
+        style={{
+          paddingLeft: isOpen ? '30px' : '',
+          paddingRight: isOpen ? '30px' : '',
+          borderRight: isActive ? '4px solid #257b69' : '4px solid transparent'
+        }}
         onClick={() => props.menuItemClickHandler(props.title)}
         target={newTab ? "_blank" : ""}
       >
@@ -74,13 +63,11 @@ const MenuItem = (props) => {
               key={index}
               to={child.to}
               className="menu-item-link d-flex align-items-center w-100"
-              style={{paddingLeft: isOpen ? '40px' : ''}}
-              isActive={(match, location) =>{
-                if (!match) return false;
-                return location.hash.substr(1) === child.to.split('#')[1] || location.pathname === child.to;
+              style={{
+                paddingLeft: isOpen ? '40px' : '',
+                borderRight: location.pathname === child.to ? '4px solid #257b69' : '4px solid transparent'
               }}
               activeClassName="sidebar-link-active"
-              activeStyle={{borderRightColor: isOpen ? '#257b69' : 'transparent'}}
               onClick={() => props.menuItemClickHandler(props.title)}
             >
               <div className={`d-flex align-items-center w-100 justify-content-start`}>
