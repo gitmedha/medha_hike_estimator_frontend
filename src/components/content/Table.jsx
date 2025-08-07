@@ -66,6 +66,11 @@ const Styles = styled.div`
       white-space: nowrap;
       max-width: 150px;
     }
+
+    .highlight-cell {
+      color: #257b69;
+      font-weight: bold;
+    }
   }
 
   .mobile {
@@ -81,6 +86,11 @@ const Styles = styled.div`
 
       .cell:not(:last-child) {
         margin-bottom: 10px;
+      }
+
+      .highlight-cell {
+        color: #257b69;
+        font-weight: bold;
       }
     }
   }
@@ -120,9 +130,26 @@ const Table = ({
   isSearchEnable = false,
   isFilterApplied = false,
 }) => {
+   const highlightedColumns = ['Employee ID', 'Employee Name', 'Name', 'ID','First Name','Last Name','Employee','Reviewer'];
+  
+  // Memoize the columns to prevent unnecessary re-renders
+  const memoizedColumns = React.useMemo(() => {
+    return columns.map(col => ({
+      ...col,
+      Cell: ({ value, column }) => {
+        const shouldHighlight = highlightedColumns.includes(column.Header);
+        return (
+          <div className={shouldHighlight ? "highlight-cell" : ""}>
+            {value}
+          </div>
+        );
+      }
+    }));
+  }, [columns]);
+
   const tableInstance = useTable(
     {
-      columns,
+      columns: memoizedColumns,
       data,
       initialState: { pageIndex: 0, pageSize: paginationPageSize },
       manualSortBy: true,
@@ -155,23 +182,34 @@ const Table = ({
     }
   };
 
-  React.useEffect(() => {
-    fetchData(pageIndex, pageSize, sortBy,isSearchEnable,isFilterApplied);
-  }, [pageIndex, pageSize, sortBy, isSearchEnable,isFilterApplied]);
+  // Add a ref to track if we should skip the next fetch
+  const skipFetchRef = React.useRef(false);
 
   React.useEffect(() => {
+    if (skipFetchRef.current) {
+      skipFetchRef.current = false;
+      return;
+    }
+    fetchData(pageIndex, pageSize, sortBy, isSearchEnable, isFilterApplied);
+  }, [pageIndex, pageSize, sortBy, isSearchEnable, isFilterApplied]);
+
+  React.useEffect(() => {
+    skipFetchRef.current = true;
     onPageSizeChange(pageSize);
   }, [pageSize]);
 
   React.useEffect(() => {
+    skipFetchRef.current = true;
     setPageSize(paginationPageSize);
   }, [paginationPageSize]);
 
   React.useEffect(() => {
+    skipFetchRef.current = true;
     onPageIndexChange(pageIndex);
   }, [pageIndex]);
 
   React.useEffect(() => {
+    skipFetchRef.current = true;
     gotoPage(paginationPageIndex);
   }, [paginationPageIndex]);
 
@@ -295,14 +333,21 @@ const Table = ({
                   className={`row ${row.original.href || rowClickFunctionExists ? "clickable" : ""}`}
                   onClick={() => {}}
                 >
-                  {row.cells.map((cell, cellIndex) => (
-                    <div
-                      key={cellIndex}
-                      className={`cell ${cellIndex === row.cells.length - 1 && collapse_tab_name === "Attandance" ? "d-flex justify-content-end" : ""}`}
-                    >
-                      {cell.render("Cell")}
-                    </div>
-                  ))}
+                  {row.cells.map((cell, cellIndex) => {
+                    const isHighlighted = highlightedColumns.includes(cell.column.Header);
+                    return (
+                      <div
+                        key={cellIndex}
+                        className={`cell ${isHighlighted ? "highlight-cell" : ""} ${
+                          cellIndex === row.cells.length - 1 && collapse_tab_name === "Attandance" 
+                            ? "d-flex justify-content-end" 
+                            : ""
+                        }`}
+                      >
+                        {cell.render("Cell")}
+                      </div>
+                    );
+                  })}
                 </div>
               );
             })
