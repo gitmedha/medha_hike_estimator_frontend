@@ -265,10 +265,15 @@ function SearchBar(props) {
                         className="form-control"
                         autoComplete="off"
                         onChange={(date) => {
-                          formik.setFieldValue('search_by_value_date', date);
-                          validateDates(formik.values);
+                          setSearchValue(null);
+                          setSearchField("date_of_joining");
+                          setDateError(null);
+                          formik.setFieldValue("search_by_value_date", date);
+                          formik.setFieldValue("search_by_value_date_to", null);
+                          validateDates({ ...formik.values, search_by_value_date: date });
                         }}
                       />
+
                     </div>
                     <div className="ml-2">
                       <Input
@@ -278,11 +283,13 @@ function SearchBar(props) {
                         control="datepicker"
                         className="form-control"
                         autoComplete="off"
+                        minDate={formik.values.search_by_value_date || new Date()}
                         onChange={(date) => {
-                          formik.setFieldValue('search_by_value_date_to', date);
-                          validateDates(formik.values);
+                          formik.setFieldValue("search_by_value_date_to", date);
+                          validateDates({ ...formik.values, search_by_value_date_to: date });
                         }}
                       />
+
                     </div>
                   </div>
                   {dateError && (
