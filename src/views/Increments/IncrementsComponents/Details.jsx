@@ -100,7 +100,7 @@ const Details = (props) => {
 
   // Helper function to display value or #
   const displayValue = (value) => {
-    return value === undefined || value === null || value === '' ? '#' : value;
+    return value === undefined || value === null || value === '' ? '—' : value;
   };
 
   return (
@@ -156,13 +156,13 @@ const Details = (props) => {
                 <DetailField label="Average Rating" value={displayValue(average)} />
               </div>
               <div className="col-2">
-                <DetailField label="Normalized Rating" value={displayValue(normalize_rating)} />
+                <DetailField label="Normalized Rating" value={`${displayValue(normalize_rating)}`} />
               </div>
               <div className="col-2">
-                <DetailField label="Increment" value={displayValue(increment)} />
+                <DetailField label="Increment" value={`${displayValue(increment)} %`} />
               </div>
               <div className="col-2">
-                <DetailField label="Weighted Increment" value={displayValue(weighted_increment)} />
+                <DetailField label="Weighted Increment" value={`${displayValue(weighted_increment)} %`} />
               </div>  
             </div>
             <div className="row">
@@ -182,7 +182,7 @@ const Details = (props) => {
                 />
               </div>
               <div className="col-2">
-                <DetailField label="Increment adjustments" value={displayValue(inc_adjustments)} />
+                <DetailField label="Increment adjustments" value={`${displayValue(inc_adjustments)} %`} />
               </div>
             </div>
             <div className="row">
