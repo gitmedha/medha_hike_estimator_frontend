@@ -95,7 +95,7 @@ const Details = (props) => {
 
   // Helper function to display value or #
   const displayValue = (value) => {
-    return value === undefined || value === null || value === '' ? '#' : value;
+    return value === undefined || value === null || value === '' ? '—' : value;
   };
 
   return (
@@ -151,15 +151,15 @@ const Details = (props) => {
                 <DetailField label="Average Rating" value={displayValue(average)} />
               </div>
               <div className="col-auto">
-                <DetailField label="Normalized Rating" value={displayValue(normalized_ratings)} />
+                <DetailField label="Normalized Rating" value={`${displayValue(normalized_ratings)}`} />
               </div>
             </div>
             <div className="row">
               <div className="col-2">
-                <DetailField label="Bonus" value={displayValue(bonus)} />
+                <DetailField label="Bonus" value={`${displayValue(bonus)} %`} />
               </div>
               <div className="col-2">
-                <DetailField label="Weighted Bonus" value={displayValue(weighted_bonus)} />
+                <DetailField label="Weighted Bonus" value={`${displayValue(weighted_bonus)} %`} />
               </div>
             </div>
           </div>
