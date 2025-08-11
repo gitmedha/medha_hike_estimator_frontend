@@ -1,27 +1,15 @@
 import React, { useState } from 'react';
-import { MdDashboard } from "react-icons/md";
-import { FaUserGraduate, FaChalkboardTeacher, FaUserTie, FaSchool, FaBriefcase, FaUsersCog ,FaCalendarDay} from "react-icons/fa";
 import MenuItem from "./MenuItem";
 import MenuIcon from "@material-ui/icons/Menu";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { motion, AnimatePresence } from "framer-motion";
-import { isAdmin, isMedhavi, isPartnership, isSRM } from '../../common/commonFunctions';
-
-const iconStyle = {
-  marginRight: "5px",
-};
-
-const iconProps = {
-  size: 24,
-  style: { iconStyle },
-};
 
 const routes = [
   {
     to: "/employees_details",
     title: "Employees Details",
     aliases: ['student'],
-    icon:  (
+    icon: (
       <img
         className="employees_details_icon"
         src={require('../../assets/images/employee-data.png').default}
@@ -35,7 +23,7 @@ const routes = [
     to: "/historical_data",
     title: "Historical Data",
     aliases: ['employer'],
-    icon:  (
+    icon: (
       <img
         className="historical_details_icon"
         src={require('../../assets/images/historic-data.png').default}
@@ -49,7 +37,7 @@ const routes = [
     to: "/employee_increments",
     title: "Employees Increment",
     aliases: ['increment'],
-    icon:  (
+    icon: (
       <img
         className="employees_increment_icon"
         src={require('../../assets/images/raise.png').default}
@@ -60,10 +48,10 @@ const routes = [
     show: true,
   },
   {
-    to:"/employee_bonuses",
-    title:"Employees Bonus",
+    to: "/employee_bonuses",
+    title: "Employees Bonus",
     aliases: ['bonus'],
-    icon:  (
+    icon: (
       <img
         className="employees_increment_icon"
         src={require('../../assets/images/bonus.png').default}
@@ -124,21 +112,22 @@ const Sidebar = ({ isOpen, toggleMenu }) => {
           src={require('../../assets/images/Medha-logo.svg').default}
           alt="Medha SIS"
           className={`mx-auto d-block ${isOpen ? '' : 'mt-3'}`}
-          style={{width: isOpen ? '120px' : '60px', marginBottom: '30px'}}
+          style={{ width: isOpen ? '120px' : '60px', marginBottom: '30px' }}
         />
         <>
           {routes.filter(route => route.show).map((route) => (
-            <MenuItem 
-              {...route} 
-              key={route.title} 
-              isOpen={isOpen} 
+            <MenuItem
+              {...route}
+              key={route.title}
+              isOpen={isOpen}
               isActive={activeFirstLevel === route.title}
-              menuItemClickHandler={menuItemClickHandler}  
+              menuItemClickHandler={menuItemClickHandler}
             />
           ))}
         </>
       </div>
     </div>
-  )};
+  );
+};
 
 export default Sidebar;
