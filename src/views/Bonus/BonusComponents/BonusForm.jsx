@@ -73,6 +73,10 @@ function BonusForm(props) {
         newValues.compentency = parseFloat(values.compentency);
         newValues.average = parseFloat(values.average);
         newValues.kra = parseFloat(values.kra);
+        newValues.review_cycle = `${moment(values.from_review_cycle).format("MMMM YYYY")}-${moment(values.to_review_cycle).format("MMM YYYY")}`;
+
+         delete newValues.from_review_cycle;
+         delete newValues.to_review_cycle;
           if(props.bonusData){
             await updateBonus(newValues,props.bonusData.id);
             onHide();
@@ -87,7 +91,9 @@ function BonusForm(props) {
            const{data} =  await createBonus(newValues);
            onHide();
            props.ToastOnSuccess()
-           setTimeout(() => navigation.push(`/bonus/${data[0].employee_id}`),2000);
+           setTimeout(() => navigation.push(`/bonus/${data[0].employee_id}`, {
+            review_cycle: newValues.review_cycle
+           }),2000);
           nProgress.done();
 
           }
