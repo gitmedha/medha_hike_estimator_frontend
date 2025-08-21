@@ -169,48 +169,37 @@ function Bonuses(props) {
         key: 7
       }]
 
-      const fetchData = useCallback(async(paginationPageIndex,pageSize,sortBy,reviewCycle)=>{
-        nProgress.start();
-        setLoading(true);
-
-        if(sortBy.length){
-          
-          let sortField = sortBy[0].id;
-          let sortOrder = sortBy[0].desc? "desc" : "asc";
-          if(reviewCycle){
-            await fetchAllBonusesByReviewCycle(pageSize,paginationPageIndex,sortField,sortOrder,reviewCycle);
-            setLoading(false);
-            nProgress.done();
-          }
-          else {
-
-            const data = await fetchAllBonuses(paginationPageIndex, pageSize,sortField,sortOrder);
-            setBonusData(data?.data);
-            setTotalCount(data?.totalCount);
-            setLoading(false);
-            nProgress.done();
-          }
-          
-         
-
-        }else {
-          if(reviewCycle){
-            await fetchAllBonusesByReviewCycle(pageSize,paginationPageIndex,'employee_id','asc',reviewCycle);
-            setLoading(false);
-            nProgress.done();
-          }
-          else {
-            const data = await fetchAllBonuses(paginationPageIndex, pageSize);
-            setBonusData(data?.data);
-            setTotalCount(data?.totalCount);
-            setLoading(false);
-            nProgress.done();
-
-          }
-         
-        }
-        
-      },[paginationPageIndex,pageSize]);
+      const fetchData = useCallback(async(paginationPageIndex, pageSize, sortBy, isSearchEnable, isFilterApplied) => {
+  nProgress.start();
+  setLoading(true);
+  
+  // Use the reviewCycle from component state or localStorage
+  const currentReviewCycle = reviewCycle || localStorage.getItem('review_cycle');
+  
+  if(sortBy.length){
+    let sortField = sortBy[0].id;
+    let sortOrder = sortBy[0].desc ? "desc" : "asc";
+    
+    if(currentReviewCycle){
+      await fetchAllBonusesByReviewCycle(pageSize, paginationPageIndex, sortField, sortOrder, currentReviewCycle);
+    } else {
+      const data = await fetchAllBonuses(paginationPageIndex, pageSize, sortField, sortOrder);
+      setBonusData(data?.data);
+      setTotalCount(data?.totalCount);
+    }
+  } else {
+    if(currentReviewCycle){
+      await fetchAllBonusesByReviewCycle(pageSize, paginationPageIndex, 'employee_id', 'asc', currentReviewCycle);
+    } else {
+      const data = await fetchAllBonuses(paginationPageIndex, pageSize);
+      setBonusData(data?.data);
+      setTotalCount(data?.totalCount);
+    }
+  }
+  
+  setLoading(false);
+  nProgress.done();
+}, [paginationPageIndex, pageSize, reviewCycle]);
 
       const handleSearch = async(value)=>{
         try{
@@ -608,18 +597,18 @@ function Bonuses(props) {
               columns={columns}
               data={bonusData}
               totalRecords={totalCount}
-              fetchData={fetchData}
+              fetchData={(pageIndex, pageSize, sortBy, isSearchEnable, isFilterApplied) => 
+                {
+                  console.log("Fetching data with pageIndex:", pageIndex, "pageSize:", pageSize, "sortBy:", sortBy, "reviewCycle:", reviewCycle);
+                fetchData(pageIndex, pageSize, sortBy, reviewCycle || localStorage.getItem('review_cycle'))
+              }}
               loading={loading}
               paginationPageSize={paginationPageSize}
               onPageSizeChange={setPaginationPageSize}
               paginationPageIndex={paginationPageIndex}
               onPageIndexChange={setPaginationPageIndex}
-            //   isSearchEnable={isSearchEnable}
-            //   selectedSearchField={selectedSearchField}
-            //   selectedSearchedValue={selectedSearchedValue}
               onRowClick={onRowClick}
               reviewCycle={reviewCycle}
-
             />
           </div>
         </div>
