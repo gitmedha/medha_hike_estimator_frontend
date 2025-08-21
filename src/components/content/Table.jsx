@@ -38,6 +38,7 @@ const Styles = styled.div`
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+        padding: 12px 8px;
       }
     }
 
@@ -52,8 +53,7 @@ const Styles = styled.div`
     th,
     td {
       margin: 0;
-      padding-top: 0;
-      padding-bottom: 0;
+      padding: 12px 8px;
       color: #787b96;
       border-bottom: 1px solid #bfbfbf;
       height: 60px;
@@ -130,7 +130,7 @@ const Table = ({
   isSearchEnable = false,
   isFilterApplied = false,
 }) => {
-   const highlightedColumns = ['Employee ID', 'Employee Name', 'Name', 'ID','First Name','Last Name','Employee','Reviewer'];
+  const highlightedColumns = ['Employee ID', 'Employee Name', 'Name', 'ID','First Name','Last Name','Employee','Reviewer'];
   
   // Memoize the columns to prevent unnecessary re-renders
   const memoizedColumns = React.useMemo(() => {
@@ -151,7 +151,7 @@ const Table = ({
     {
       columns: memoizedColumns,
       data,
-      initialState: { pageIndex: 0, pageSize: paginationPageSize },
+      initialState: { pageIndex: paginationPageIndex, pageSize: paginationPageSize },
       manualSortBy: true,
       manualPagination: true,
       pageCount: Math.ceil(totalRecords / paginationPageSize),
@@ -182,36 +182,30 @@ const Table = ({
     }
   };
 
-  // Add a ref to track if we should skip the next fetch
-  const skipFetchRef = React.useRef(false);
-
+  // Main useEffect for fetching data
   React.useEffect(() => {
-    if (skipFetchRef.current) {
-      skipFetchRef.current = false;
-      return;
-    }
     fetchData(pageIndex, pageSize, sortBy, isSearchEnable, isFilterApplied);
   }, [pageIndex, pageSize, sortBy, isSearchEnable, isFilterApplied]);
 
+  // Sync pageSize changes with parent component
   React.useEffect(() => {
-    skipFetchRef.current = true;
     onPageSizeChange(pageSize);
   }, [pageSize]);
 
+  // Sync external pageSize changes with react-table
   React.useEffect(() => {
-    skipFetchRef.current = true;
     setPageSize(paginationPageSize);
   }, [paginationPageSize]);
 
+  // Sync external pageIndex changes with react-table
   React.useEffect(() => {
-    skipFetchRef.current = true;
-    onPageIndexChange(pageIndex);
-  }, [pageIndex]);
-
-  React.useEffect(() => {
-    skipFetchRef.current = true;
     gotoPage(paginationPageIndex);
   }, [paginationPageIndex]);
+
+  // Sync pageIndex changes with parent component
+  React.useEffect(() => {
+    onPageIndexChange(pageIndex);
+  }, [pageIndex]);
 
   return (
     <>
@@ -221,24 +215,26 @@ const Table = ({
             <thead>
               {headerGroups.map((headerGroup) => (
                 <tr {...headerGroup.getHeaderGroupProps()}>
-                  {indexes && <th style={{ width: "1.5rem" }}>#</th>}
+                  {indexes && <th style={{ width: "50px", textAlign: "center" }}>#</th>}
                   {headerGroup.headers.map((column) => (
                     <th
                       {...column.getHeaderProps(column.getSortByToggleProps())}
                       className={column.Header === "Title" ? "ellipsis-header" : ""}
                     >
-                      {column.render("Header")}
-                      <span>
-                        {column.isSorted ? (
-                          column.isSortedDesc ? (
-                            <FaLongArrowAltDown />
+                      <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <span>{column.render("Header")}</span>
+                        <span style={{ marginLeft: '4px' }}>
+                          {column.isSorted ? (
+                            column.isSortedDesc ? (
+                              <FaLongArrowAltDown size={12} />
+                            ) : (
+                              <FaLongArrowAltUp size={12} />
+                            )
                           ) : (
-                            <FaLongArrowAltUp />
-                          )
-                        ) : (
-                          ""
-                        )}
-                      </span>
+                            ""
+                          )}
+                        </span>
+                      </div>
                     </th>
                   ))}
                 </tr>
@@ -247,15 +243,13 @@ const Table = ({
             <tbody {...getTableBodyProps()}>
               {loading ? (
                 <>
-                  <tr>
-                    <td colSpan={columns.length}><Skeleton height="100%" /></td>
-                  </tr>
-                  <tr>
-                    <td colSpan={columns.length}><Skeleton height="100%" /></td>
-                  </tr>
-                  <tr>
-                    <td colSpan={columns.length}><Skeleton height="100%" /></td>
-                  </tr>
+                  {[...Array(3)].map((_, index) => (
+                    <tr key={index}>
+                      <td colSpan={indexes ? columns.length + 1 : columns.length}>
+                        <Skeleton height="60px" />
+                      </td>
+                    </tr>
+                  ))}
                 </>
               ) : page.length ? (
                 page.map((row, index) => {
@@ -267,15 +261,17 @@ const Table = ({
                       className={row.original.href || rowClickFunctionExists ? "clickable" : ""}
                     >
                       {indexes && (
-                        <td style={{ color: "#787B96", fontFamily: "Latto-Bold" }}>
+                        <td style={{ 
+                          color: "#787B96", 
+                          fontFamily: "Latto-Bold",
+                          textAlign: 'center'
+                        }}>
                           {row.original.href && !rowClickFunctionExists ? (
                             <a className="table-row-link" href={row.original.href}>
-                              {pageIndex * pageSize + index + 1}.
+                              {pageIndex * pageSize + index + 1}
                             </a>
                           ) : (
-                            <>
-                              {pageIndex * pageSize + index + 1}.
-                            </>
+                            pageIndex * pageSize + index + 1
                           )}
                         </td>
                       )}
@@ -304,6 +300,7 @@ const Table = ({
                       color: "#787B96",
                       fontFamily: "Latto-Bold",
                       textAlign: "center",
+                      height: "100px"
                     }}
                   >
                     <span
@@ -324,14 +321,14 @@ const Table = ({
         <div className="d-md-none mobile">
           {loading ? (
             <Skeleton count={3} height="60px" />
-          ) : (
+          ) : page.length ? (
             page.map((row, index) => {
               prepareRow(row);
               return (
                 <div
                   key={index}
                   className={`row ${row.original.href || rowClickFunctionExists ? "clickable" : ""}`}
-                  onClick={() => {}}
+                  onClick={() => handleRowClick(row)}
                 >
                   {row.cells.map((cell, cellIndex) => {
                     const isHighlighted = highlightedColumns.includes(cell.column.Header);
@@ -339,7 +336,7 @@ const Table = ({
                       <div
                         key={cellIndex}
                         className={`cell ${isHighlighted ? "highlight-cell" : ""} ${
-                          cellIndex === row.cells.length - 1 && collapse_tab_name === "Attandance" 
+                          cellIndex === row.cells.length - 1 && collapse_tab_name === "Attendance" 
                             ? "d-flex justify-content-end" 
                             : ""
                         }`}
@@ -351,6 +348,14 @@ const Table = ({
                 </div>
               );
             })
+          ) : (
+            <div className="row">
+              <div className="cell" style={{ textAlign: 'center', padding: '20px' }}>
+                <span style={{ fontStyle: "italic", color: "#787B96" }}>
+                  No entries found.
+                </span>
+              </div>
+            </div>
           )}
         </div>
       </Styles>
