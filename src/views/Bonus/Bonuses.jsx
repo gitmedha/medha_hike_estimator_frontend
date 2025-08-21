@@ -252,7 +252,7 @@ function Bonuses(props) {
       }
 
       const ToastOnSuccess = ()=>{
-        toaster.success("Increment entry created successfully!",{ position: "bottom-center" })
+        toaster.success("bonus entry created successfully!",{ position: "bottom-center" })
       }
       const ToastOnFailure = (value)=>{
         toaster.error("Failed to create entry!",{ position: "bottom-center" })

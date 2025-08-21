@@ -53,12 +53,11 @@ function Bonus() {
   const [isLoading,setIsLoading] = useState(true);
   const [isAdmin] = useState(localStorage.getItem('admin'));
   const location = useLocation();
-  const { review_cycle } = location.state || {};
+  const { review_cycle } = location.state || { review_cycle: null };
 
-  
 useEffect(()=>{
   async function componentMount(){
-    const data = await fetchBonusDetails(id,location.state.review_cycle);
+    const data = await fetchBonusDetails(id,review_cycle);
     await setBonusData(data[0]);
     await setReviewCycles(await getReviewCycles(id));
     setIsLoading(false);
