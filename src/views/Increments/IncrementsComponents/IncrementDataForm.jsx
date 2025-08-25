@@ -232,6 +232,7 @@ const onSubmit = async (values) => {
                           placeholder="Full Name"
                           className="form-control"
                           options={increments}
+                          isDisabled={true}
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mt-2">
@@ -243,6 +244,7 @@ const onSubmit = async (values) => {
                           placeholder="Reviewer"
                           className="form-control"
                           options={reviewers}
+                          isDisabled={true}
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mt-2">
@@ -299,7 +301,7 @@ const onSubmit = async (values) => {
                        
                        
                       </div>
-                      <div className="col-md-6 col-sm-12 mt-2">
+                      <div className="col-md-6 col-sm-12" style={{marginTop:'32px'}}>
                         <Input
                           name="tenure"
                           label="Tenure"
@@ -307,6 +309,9 @@ const onSubmit = async (values) => {
                           control="input"
                           placeholder="Tenure"
                           className="form-control"
+                          disabled={true}
+                          style={{marginTop:'4px'}}
+                          
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mt-2">
@@ -327,6 +332,7 @@ const onSubmit = async (values) => {
                           className="form-control"
                           defaultValue={props.IncrementData ? props.IncrementData.long_tenure ? 'Yes' : 'No' : 'No'}
                           onChange={(e) => handleInputChange("long_tenure", e.value === 'Yes' ? "Yes" : "No")}
+                          isDisabled={true}
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mt-2">
@@ -348,6 +354,7 @@ const onSubmit = async (values) => {
                           placeholder="Current Band"
                           className="form-control"
                           options={currentBands}
+                          isDisabled={true}
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mt-2">
@@ -358,6 +365,7 @@ const onSubmit = async (values) => {
                           control="input"
                           placeholder="₹ Current Salary"
                           className="form-control"
+                          disabled={true}
                         />
          
                       </div>
@@ -390,7 +398,7 @@ const onSubmit = async (values) => {
                           control="input"
                           placeholder="Increment %"
                           className="form-control"
-                          // disabled={true}
+                          disabled={true}
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mt-2">
@@ -400,7 +408,7 @@ const onSubmit = async (values) => {
                           control="input"
                           placeholder="Normalize Rating"
                           className="form-control"
-                          // disabled={true}
+                          disabled={true}
                         />
                       </div>
                       <div className="col-md-6 col-sm-12 mt-2">
@@ -410,6 +418,7 @@ const onSubmit = async (values) => {
                           control="input"
                           placeholder="Weighted Increment %"
                           className="form-control"
+                          disabled={true}
                         />
                       </div>
                     </div>
