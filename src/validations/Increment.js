@@ -33,22 +33,5 @@ export const incrementValidations = Yup.object().shape({
   tenure: Yup.number()
     .typeError("Tenure must be a number")
     .min(0, "Tenure cannot be less than 0")
-    .required("Tenure is required"),
-
-  from_review_cycle: Yup.string()
-    .required("From review cycle is required"),
-
-  to_review_cycle: Yup.string()
-    .required("To review cycle is required")
-    .test(
-      "is-after-from",
-      "To review cycle must be after From review cycle",
-      function (toDate) {
-        const { from_review_cycle } = this.parent;
-        const from = moment(from_review_cycle, "MMM YYYY", true);
-        const to = moment(toDate, "MMM YYYY", true);
-        if (!from.isValid() || !to.isValid()) return true;
-        return to.isAfter(from);
-      }
-    ),
+    .required("Tenure is required")
 });
