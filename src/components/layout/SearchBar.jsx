@@ -151,6 +151,13 @@ function SearchBar(props) {
 
   useEffect(() => {
     const setSearchValueDropDown = async () => {
+      const ratings = [
+        { label: "0-1", value: "0-1" },
+        { label: "1-2", value: "1-2" },
+        { label: "2-3", value: "2-3" },
+        { label: "3-4", value: "3-4" },
+        { label: "4-5", value: "4-5" },
+      ]
       try {
         const interval = setInterval(() => {
           setProgress((prevProgress) =>
@@ -161,9 +168,18 @@ function SearchBar(props) {
         clearInterval(interval);
         handleLoaderForSearch();
 
+        if(searchField === 'final_score' || searchField === 'kra_vs_goals' || searchField === 'competency'){
+          
+        await setSearchValueOptions(ratings);
+        await setDefaultSearchArray(ratings);
+
+        }
+        else {
         const data = await handleSearchPicklist(searchField);
         await setSearchValueOptions(data);
         await setDefaultSearchArray(data);
+        }
+        
       } catch (error) {
         console.error("error", error);
       }
@@ -178,6 +194,10 @@ function SearchBar(props) {
       setSearchValueDropDown();
     }
   }, [searchField]);
+
+  console.log("searchField",searchField)
+  console.log("searchValue",searchValue)
+  console.log("searchValueOptions",searchValueOptions)
 
   return (
     <Formik 
