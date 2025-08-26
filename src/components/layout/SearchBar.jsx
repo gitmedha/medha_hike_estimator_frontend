@@ -195,9 +195,6 @@ function SearchBar(props) {
     }
   }, [searchField]);
 
-  console.log("searchField",searchField)
-  console.log("searchValue",searchValue)
-  console.log("searchValueOptions",searchValueOptions)
 
   return (
     <Formik 
