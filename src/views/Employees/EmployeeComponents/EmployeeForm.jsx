@@ -50,12 +50,8 @@ export default function EmployeeForm(props) {
 ]);
     const [employeeTitles, setEmployeeTitles] = useState([]);
 
-    const [isWorking,setIsWorking] = useState(props.employeeData ? true:false);
     const [isUpdated,setIsUpdated] = useState(false);
     
-
- 
-
     const initialValues = {
         current_band:props?.employeeData?.current_band || "",
         department:props?.employeeData?.department || "",
