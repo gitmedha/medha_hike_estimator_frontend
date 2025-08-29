@@ -29,7 +29,7 @@ function SearchBar(props) {
     handleSearchPicklist,
     clearFilters,
     isClearDisabled,
-    reviewCycle={},setReviewCycle=()=>{}, refreshOnClear=()=>{}, turnSearchOff=()=>{}} = props;
+    reviewCycle={},setReviewCycle=()=>{}, refreshOnClear=()=>{}, turnSearchOff=()=>{},setIsSearchable=null} = props;
   const [searchValueOptions, setSearchValueOptions] = useState([]);
   const [defaultSearchArray, setDefaultSearchArray] = useState([]);
   const [searchFieldOptions] = useState(props.searchFieldOptions);
@@ -98,6 +98,9 @@ function SearchBar(props) {
     setSearchValue(null);
     setSearchValueOptions([]);
     setDateError(null);
+    if(setIsSearchable){
+      setIsSearchable(false);
+    }
     
     if (clearFilters) {
       clearFilters();
@@ -158,6 +161,17 @@ function SearchBar(props) {
         { label: "3-4", value: "3-4" },
         { label: "4-5", value: "4-5" },
       ]
+      const normalizedRatingRanges = [
+      { label: "-2.00 – -1.50", value: "-2.00 – -1.50" },
+      { label: "-1.50 – -1.00", value: "-1.50 – -1.00" },
+      { label: "-1.00 – -0.50", value: "-1.00 – -0.50" },
+      { label: "-0.50 – 0.00", value: "-0.50 – 0.00" },
+      { label: "0.00 – 0.50", value: "0.00 – 0.50" },
+      { label: "0.50 – 1.00", value: "0.50 – 1.00" },
+      { label: "1.00 – 1.50", value: "1.00 – 1.50" },
+      { label: "1.50 – 2.00", value: "1.50 – 2.00" },
+    ];
+    
       try {
         const interval = setInterval(() => {
           setProgress((prevProgress) =>
@@ -168,17 +182,25 @@ function SearchBar(props) {
         clearInterval(interval);
         handleLoaderForSearch();
 
-        if(searchField === 'final_score' || searchField === 'kra_vs_goals' || searchField === 'competency'){
+        // if(searchField === 'final_score' || searchField === 'kra_vs_goals' || searchField === 'competency' || searchField === 'compentency' || searchField === 'average'){
           
-        await setSearchValueOptions(ratings);
-        await setDefaultSearchArray(ratings);
+        // await setSearchValueOptions(ratings);
+        // await setDefaultSearchArray(ratings);
 
-        }
-        else {
+        // }
+        // else if (searchField === 'normalize_rating'){
+        //   await setSearchValueOptions(normalizedRatingRanges);
+        //   await setDefaultSearchArray(normalizedRatingRanges);
+        // }
+        // else if (searchField === 'increment'){
+
+        // }
+        // else {
+        
+        // }
         const data = await handleSearchPicklist(searchField);
         await setSearchValueOptions(data);
         await setDefaultSearchArray(data);
-        }
         
       } catch (error) {
         console.error("error", error);
