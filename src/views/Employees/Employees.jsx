@@ -331,11 +331,6 @@ const refreshEmployees = async () => {
         >
           {loading ? "Refreshing..." : "Refresh"}
         </button>
-        {lastRefreshed && (
-          <span className="text-muted">
-            Last refreshed: {lastRefreshed.toLocaleString()}
-          </span>
-        )}
           
         </div>
         
