@@ -234,6 +234,8 @@ const fetchIncrementByReview = async(pageSize,pageIndex,sortBy,sortOrder,review_
           }
         nProgress.start();
         setLoading(true);
+        const searchField = localStorage.getItem('searchField');
+        const searchValue = localStorage.getItem('searchValue');
         if(isSearchEnable && isFilterApplied){
           
         const data = await fetchAllIncrements(paginationPageIndex, pageSize,SortField,SortOrder,searchField,searchValue,filters);
@@ -243,11 +245,6 @@ const fetchIncrementByReview = async(pageSize,pageIndex,sortBy,sortOrder,review_
         nProgress.done();
         }
         else if (isSearchEnable){
-          console.log('searchValue',searchValue);
-          console.log('searchField',searchField);
-          console.log('pageSize',pageSize);
-          console.log('paginationPageIndex',paginationPageIndex);
-          console.log('reviewCycle',reviewCycle || localStorage.getItem('appraisal_cycle'));
           const data = await search(searchField, searchValue,pageSize,paginationPageIndex,reviewCycle || localStorage.getItem('appraisal_cycle'));
           setIncrementData(data.data);
           setTotalCount(data.totalCount);
@@ -270,21 +267,15 @@ const fetchIncrementByReview = async(pageSize,pageIndex,sortBy,sortOrder,review_
         setLoading(false);
         nProgress.done();
         }
-        // if(isSearchEnable){
-        //   const data = await search(defaultSearchOptions.searchField, defaultSearchOptions.searchValue,pageSize,pageIndex,defaultSearchOptions.reviewCycle);
-        //   console.log('data',data);
-        //   setIncrementData(data.data);
-        //   setTotalCount(data.totalCount);
-        //   setLoading(false);
-        //   nProgress.done();
-        //   return;
-        // }
       },[paginationPageIndex,pageSize]);
 
       const handleSearch = async(value)=>{
         setIsSearchable(true);
         setSearchField(value.searchField);
         setSearchValue(value.searchValue);
+        localStorage.setItem('searchField',value.searchField);
+        localStorage.setItem('searchValue',value.searchValue);
+      
         try{
 
         const data = await search(value.searchField, value.searchValue,pageSize,paginationPageIndex,value.reviewCycle);
@@ -472,10 +463,11 @@ console.error(e.message);
 
 
     const clearFilters = async()=>{
-        await setSelectCurrentBand([])
-       await setSelectedBand([]);
-       await setSelectedTenure([]);
-       await setSelectedLongTenure([]);
+        setSelectCurrentBand([])
+        setSelectedBand([]);
+        setSelectedTenure([]);
+        setSelectedLongTenure([]);
+
        
        const data = await fetchAllIncrements(paginationPageIndex, pageSize);
        setIncrementData(data.data);

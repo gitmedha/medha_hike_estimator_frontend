@@ -80,6 +80,7 @@ function Bonuses(props) {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [lastClicked, setLastClicked] = useState(null);
   const [uploadStatus, setUploadStatus] = useState("");
+  const [isSearchEnable,setIsSearchable] = useState(false);
 
   const handleClick = (e, itemId) => {
     e.preventDefault();
@@ -188,6 +189,21 @@ function Bonuses(props) {
       setTotalCount(data?.totalCount);
     }
   } else {
+    console.log('No sorting applied');
+    console.log("isSearchable", isSearchEnable);
+    if(isSearchEnable){
+      const searchField = localStorage.getItem('searchField');
+      const searchValue = localStorage.getItem('searchValue');
+      console.log('searchField', searchField);
+      console.log('searchValue', searchValue);
+      const data = await search(searchField, searchValue, paginationPageIndex, pageSize, currentReviewCycle);
+      console.log('data', data);
+      setBonusData(data?.data);
+      setTotalCount(data?.totalCount);
+      setLoading(false);
+      nProgress.done();
+      return;
+    }
     if(currentReviewCycle){
       await fetchAllBonusesByReviewCycle(pageSize, paginationPageIndex, 'employee_id', 'asc', currentReviewCycle);
     } else {
@@ -202,7 +218,12 @@ function Bonuses(props) {
 }, [paginationPageIndex, pageSize, reviewCycle]);
 
       const handleSearch = async(value)=>{
+        
+       await localStorage.setItem('searchField',value.searchField);
+        await localStorage.setItem('searchValue',value.searchValue);
         try{
+        setIsSearchable(true);
+
         const data = await search(value.searchField, value.searchValue,paginationPageIndex,pageSize,value.reviewCycle);
         setBonusData(data.data);
         setTotalCount(data.totalCount);
@@ -246,6 +267,9 @@ function Bonuses(props) {
       }
 
       const clearFilters = async()=>{
+        setIsSearchable(false);
+        localStorage.removeItem('searchField');
+        localStorage.removeItem('searchValue');
        const data = await fetchAllBonuses(paginationPageIndex, pageSize);
        setBonusData(data?.data);
        setTotalCount(data?.totalCount);
@@ -597,11 +621,7 @@ function Bonuses(props) {
               columns={columns}
               data={bonusData}
               totalRecords={totalCount}
-              fetchData={(pageIndex, pageSize, sortBy, isSearchEnable, isFilterApplied) => 
-                {
-                  console.log("Fetching data with pageIndex:", pageIndex, "pageSize:", pageSize, "sortBy:", sortBy, "reviewCycle:", reviewCycle);
-                fetchData(pageIndex, pageSize, sortBy, reviewCycle || localStorage.getItem('review_cycle'))
-              }}
+              fetchData={fetchData} 
               loading={loading}
               paginationPageSize={paginationPageSize}
               onPageSizeChange={setPaginationPageSize}
@@ -609,6 +629,7 @@ function Bonuses(props) {
               onPageIndexChange={setPaginationPageIndex}
               onRowClick={onRowClick}
               reviewCycle={reviewCycle}
+              isSearchEnable={isSearchEnable}
             />
           </div>
         </div>
