@@ -119,6 +119,7 @@ const ReviewCycleInput = (props) => {
                   onChange={(date) => {
                     setFieldValue(name, date);
                     onInput?.(date);
+                    props.onChange?.(date);
                   }}
                   dateFormat="MMM yyyy"
                   showMonthYearPicker={showMonthYearPicker}
