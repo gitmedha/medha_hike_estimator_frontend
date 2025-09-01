@@ -124,6 +124,7 @@ function HistoricForm(props) {
                       setFieldValue(field, value);
 
                       if (field === "kra_vs_goals" || field === "competency") {
+                      
                         const kra = parseFloat(values.kra_vs_goals || (field === "kra_vs_goals" ? value : 0)) || 0;
                         const competency = parseFloat(values.competency || (field === "competency" ? value : 0)) || 0;
                         const average = (kra + competency) / 2;
@@ -146,7 +147,7 @@ function HistoricForm(props) {
                               className="form-control"
                               options={employees}
                               value={values.employee} 
-                              onChange={(e) => handleInputChange("employee", e.target.value)}
+                              onChange={(e) => handleInputChange("employee", e.value)}
                             />
                           </div>
                           <div className="col-md-6 col-sm-12 mt-2">
@@ -180,7 +181,8 @@ function HistoricForm(props) {
                               control="input"
                               placeholder="Competency"
                               className="form-control"
-                              onChange={(e) => handleInputChange("competency", e.target.value)}
+                              onChange={(e) =>{ handleInputChange("competency", e.target.value)}}
+                              
 
                             />
                           </div>

@@ -6,7 +6,6 @@ import { FaUserAlt} from "react-icons/fa";
 const Userbox = () => {
   const {user, logout} = useContext(AuthContext);
 const userData = JSON.parse(localStorage.getItem("user"));
-console.log("userData", userData);
 
   return (
     <Dropdown className="user-box">

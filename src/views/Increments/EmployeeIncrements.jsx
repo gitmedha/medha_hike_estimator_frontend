@@ -4,13 +4,10 @@ import styled from "styled-components";
 import { useState, useEffect, useMemo, useCallback,} from "react";
 import { useHistory } from "react-router-dom";
 import Table from "../../components/content/Table";
-// import { FaListUl, FaThLarge } from "react-icons/fa";
-// import Switch from "@material-ui/core/Switch";
 import SearchBar from "../../components/layout/SearchBar";
 import IncrementDataForm from "./IncrementsComponents/IncrementDataForm";  
 import {
   fetchAllIncrements,
-  fetchFilterPicklist,
   applyFilterActions,
   fetchSearchDropdown,
   search,
@@ -25,7 +22,6 @@ import {
 import toaster from 'react-hot-toast'
 import CurrentBandDropdown from "./IncrementsComponents/CurrentBandFilter";
 import Modal from "react-bootstrap/Modal";
-import Spinner from "../../utils/Spinners/Spinner";
 import { Dropdown,Button } from 'react-bootstrap';
 import api from "../../apis";
 import ReactSelect from "react-select";
@@ -228,6 +224,7 @@ const fetchIncrementByReview = async(pageSize,pageIndex,sortBy,sortOrder,review_
       const fetchData = useCallback(async(pageIndex,
         pageSize,
         sortBy,isSearchEnable,isFilterApplied)=>{
+        
           let SortField='employee_id';
           let SortOrder='asc';
           if(sortBy.length){
@@ -237,8 +234,8 @@ const fetchIncrementByReview = async(pageSize,pageIndex,sortBy,sortOrder,review_
           }
         nProgress.start();
         setLoading(true);
-        console.log('isSearchEnable',isSearchEnable);
-        console.log('isFilterApplied',isFilterApplied);
+        const searchField = localStorage.getItem('searchField');
+        const searchValue = localStorage.getItem('searchValue');
         if(isSearchEnable && isFilterApplied){
           
         const data = await fetchAllIncrements(paginationPageIndex, pageSize,SortField,SortOrder,searchField,searchValue,filters);
@@ -247,14 +244,14 @@ const fetchIncrementByReview = async(pageSize,pageIndex,sortBy,sortOrder,review_
         setLoading(false);
         nProgress.done();
         }
-        // else if (isSearchEnable){
-        //   const data = await search(searchField, searchValue,pageSize,paginationPageIndex,reviewCycle || localStorage.getItem('appraisal_cycle'));
-        //   setIncrementData(data.data);
-        //   setTotalCount(data.totalCount);
-        //   setLoading(false);
-        //   nProgress.done();
+        else if (isSearchEnable){
+          const data = await search(searchField, searchValue,pageSize,paginationPageIndex,reviewCycle || localStorage.getItem('appraisal_cycle'));
+          setIncrementData(data.data);
+          setTotalCount(data.totalCount);
+          setLoading(false);
+          nProgress.done();
 
-        // }
+        }
         else if(isFilterApplied){
           const data = await applyFilterActions(filters,paginationPageIndex,pageSize, reviewCycle || localStorage.getItem('appraisal_cycle'));
           setIncrementData(data.data);
@@ -270,21 +267,15 @@ const fetchIncrementByReview = async(pageSize,pageIndex,sortBy,sortOrder,review_
         setLoading(false);
         nProgress.done();
         }
-        // if(isSearchEnable){
-        //   const data = await search(defaultSearchOptions.searchField, defaultSearchOptions.searchValue,pageSize,pageIndex,defaultSearchOptions.reviewCycle);
-        //   console.log('data',data);
-        //   setIncrementData(data.data);
-        //   setTotalCount(data.totalCount);
-        //   setLoading(false);
-        //   nProgress.done();
-        //   return;
-        // }
       },[paginationPageIndex,pageSize]);
 
       const handleSearch = async(value)=>{
         setIsSearchable(true);
         setSearchField(value.searchField);
         setSearchValue(value.searchValue);
+        localStorage.setItem('searchField',value.searchField);
+        localStorage.setItem('searchValue',value.searchValue);
+      
         try{
 
         const data = await search(value.searchField, value.searchValue,pageSize,paginationPageIndex,value.reviewCycle);
@@ -440,9 +431,7 @@ console.error(e.message);
 
          setIncrementData(data.data);
          setTotalCount(data.totalCount);
-
          localStorage.setItem('appraisal_cycle', data.data[0].appraisal_cycle);
-
         }
         mountApis();
       },[])
@@ -473,11 +462,12 @@ console.error(e.message);
       },[filters])
 
 
-      const clearFilters = async()=>{
-        await setSelectCurrentBand([])
-       await setSelectedBand([]);
-       await setSelectedTenure([]);
-       await setSelectedLongTenure([]);
+    const clearFilters = async()=>{
+        setSelectCurrentBand([])
+        setSelectedBand([]);
+        setSelectedTenure([]);
+        setSelectedLongTenure([]);
+
        
        const data = await fetchAllIncrements(paginationPageIndex, pageSize);
        setIncrementData(data.data);
@@ -689,6 +679,7 @@ useEffect(()=>{
           setClearDisabled={setClearDisabled}
           reviewCycle={reviewCycle || localStorage.getItem('appraisal_cycle')}
           setReviewCycle={setReviewCycle}
+          setIsSearchable={setIsSearchable}
           />
         </div>
        {isAdmin === "true" &&  <div className="col-auto" style={{marginRight:10,marginTop:30}}>

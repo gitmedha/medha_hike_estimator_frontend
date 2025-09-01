@@ -49,6 +49,8 @@ function BonusForm(props) {
     const { reviewCycle,show,onHide } = props;
     const [increments,setIncrements] = useState([]);
     const [reviewers,setReviewers] = useState([]);
+  const [error, setError] = useState("");
+
     const [IDs,setIDs] = useState([]);
     let navigation = useHistory();
     const initialValues = {
@@ -64,52 +66,65 @@ function BonusForm(props) {
         from_review_cycle:props?.bonusData?.from_review_cycle || null,
         to_review_cycle:props?.bonusData?.to_review_cycle || null
     }
-    const onSubmit = async (values)=>{
-      nProgress.start();
-        try{
-        let newValues = values;
-        
-        newValues.normalized_ratings = parseFloat(values.normalized_ratings);
-        newValues.compentency = parseFloat(values.compentency);
-        newValues.average = parseFloat(values.average);
-        newValues.kra = parseFloat(values.kra);
-        newValues.review_cycle = `${moment(values.from_review_cycle).format("MMMM YYYY")}-${moment(values.to_review_cycle).format("MMM YYYY")}`;
+   const onSubmit = async (values) => {
+  nProgress.start();
+  try {
+    // Validate review cycle first
+    console.log("values",values)
+    if (values.from_review_cycle && values.to_review_cycle) {
+      const fromDate = new Date(values.from_review_cycle);
+      const toDate = new Date(values.to_review_cycle);
 
-         delete newValues.from_review_cycle;
-         delete newValues.to_review_cycle;
-          if(props.bonusData){
-            await updateBonus(newValues,props.bonusData.id);
-            onHide();
-            toaster.success('Details updated successfully!',{ position: "bottom-center" })
-
-            setTimeout(() =>window.location.href = `/bonus/${props.bonusData.employee_id}`,2000);
-            nProgress.done();
-
-          }
-          else {
-            
-           const{data} =  await createBonus(newValues);
-           onHide();
-           props.ToastOnSuccess()
-           setTimeout(() => navigation.push(`/bonus/${data[0].employee_id}`, {
-            review_cycle: newValues.review_cycle
-           }),2000);
-          nProgress.done();
-
-          }
-
-        }catch(error){
-          onHide();
-          nProgress.done();
-          if(props.ToastOnFailure){
-            props.ToastOnFailure();
-          }
-          else {
-            toaster.error('Failed to update details!',{ position: "bottom-center" })
-          }
-          console.error(error)
-        }
+      if (fromDate >= toDate) {
+        setError("To Review Cycle must be after From Review Cycle");
+        nProgress.done();
+        return; // stop execution if validation fails
+      }
     }
+
+    let newValues = { ...values };
+
+    newValues.normalized_ratings = parseFloat(values.normalized_ratings);
+    newValues.compentency = parseFloat(values.compentency);
+    newValues.average = parseFloat(values.average);
+    newValues.kra = parseFloat(values.kra);
+    newValues.review_cycle = `${moment(values.from_review_cycle).format("MMMM YYYY")}-${moment(values.to_review_cycle).format("MMM YYYY")}`;
+
+    delete newValues.from_review_cycle;
+    delete newValues.to_review_cycle;
+
+    if (props.bonusData) {
+      await updateBonus(newValues, props.bonusData.id);
+      onHide();
+      toaster.success("Details updated successfully!", { position: "bottom-center" });
+
+      setTimeout(() => (window.location.href = `/bonus/${props.bonusData.employee_id}`), 2000);
+      nProgress.done();
+    } else {
+      const { data } = await createBonus(newValues);
+      onHide();
+      props.ToastOnSuccess();
+      setTimeout(
+        () =>
+          navigation.push(`/bonus/${data[0].employee_id}`, {
+            review_cycle: newValues.review_cycle,
+          }),
+        2000
+      );
+      nProgress.done();
+    }
+  } catch (error) {
+    onHide();
+    nProgress.done();
+    if (props.ToastOnFailure) {
+      props.ToastOnFailure();
+    } else {
+      toaster.error("Failed to update details!", { position: "bottom-center" });
+    }
+    console.error(error);
+  }
+};
+
     useEffect(()=>{
         async function setInitialFields(){
             const data = await getBonusPickList(reviewCycle);
@@ -120,7 +135,6 @@ function BonusForm(props) {
         setInitialFields()
     }, [])
 
-    console.log("props.bonusData",props.bonusData)
   
     return (
         <Modal
@@ -147,7 +161,7 @@ function BonusForm(props) {
               initialValues={initialValues}
               validationSchema={bonusValidations}
             >
-              {({ values, setFieldValue }) => {
+              {({ values, setFieldValue,errors,setFieldError }) => {
                 const handleInputChange = (field, value) => {
                   setFieldValue(field, value);
                   if(field === "kra"){
@@ -243,7 +257,6 @@ function BonusForm(props) {
                            <ReviewCycleInput
                           name="from_review_cycle"
                           label="From"
-                          className=""
                           required
                         />
                         <ReviewCycleInput
@@ -254,7 +267,9 @@ function BonusForm(props) {
 
                         </div>
                        
-                       
+              {error && <p style={{ color: "red" }}>{error}</p>}
+
+
                       </div>
                       <div className="col-md-6 col-sm-12 mt-2">
                         <Input

@@ -75,6 +75,8 @@ const Sidebar = ({ isOpen, toggleMenu }) => {
   });
 
   const menuItemClickHandler = (menuItemTitle) => {
+    localStorage.removeItem('searchField');
+    localStorage.removeItem('searchValue');
     setActiveFirstLevel(menuItemTitle);
     if (window.innerWidth < 768) {
       toggleMenu();
