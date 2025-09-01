@@ -182,22 +182,6 @@ function SearchBar(props) {
         clearInterval(interval);
         handleLoaderForSearch();
 
-        // if(searchField === 'final_score' || searchField === 'kra_vs_goals' || searchField === 'competency' || searchField === 'compentency' || searchField === 'average'){
-          
-        // await setSearchValueOptions(ratings);
-        // await setDefaultSearchArray(ratings);
-
-        // }
-        // else if (searchField === 'normalize_rating'){
-        //   await setSearchValueOptions(normalizedRatingRanges);
-        //   await setDefaultSearchArray(normalizedRatingRanges);
-        // }
-        // else if (searchField === 'increment'){
-
-        // }
-        // else {
-        
-        // }
         const data = await handleSearchPicklist(searchField);
         await setSearchValueOptions(data);
         await setDefaultSearchArray(data);
@@ -341,7 +325,7 @@ function SearchBar(props) {
                 <button
                   className="btn btn-primary action_button_sec search_bar_action_sec"
                   type="submit"
-                  disabled={isDisable} // Removed dateError from disabled condition
+                  disabled={isDisable}
                 >
                   FIND
                 </button>
