@@ -115,7 +115,7 @@ if (isLoading) {
         </div>
         <Details {...employee}/>
         <Collapsible title="Historic Details" opened={true}>
-          {historicalData.length ?<HistoricDetails historics={historicalData} firstName={employee.first_name} lastName={employee.last_name}/>:<div></div>}
+          {historicalData?.length ?<HistoricDetails historics={historicalData} firstName={employee.first_name} lastName={employee.last_name}/>:<div></div>}
         </Collapsible>
         {
           modalShow ? <EmployeeForm show={modalShow} onHide={()=>setModalShow(false)} employeeData={employee} triggerToast={toaster}                         showDeleteModal={handleDeleteModal}
