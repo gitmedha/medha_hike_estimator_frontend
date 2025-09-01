@@ -102,14 +102,10 @@ const SelectField = (props) => {
         components={{ DropdownIndicator }}
         onChange={option => {
           setSelectedOption(option)
-          // console.log(field.name, option ? option.value : null)
             form.setFieldValue(field.name, option ? option.value : null);
             onChange(option);
           }
         }
-        // value={
-        //   options ? options.find((option) => option.value === field.value) || field.value  : null
-        // }
         value={selectedOpt}
         defaultOptions={defaultOptions}
         cacheOptions

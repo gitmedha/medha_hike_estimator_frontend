@@ -70,7 +70,6 @@ function BonusForm(props) {
   nProgress.start();
   try {
     // Validate review cycle first
-    console.log("values",values)
     if (values.from_review_cycle && values.to_review_cycle) {
       const fromDate = new Date(values.from_review_cycle);
       const toDate = new Date(values.to_review_cycle);

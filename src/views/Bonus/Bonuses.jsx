@@ -189,15 +189,10 @@ function Bonuses(props) {
       setTotalCount(data?.totalCount);
     }
   } else {
-    console.log('No sorting applied');
-    console.log("isSearchable", isSearchEnable);
     if(isSearchEnable){
       const searchField = localStorage.getItem('searchField');
       const searchValue = localStorage.getItem('searchValue');
-      console.log('searchField', searchField);
-      console.log('searchValue', searchValue);
       const data = await search(searchField, searchValue, paginationPageIndex, pageSize, currentReviewCycle);
-      console.log('data', data);
       setBonusData(data?.data);
       setTotalCount(data?.totalCount);
       setLoading(false);
