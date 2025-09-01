@@ -46,6 +46,13 @@ export default function EmployeeForm(props) {
     }, {
         label: 'Inactive',
         value: 'Inactive'
+    }, 
+    {
+        label: 'Resigned',
+        value: 'resigned'
+    }, {
+        label: 'Terminated',
+        value: 'Terminated'
     }
 ]);
     const [employeeTitles, setEmployeeTitles] = useState([]);
