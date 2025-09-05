@@ -4,7 +4,6 @@ import AuthContext from "../context/AuthContext";
 
 export const PublicRoute = ({ component: Component, ...rest }) => {
   const { isAuthenticated } = useContext(AuthContext);
-  console.log("PublicRoute isAuthenticated", isAuthenticated);
 
   return (
     <Route

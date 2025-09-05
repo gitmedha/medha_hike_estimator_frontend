@@ -99,7 +99,6 @@ useEffect(() => {
     });
 }, []);
 
-console.log("user",user)
 
   return (
     <AuthContext.Provider
