@@ -324,6 +324,7 @@ export default function EmployeeForm(props) {
                           placeholder="Experience in years"
                           className="form-control"
                           autoComplete="off"
+                          disabled
                         />
                       </div>
                       
@@ -336,6 +337,7 @@ export default function EmployeeForm(props) {
                             className="form-control"
                             placeholder="Experience in months"
                             autoComplete="off"
+                            disabled
                           />
                         </div>
                     </div>
