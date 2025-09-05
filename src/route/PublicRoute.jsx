@@ -1,15 +1,21 @@
 import { Redirect, Route } from "react-router";
+import { useContext } from "react";
+import AuthContext from "../context/AuthContext";
 
-// screen if you're not yet authenticated.
-export const PublicRoute = ({ children, ...rest }) => {
-  let token = localStorage.getItem('token');
-  if (token) {
-    return <Redirect to={{pathname: '/employees_details'}} />
-  }
+export const PublicRoute = ({ component: Component, ...rest }) => {
+  const { isAuthenticated } = useContext(AuthContext);
+  console.log("PublicRoute isAuthenticated", isAuthenticated);
+
   return (
     <Route
       {...rest}
-      render={() => children}
+      render={(props) =>
+        isAuthenticated ? (
+          <Redirect to="/employees_details" />
+        ) : (
+          <Component {...props} />
+        )
+      }
     />
   );
-}
+};

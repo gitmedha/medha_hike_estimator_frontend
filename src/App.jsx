@@ -33,6 +33,8 @@ import PageNotFound from "./views/404Page";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 
+import api from "./apis"
+
 const RouteContainer = styled.div`
   flex: 1;
   z-index: 2;
@@ -48,12 +50,21 @@ const App = (props) => {
   const history = useHistory();
   const token = localStorage.getItem("token");
 
-  const logout = (callback = () => {}) => {
+const logout = async (callback = () => {}) => {
+  try {
+    await api.post("/api/users/logout", {}, { withCredentials: true });
+
+    // Clear context state
     setUser(null);
-    localStorage.removeItem('token');
-    history.push("/")
+
+    // Redirect
+    history.push("/");
+
     callback();
+  } catch (err) {
+    console.error("Logout failed:", err);
   }
+};
 
   //add Sentry Plugin for error handling
   if (process.env.NODE_ENV === "production") {
@@ -76,36 +87,19 @@ const App = (props) => {
     }
   }, [props.alert]);
 
-  const getUserDetails = () => {
-    if (token) {
-      // authenticate the token on the server and place set user object
-      axios.get(apiPath('/users/me'), {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }).then((res) => {
-        // if res comes back not valid, token is not valid
-        // delete the token and log the user out on client
-        if (res.status !== 200) {
-          localStorage.removeItem('token');
-          setUser(null);
-          return null;
-        }
-        setUser(res.data);
-        localStorage.setItem("user_id", res.data.id);
-        localStorage.setItem("user_name", res.data.username);
-        localStorage.setItem("user_email", res.data.email);
-        localStorage.setItem("user_role", res.data?.role.name);
-        localStorage.setItem("user_state", res.data.state);
-        localStorage.setItem("user_area", res.data.area);
-      });
-    }
-  }
 
-  useEffect(() => {
 
-  }, []);
+useEffect(() => {
+  api.get('/api/users/me', { withCredentials: true })
+    .then(res => {
+      setUser(res.data);
+    })
+    .catch(() => {
+      setUser(null);
+    });
+}, []);
 
+console.log("user",user)
 
   return (
     <AuthContext.Provider

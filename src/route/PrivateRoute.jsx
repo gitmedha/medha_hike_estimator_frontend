@@ -1,19 +1,22 @@
-import { Redirect, Route } from "react-router";
+import { useContext } from "react";
+import { Route, Redirect } from "react-router-dom";
+import AuthContext from "../context/AuthContext";
 
-// screen if you're not yet authenticated.
-export const PrivateRoute = ({ children, ...rest }) => {
-  let token = localStorage.getItem('token');
-  
-  if (!token) {
-    if (rest.location.pathname) {
-      localStorage.setItem('next_url', rest.location.pathname);
-    }
-    return <Redirect to={{pathname: '/'}} />
-  }
+export const PrivateRoute = ({ component: Component, ...rest }) => {
+  const { user, isAuthenticated } = useContext(AuthContext);
+  console.log("PrivateRoute user", user);
+  console.log("PrivateRoute isAuthenticated", isAuthenticated);
+
   return (
     <Route
       {...rest}
-      render={() => children}
+      render={(props) =>
+        isAuthenticated ? (
+          <Component {...props} />
+        ) : (
+          <Redirect to="/" />
+        )
+      }
     />
   );
-}
+};
