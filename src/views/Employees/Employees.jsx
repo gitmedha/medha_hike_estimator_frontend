@@ -13,6 +13,8 @@ import { searchEmployees, LoadSearchPicklist, downloadTableExcel,syncEmployeesWi
 import EmployeeForm from "./EmployeeComponents/EmployeeForm";  
 import toaster from 'react-hot-toast'
 import { Dropdown, Modal, Button } from 'react-bootstrap';
+import UploadExcel from "src/components/layout/UploadExcel";
+
 
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
@@ -378,39 +380,61 @@ const refreshEmployees = async () => {
             refreshData={() => fetchData(paginationPageIndex, paginationPageSize, [])}
           />
         )}
-        {showUploadExcelInput && (
-          <Modal
-            centered
-            size="sm"
-            show={true}
-            onHide={() => setShowUploadExcelInput(false)}
-            animation={false}
-            aria-labelledby="contained-modal-title-vcenter"
-          >
-            <Modal.Header closeButton>
-              <Modal.Title>Upload Excel</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <div className="uploader-container">
-                <input
-                  accept=".xlsx"
-                  type="file"
-                  name="file-uploader"
-                  onChange={handleFileChange}
-                  className="form-control mb-3"
-                />
-                {selectedFile && (
-                  <p className="text-center text-primary">
-                    Selected File: <strong>{selectedFile.name}</strong>
-                  </p>
-                )}
-                <Button variant="primary" className="w-100" onClick={handleUploadFile}>
-                  Upload File
-                </Button>
-              </div>
-            </Modal.Body>
-          </Modal>
-        )}
+        
+      {showUploadExcelInput && (
+  <Modal
+    centered
+    size="xl"
+    show={true}
+    onHide={() => setShowUploadExcelInput(false)}
+    animation={false}
+  >
+    <Modal.Header >
+      <Modal.Title>Upload Excel File</Modal.Title>
+    </Modal.Header>
+    <Modal.Body>
+      <UploadExcel
+        expectedColumns={[
+          "Employee ID",
+          "First Name",
+          "Last Name",
+          "Email ID",
+          "Department",
+          "Title",
+          "Date of Joining",
+          "Employee Status",
+          "Employee Type",
+          "Experience",
+          "Current Band",
+          "Gross Monthly Salary/ Fee (Rs.)"
+        ]}
+        validationRules={{
+          "Employee ID": (val) => !!val,
+          "First Name": (val) => !!val,
+          "Last Name": (val) => !!val,
+          "Email ID": (val) => /\S+@\S+\.\S+/.test(val),
+          "Department": (val) => !!val,
+          "Title": (val) => !!val,
+          "Date of Joining": (val) => !!val,
+          "Employee Status": (val) => !!val,
+          "Employee Type": (val) => !!val,
+          "Experience": (val) => !isNaN(parseFloat(val)),
+          "Current Band": (val) => !!val,
+          "Gross Monthly Salary/ Fee (Rs.)": (val) => !isNaN(parseFloat(val))
+        }}
+        uploadApi="/api/employees/upload_excel"
+        onValidData={(valid) => console.log("Valid rows:", valid)}
+        onInvalidData={(invalid) => console.log("Invalid rows:", invalid)}
+        refreshData={() => {
+          fetchData(paginationPageIndex, paginationPageSize, []);
+          setShowUploadExcelInput(false);
+        }}
+        onClose={() => setShowUploadExcelInput(false)}
+      />
+    </Modal.Body>
+  </Modal>
+)}
+
       </Styled>
     </>
   );
