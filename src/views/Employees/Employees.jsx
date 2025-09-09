@@ -382,18 +382,7 @@ const refreshEmployees = async () => {
         )}
         
       {showUploadExcelInput && (
-  <Modal
-    centered
-    size="xl"
-    show={true}
-    onHide={() => setShowUploadExcelInput(false)}
-    animation={false}
-  >
-    <Modal.Header >
-      <Modal.Title>Upload Excel File</Modal.Title>
-    </Modal.Header>
-    <Modal.Body>
-      <UploadExcel
+  <UploadExcel
         expectedColumns={[
           "Employee ID",
           "First Name",
@@ -409,19 +398,44 @@ const refreshEmployees = async () => {
           "Gross Monthly Salary/ Fee (Rs.)"
         ]}
         validationRules={{
-          "Employee ID": (val) => !!val,
-          "First Name": (val) => !!val,
-          "Last Name": (val) => !!val,
-          "Email ID": (val) => /\S+@\S+\.\S+/.test(val),
-          "Department": (val) => !!val,
-          "Title": (val) => !!val,
-          "Date of Joining": (val) => !!val,
-          "Employee Status": (val) => !!val,
-          "Employee Type": (val) => !!val,
-          "Experience": (val) => !isNaN(parseFloat(val)),
-          "Current Band": (val) => !!val,
-          "Gross Monthly Salary/ Fee (Rs.)": (val) => !isNaN(parseFloat(val))
-        }}
+  "Employee ID": (val) => /^M\d{4}$/.test(val),
+  "First Name": (val) => !!val,
+  "Last Name": (val) => !!val,
+  "Email ID": (val) => /\S+@\S+\.\S+/.test(val),
+  "Department": (val) => !!val,
+  "Title": (val) => !!val,
+  "Date of Joining": (val) => {
+    if (!val) return false;
+    const date = new Date(val);
+    const today = new Date();
+    return !isNaN(date) && date <= today;
+  },
+  "Employee Status": (val) => !!val,
+  "Employee Type": (val) => !!val,
+  "Experience": (val, row = {}) => {
+  if (!val || isNaN(parseFloat(val))) return false;
+
+  const dojRaw = row["Date of Joining"];
+  if (!dojRaw) return false;
+
+  const doj = new Date(dojRaw);
+  if (isNaN(doj)) return false;
+
+  const today = new Date();
+  const diffYears = (today - doj) / (1000 * 60 * 60 * 24 * 365); // years
+  const uploadedExp = parseFloat(val);
+
+  // Accept if uploadedExp is within ±0.2 years of calculated
+  return Math.abs(uploadedExp - diffYears) < 0.2;
+},
+
+  "Current Band": (val) => {
+    const allowedBands = ["I","II","III","IV","V","VI","VII","VIII"];
+    return allowedBands.includes(val?.toString().trim());
+  },
+  "Gross Monthly Salary/ Fee (Rs.)": (val) => !isNaN(parseFloat(val))
+}}
+
         uploadApi="/api/employees/upload_excel"
         onValidData={(valid) => console.log("Valid rows:", valid)}
         onInvalidData={(invalid) => console.log("Invalid rows:", invalid)}
@@ -431,9 +445,7 @@ const refreshEmployees = async () => {
         }}
         onClose={() => setShowUploadExcelInput(false)}
       />
-    </Modal.Body>
-  </Modal>
-)}
+  )}
 
       </Styled>
     </>
