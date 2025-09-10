@@ -76,7 +76,8 @@ const UploadExcel = ({
   onInvalidData,
   refreshData,
   onClose,
-  title = "Upload Data"
+  title,
+  colMapping
 }) => {
   const [fileName, setFileName] = useState("");
   const [parsedData, setParsedData] = useState([]);
@@ -93,21 +94,6 @@ const UploadExcel = ({
   const [showSpinner, setShowSpinner] = useState(false);
 
   const fileInputRef = useRef(null);
-
-  const colMapping = {
-    "Employee ID": "employee_id",
-    "First Name": "first_name",
-    "Last Name": "last_name",
-    "Email ID": "email_id",
-    "Department": "department",
-    "Title": "title",
-    "Date of Joining": "date_of_joining",
-    "Employee Status": "employee_status",
-    "Employee Type": "employee_type",
-    "Experience": "experience",
-    "Current Band": "current_band",
-    "Gross Monthly Salary/ Fee (Rs.)": "gross_monthly_salary_or_fee_rs",
-  };
 
   const reset = () => {
     setFileName("");
@@ -170,20 +156,20 @@ const UploadExcel = ({
         const normalizedRow = Object.keys(colMapping).reduce((acc, key) => {
           let value = row[key] || "";
 
-          if (key === "Date of Joining" && value) {
-            const dateStr = value.toString();
-            if (dateStr.includes('/')) {
-              const [month, day, year] = dateStr.split('/');
-              const fullYear = year.length === 2 ? `20${year}` : year;
-              const dateObj = new Date(`${fullYear}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
-              if (!isNaN(dateObj.getTime())) {
-                value = dateObj.toISOString().split('T')[0];
-              }
-            } else if (!isNaN(Date.parse(dateStr))) {
-              const dateObj = new Date(dateStr);
-              value = dateObj.toISOString().split('T')[0];
-            }
-          }
+        //   if (key === "Date of Joining" && value) {
+        //     const dateStr = value.toString();
+        //     if (dateStr.includes('/')) {
+        //       const [month, day, year] = dateStr.split('/');
+        //       const fullYear = year.length === 2 ? `20${year}` : year;
+        //       const dateObj = new Date(`${fullYear}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
+        //       if (!isNaN(dateObj.getTime())) {
+        //         value = dateObj.toISOString().split('T')[0];
+        //       }
+        //     } else if (!isNaN(Date.parse(dateStr))) {
+        //       const dateObj = new Date(dateStr);
+        //       value = dateObj.toISOString().split('T')[0];
+        //     }
+        //   }
 
           acc[colMapping[key]] = value;
           return acc;
@@ -211,8 +197,8 @@ const UploadExcel = ({
         const val = row[key];
 
         if (validationRules[col]) {
-          const validationResult = validationRules[col](val);
-          if (validationResult !== true) {
+        const validationResult = validationRules[col](val, row)          
+        if (validationResult !== true) {
             errors[col] = validationResult || `${col} is invalid`;
           }
         }
@@ -273,7 +259,7 @@ const UploadExcel = ({
   };
 
   return (
-    <Modal centered size="lg" show={true} onHide={handleClose} animation={false} className="form-modal">
+    <Modal centered size="xl" show={true} onHide={handleClose} animation={false} className="form-modal">
       <Modal.Header className="bg-white">
         <Modal.Title>
           <h1 className="text--primary bebas-thick mb-0">{title}</h1>

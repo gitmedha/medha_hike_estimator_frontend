@@ -26,6 +26,8 @@ import { Dropdown,Button } from 'react-bootstrap';
 import api from "../../apis";
 import ReactSelect from "react-select";
 import SweetAlert from "react-bootstrap-sweetalert";
+import UploadExcel from "../../components/layout/UploadExcel";
+
 
 
 const Styled = styled.div`
@@ -838,39 +840,95 @@ useEffect(()=>{
 
 
 
-  {showUploadExcelInput && (
-          <Modal
-            centered
-            size="sm"
-            show={true}
-            onHide={() => setShowUploadExcelInput(false)}
-            animation={false}
-            aria-labelledby="contained-modal-title-vcenter"
-          >
-            <Modal.Header>
-              <Modal.Title>Upload Excel</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <div className="uploader-container">
-                <input
-                  accept=".xlsx, .xls"
-                  type="file"
-                  name="file-uploader"
-                  onChange={handleFileChange}
-                  className="form-control mb-3"
-                />
-                {selectedFile && (
-                  <p className="text-center text-primary">
-                    Selected File: <strong>{selectedFile.name}</strong>
-                  </p>
-                )}
-                <Button variant="primary" className="w-100" onClick={handleUploadFile}>
-                  Upload File
-                </Button>
-              </div>
-            </Modal.Body>
-          </Modal>
-        )}
+{showUploadExcelInput && (
+  <UploadExcel
+    expectedColumns={[
+      "Review Cycle",
+      "Employee ID",
+      "Full Name",
+      "Manager",
+      "KRA",
+      "Compentency",
+      "Average",
+      "Normalized Ratings",
+      "Increment",
+      "Weighted Increment",
+      "Long Tenure",
+      "Current band",
+      "Current Salary",
+      "New Band",
+      "New Salary"
+    ]}
+    colMapping={{
+      "Review Cycle": "review_cycle",
+      "Employee ID": "employee_id",
+      "Full Name": "full_name",
+      "Manager": "manager",
+      "KRA": "kra",
+      "Compentency": "compentency",
+      "Average": "average",
+      "Normalized Ratings": "normalized_ratings",
+      "Increment": "increment",
+      "Weighted Increment": "weighted_increment",
+      "Long Tenure": "long_tenure",
+      "Current band": "current_band",
+      "Current Salary": "current_salary",
+      "New Band": "new_band",
+      "New Salary": "new_salary"
+    }}
+    validationRules={{
+      "Review Cycle": (val) => {
+        const pattern = /^(January|February|March|April|May|June|July|August|September|October|November|December)\s\d{4}-(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s\d{4}$/;
+        return pattern.test(val) || "Review Cycle must be in format like 'April 2024-Mar 2025'";
+      },
+      "Employee ID": (val) => /^M\d{4}$/.test(val) || "Employee ID must be in format M followed by 4 digits (e.g., M1234)",
+      "Full Name": (val) => !!val?.trim() || "Full Name is required",
+      "Manager": (val, row) => {
+        if (!val?.trim()) return "Manager name is required";
+        if (val?.trim() === row["Full Name"]?.trim()) return "Manager name cannot be same as employee name";
+        return true;
+      },
+      "KRA": (val) => {
+        if (val === "" || val === null || val === undefined) return true; // Allow empty
+        return !isNaN(parseFloat(val)) || "KRA must be numeric";
+      },
+      "Compentency": (val) => {
+        if (val === "" || val === null || val === undefined) return true; // Allow empty
+        return !isNaN(parseFloat(val)) || "Compentency must be numeric";
+      },
+      "Average": (val, row) => {
+        const kra = parseFloat(row["kra"]) || 0;
+        const competency = parseFloat(row["compentency"]) || 0;
+        
+        // If both KRA and Compentency are empty, allow empty Average
+        if ((!row["kra"] || row["kra"] === "") && (!row["compentency"] || row["compentency"] === "")) {
+          if (!val || val === "") return true;
+          return "Average should be empty when KRA and Compentency are empty";
+        }
+        
+        const expected = (kra + competency) / 2;
+        return parseFloat(val) === expected || `Average must be the average of KRA and Compentency (${expected})`;
+      },
+      "Normalized Ratings": (val) => !isNaN(parseFloat(val)) || "Normalized Ratings must be numeric",
+      "Increment": (val) => !isNaN(parseFloat(val)) || "Increment must be numeric",
+      "Weighted Increment": (val) => !isNaN(parseFloat(val)) || "Weighted Increment must be numeric",
+      "Long Tenure": (val) => {
+        const lowerVal = String(val).toLowerCase().trim();
+        return ['true', 'false', 'yes', 'no', '1', '0', ''].includes(lowerVal) || 
+               "Long Tenure must be true/false, yes/no, or 1/0";
+      },
+      "Current band": (val) => {
+        if (!val) return "Current band is required";
+        const validBands = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'];
+        return validBands.includes(val.trim()) || `Current band must be one of: ${validBands.join(', ')}`;
+      }
+    }}
+    uploadApi="/api/increments/upload_excel"
+    refreshData={() => fetchData(paginationPageIndex, paginationPageSize, [], isSearchable, isFilterApplied)}
+    onClose={() => setShowUploadExcelInput(false)}
+    title="Upload Increments Excel"
+  />
+)}
 
 {
   showConfirmationModal && (

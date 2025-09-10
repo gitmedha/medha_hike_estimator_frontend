@@ -10,7 +10,7 @@ import { searchHistorics, LoadSearchPicklist, downloadTableExcel } from "./Histo
 import HistoricForm from "./HistoricComponents/HistoricForm";
 import { Dropdown, Modal, Button } from 'react-bootstrap';
 import { setAlert } from "../../store/reducers/Notifications/actions";
-
+import UploadExcel from "../../components/layout/UploadExcel";
 const Historics = (props) => {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
@@ -276,38 +276,84 @@ const Historics = (props) => {
           onSuccess={onSuccess}
         />
       )}
-      {showUploadExcelInput && (
-        <Modal
-          centered
-          size="sm"
-          show={true}
-          onHide={() => setShowUploadExcelInput(false)}
-          animation={false}
-          aria-labelledby="contained-modal-title-vcenter"
-        >
-          <Modal.Header closeButton>
-            <Modal.Title>Upload Excel</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <div className="uploader-container">
-              <input
-                accept=".xlsx, .xls"
-                type="file"
-                name="file-uploader"
-                onChange={handleFileChange}
-                className="form-control mb-3"
-              />
-              {selectedFile && (
-                <p className="text-center text-primary">
-                  Selected File: <strong>{selectedFile.name}</strong>
-                </p>
-              )}
-              <Button variant="primary" className="w-100" onClick={handleUploadFile}>
-                Upload File
-              </Button>
-            </div>
-          </Modal.Body>
-        </Modal>
+      {showUploadExcelInput &&  (
+       <UploadExcel
+        expectedColumns={[
+          "Employee",
+          "Reviewer",
+          "KRA vs Goals",
+          "Competency",
+          "Final Score",
+          "Start Month",
+          "Ending Month"
+        ]}
+        colMapping={{
+          "Employee": "employee",
+          "Reviewer": "reviewer",
+          "KRA vs Goals": "kra_vs_goals",
+          "Competency": "competency",
+          "Final Score": "final_score",
+          "Start Month": "start_month",
+          "Ending Month": "ending_month"
+        }}
+        validationRules={{
+          "Employee": (val) => !!val && typeof val === "string",
+
+          "Reviewer": (val) => !!val && typeof val === "string",
+
+          "KRA vs Goals": (val) => {
+            if (val === "" || val === null) return true; // optional
+            return !isNaN(parseFloat(val)) || "KRA vs Goals must be a number";
+          },
+
+          "Competency": (val) => {
+            if (val === "" || val === null) return true; // optional
+            return !isNaN(parseFloat(val)) || "Competency must be a number";
+          },
+
+          "Final Score": (val, row) => {
+            if (val === "" || val === null) return "Final Score cannot be empty";
+
+            const kra = parseFloat(row["kra_vs_goals"]) || 0;
+            const comp = parseFloat(row["competency"]) || 0;
+            const expected = (kra + comp) / 2;
+            const actual = parseFloat(val);
+            if (expected !== actual) {
+              return `Final Score must be the average of KRA and Competency (${expected})`;
+            }
+
+            return true;
+          },
+          "Start Month": (val) => {
+            console.log("Validating Start Month:", val);
+  const regex = /^(Jan(uary)?|Feb(ruary)?|Mar(ch)?|Apr(il)?|May|Jun(e)?|Jul(y)?|Aug(ust)?|Sep(tember)?|Oct(ober)?|Nov(ember)?|Dec(ember)?)\s\d{4}$/i;
+  return regex.test(val?.trim()) || "Start Month must be in 'MMM YYYY' or 'MMMM YYYY' format";
+},
+
+"Ending Month": (val, row) => {
+  const regex = /^(Jan(uary)?|Feb(ruary)?|Mar(ch)?|Apr(il)?|May|Jun(e)?|Jul(y)?|Aug(ust)?|Sep(tember)?|Oct(ober)?|Nov(ember)?|Dec(ember)?)\s\d{4}$/i;
+  if (!regex.test(val?.trim())) return "Ending Month must be in 'MMM YYYY' or 'MMMM YYYY' format";
+
+  if (row["start_month"]) {
+    const start = new Date(row["start_month"]);
+    const end = new Date(val);
+
+    if (!isNaN(start) && !isNaN(end) && start > end) {
+      return "Ending Month must be later than Start Month";
+    }
+  }
+  return true;
+}
+
+        }}
+
+        uploadApi="/api/historical_data/upload_excel"
+        onValidData={(valid) => console.log("Valid rows:", valid)}
+        onInvalidData={(invalid) => console.log("Invalid rows:", invalid)}
+        refreshData={() => fetchData()}
+        onClose={() => setShowUploadExcelInput(false)}
+        title="Upload Historical Data"
+        />
       )}
     </>
   );
