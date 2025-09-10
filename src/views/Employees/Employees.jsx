@@ -402,33 +402,152 @@ const refreshEmployees = async () => {
   "First Name": (val) => !!val,
   "Last Name": (val) => !!val,
   "Email ID": (val) => /\S+@\S+\.\S+/.test(val),
-  "Department": (val) => !!val,
-  "Title": (val) => !!val,
+  "Department": (val) => {
+      const allowedDepartments = [
+        "Core Programs",
+        "Admin & Internal Controls",
+        "System Adoption",
+        "Partnerships",
+        "Finance",
+        "People",
+        "MarCom",
+        "Technology",
+        "Data & Impact",
+        "Medhavi",
+        "Admin",
+        "Management",
+      ];
+      return allowedDepartments.includes(val?.trim());
+    },
+
+      "Title": (val) => {
+      const allowedTitles = [
+        "Associate",
+        "Student Relationship Manager",
+        "Senior Manager",
+        "Manager",
+        "Design Manager",
+        "Associate - Social Media Design",
+        "Career Connections Manager",
+        "Senior Manager - Curriculum Design & Capacity Building",
+        "Student Relationship Manager - Teampreneur",
+        "Program Lead",
+        "Strategic Innovation Partner",
+        "Visual Designer",
+        "Associate, Copywriter, Social Media",
+        "Strategic Partner",
+        "Senior Manager, Data Analytics",
+        "Backend Developer - Meet",
+        "Front End Developer - Meet",
+        "Assistant, Content Creation & Auditing - Meet",
+        "Security Personnel",
+        "Associate, Student Support & Company Review - Meet",
+        "Manager - Svapoorna",
+        "Assistant Vice President",
+        "Associate, Career  Connections",
+        "Associate, Graphic Design",
+        "Manager, Content Writing",
+        "Assistant",
+        "Manager, Social Media",
+        "Program Manager",
+        "Student Relationship Manager, Program Implementation",
+        "State Lead",
+        "Senior Manager, Communications",
+        "Associate, Career  Communities",
+        "Manager, Chapter Model",
+        "Project Lead",
+        "Office Assistant",
+        "Full Stack Engineer",
+        "Designer - TAB",
+        "Senior Manager, Alumni Programs",
+        "Relationship Manager",
+        "Senior Manager, M&E",
+        "Career Connection Manager",
+        "Program Manager - Career Connections",
+        "Lead - Career Communities",
+        "Senior Program Manager",
+        "Manager, Program Design",
+        "Program  Manager - Learning Experience",
+        "Tech Associate",
+        "Associate - Meet",
+        "Graphic and UI Designer",
+        "Senior Manager, Digital Marketing",
+        "Associate,  Story Lab",
+        "Board Member",
+        "Quality Analyst",
+        "Program  Manager - Career Communities",
+        "Senior Manager, Story Lab",
+        "Technology Consultant",
+        "Data Manager",
+        "Manager, Growth",
+        "Content Writer",
+        "Senior Manager, Alumni Chapter",
+        "Student Relationship Manager - CAB",
+        "Manager - Story Lab",
+        "Manager, Videos",
+        "Assistant Vice President, Project Management",
+        "Assistant Vice President, Program Design",
+        "Program Manager - TAB",
+        "Program Manager - Svapoorna",
+        "Lead - Career Connections",
+        "Manager, Data Management",
+        "Assistant Vice President, Data Management",
+        "Assistant Vice President, Data Analytics",
+        "Institutional Partnership Lead",
+        "Design Lead",
+        "Program Lead - Learning Experience",
+        "Chief of Staff",
+        "Senior Relationship Manager",
+        "Lead - Learning Experience",
+        "Assistant Vice President,Curriculum Design & Capacity Building",
+        "Executive Director",
+        "Co-Founder",
+        "Lead - Data & Design",
+        "Senior Manager, Public Relations",
+        "Senior Manager, Communications",
+        "Design & Data Manager - Youthscape",
+        "Vice President",
+        "Data Lead",
+        "Career Progression Manager - TAB",
+      ];
+      return allowedTitles.includes(val?.trim());
+    },
+
   "Date of Joining": (val) => {
     if (!val) return false;
     const date = new Date(val);
     const today = new Date();
     return !isNaN(date) && date <= today;
   },
-  "Employee Status": (val) => !!val,
-  "Employee Type": (val) => !!val,
-  "Experience": (val, row = {}) => {
-  if (!val || isNaN(parseFloat(val))) return false;
-
-  const dojRaw = row["Date of Joining"];
-  if (!dojRaw) return false;
-
-  const doj = new Date(dojRaw);
-  if (isNaN(doj)) return false;
-
-  const today = new Date();
-  const diffYears = (today - doj) / (1000 * 60 * 60 * 24 * 365); // years
-  const uploadedExp = parseFloat(val);
-
-  // Accept if uploadedExp is within ±0.2 years of calculated
-  return Math.abs(uploadedExp - diffYears) < 0.2;
+  "Employee Status": (val) => {
+  const allowedStatuses = [
+    "Active",
+    "Resigned",
+    "End of Contract",
+    "Terminated",
+    "Deceased",
+    "Probation not confirmed",
+  ];
+  return allowedStatuses.includes(val?.trim());
+},
+  "Employee Type": (val) => {
+  const allowedTypes = [
+    "Full Time Employee",
+    "Full Time Consultant",
+    "On Contract",
+    "Board Member",
+    "Full Time Consultant (M.Corp)",
+  ];
+  return allowedTypes.includes(val?.trim());
 },
 
+  "Experience": (val) => {
+  if (!val || isNaN(parseFloat(val))) return false;
+
+  const uploadedExp = parseFloat(val);
+
+  return uploadedExp <= 14.7;
+},
   "Current Band": (val) => {
     const allowedBands = ["I","II","III","IV","V","VI","VII","VIII"];
     return allowedBands.includes(val?.toString().trim());
