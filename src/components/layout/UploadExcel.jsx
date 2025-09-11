@@ -76,7 +76,8 @@ const UploadExcel = ({
   onInvalidData,
   refreshData,
   onClose,
-  title = "Upload Data"
+  title,
+  colMapping
 }) => {
   const [fileName, setFileName] = useState("");
   const [parsedData, setParsedData] = useState([]);
@@ -93,21 +94,6 @@ const UploadExcel = ({
   const [showSpinner, setShowSpinner] = useState(false);
 
   const fileInputRef = useRef(null);
-
-  const colMapping = {
-    "Employee ID": "employee_id",
-    "First Name": "first_name",
-    "Last Name": "last_name",
-    "Email ID": "email_id",
-    "Department": "department",
-    "Title": "title",
-    "Date of Joining": "date_of_joining",
-    "Employee Status": "employee_status",
-    "Employee Type": "employee_type",
-    "Experience": "experience",
-    "Current Band": "current_band",
-    "Gross Monthly Salary/ Fee (Rs.)": "gross_monthly_salary_or_fee_rs",
-  };
 
   const reset = () => {
     setFileName("");
@@ -170,20 +156,20 @@ const UploadExcel = ({
         const normalizedRow = Object.keys(colMapping).reduce((acc, key) => {
           let value = row[key] || "";
 
-          if (key === "Date of Joining" && value) {
-            const dateStr = value.toString();
-            if (dateStr.includes('/')) {
-              const [month, day, year] = dateStr.split('/');
-              const fullYear = year.length === 2 ? `20${year}` : year;
-              const dateObj = new Date(`${fullYear}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
-              if (!isNaN(dateObj.getTime())) {
-                value = dateObj.toISOString().split('T')[0];
-              }
-            } else if (!isNaN(Date.parse(dateStr))) {
-              const dateObj = new Date(dateStr);
-              value = dateObj.toISOString().split('T')[0];
-            }
-          }
+        //   if (key === "Date of Joining" && value) {
+        //     const dateStr = value.toString();
+        //     if (dateStr.includes('/')) {
+        //       const [month, day, year] = dateStr.split('/');
+        //       const fullYear = year.length === 2 ? `20${year}` : year;
+        //       const dateObj = new Date(`${fullYear}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
+        //       if (!isNaN(dateObj.getTime())) {
+        //         value = dateObj.toISOString().split('T')[0];
+        //       }
+        //     } else if (!isNaN(Date.parse(dateStr))) {
+        //       const dateObj = new Date(dateStr);
+        //       value = dateObj.toISOString().split('T')[0];
+        //     }
+        //   }
 
           acc[colMapping[key]] = value;
           return acc;
@@ -211,8 +197,8 @@ const UploadExcel = ({
         const val = row[key];
 
         if (validationRules[col]) {
-          const validationResult = validationRules[col](val);
-          if (validationResult !== true) {
+        const validationResult = validationRules[col](val, row)          
+        if (validationResult !== true) {
             errors[col] = validationResult || `${col} is invalid`;
           }
         }
@@ -234,46 +220,59 @@ const UploadExcel = ({
   };
 
   const handleUpload = async () => {
-    if (!uploadApi) return;
-    setIsUploading(true);
-    setUploadError(null);
+  if (!uploadApi) return;
+  setIsUploading(true);
+  setUploadError(null);
 
-    try {
-      const response = await api.post(uploadApi, { data: validRows });
+  try {
+    const response = await api.post(uploadApi, { data: validRows });
 
-      if (response.data.success) {
-        toaster.success(response.data.message || "Data uploaded successfully!", {
-          position: "bottom-center"
-        });
-        setUploadSuccess(true);
-        setShowForm(false);
-        refreshData && refreshData();
-      } else {
-        const errorMsg = response.data.error || "Upload failed";
-        setUploadError(errorMsg);
-        toaster.error(errorMsg, { position: "bottom-center" });
+    const isSuccess =
+      response.data?.success === true ||
+      response.data?.status === "success" ||
+      response.status === 200;
+
+    if (isSuccess) {
+      toaster.success(response.data?.message || "Data uploaded successfully!", {
+        position: "bottom-center"
+      });
+      setUploadSuccess(true);
+      setUploadError(null);
+      setShowForm(false);
+    if (refreshData) {
+        await refreshData();
       }
-    } catch (err) {
-      console.error(err);
-      let errorMsg = "Failed to upload data";
-      if (err.response && err.response.data && err.response.data.error) {
-        errorMsg = err.response.data.error;
-      } else if (err.message) {
-        errorMsg = err.message;
-      }
+    handleClose()
+    } else {
+      const errorMsg =
+        response.data?.error || response.data?.message || "Upload failed";
       setUploadError(errorMsg);
       toaster.error(errorMsg, { position: "bottom-center" });
-    } finally {
-      setIsUploading(false);
     }
-  };
+  } catch (err) {
+    console.error(err);
+    let errorMsg = "Failed to upload data";
+    if (err.response?.data?.error) {
+      errorMsg = err.response.data.error;
+    } else if (err.response?.data?.message) {
+      errorMsg = err.response.data.message;
+    } else if (err.message) {
+      errorMsg = err.message;
+    }
+    setUploadError(errorMsg);
+    toaster.error(errorMsg, { position: "bottom-center" });
+  } finally {
+    setIsUploading(false);
+  }
+};
+
 
   const uploadNewData = () => {
     reset();
   };
 
   return (
-    <Modal centered size="lg" show={true} onHide={handleClose} animation={false} className="form-modal">
+    <Modal centered size="xl" show={true} onHide={handleClose} animation={false} className="form-modal">
       <Modal.Header className="bg-white">
         <Modal.Title>
           <h1 className="text--primary bebas-thick mb-0">{title}</h1>
@@ -334,9 +333,9 @@ const UploadExcel = ({
                                 <td
                                   key={cIdx}
                                   style={{
-                                    backgroundColor: row.errors[col] ? "#f8d7da" : "inherit",
-                                    color: row.errors[col] ? "#721c24" : "inherit",
-                                    fontWeight: row.errors[col] ? "bold" : "normal",
+                                    backgroundColor: row.errors[col] ? "#fff0f0" : "inherit",
+                                    color: row.errors[col] ? "#c9302c" : "inherit",
+                                    fontWeight: "normal",
                                   }}
                                   title={row.errors[col] || row[colMapping[col]]}
                                 >
@@ -351,7 +350,7 @@ const UploadExcel = ({
                   </div>
                 ) : !uploadError && (
                   <p className="text-success text-center">
-                    {validRows.length} rows are valid and ready to upload.
+                    {validRows?.length} rows are valid and ready to upload.
                   </p>
                 )}
               </div>

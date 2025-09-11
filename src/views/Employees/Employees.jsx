@@ -383,42 +383,56 @@ const refreshEmployees = async () => {
         
       {showUploadExcelInput && (
   <UploadExcel
-        expectedColumns={[
-          "Employee ID",
-          "First Name",
-          "Last Name",
-          "Email ID",
-          "Department",
-          "Title",
-          "Date of Joining",
-          "Employee Status",
-          "Employee Type",
-          "Experience",
-          "Current Band",
-          "Gross Monthly Salary/ Fee (Rs.)"
-        ]}
+  colMapping = {{
+    "Employee ID": "employee_id",
+    "First Name": "first_name",
+    "Last Name": "last_name",
+    "Email ID": "email_id",
+    "Department": "department",
+    "Title": "title",
+    "Date of Joining": "date_of_joining",
+    "Employee Status": "employee_status",
+    "Employee Type": "employee_type",
+    "Experience": "experience",
+    "Current Band": "current_band",
+    "Gross Monthly Salary/ Fee (Rs.)": "gross_monthly_salary_or_fee_rs",
+  }}
+    expectedColumns={[
+      "Employee ID",
+      "First Name",
+      "Last Name",
+      "Email ID",
+      "Department",
+      "Title",
+      "Date of Joining",
+      "Employee Status",
+      "Employee Type",
+      "Experience",
+      "Current Band",
+      "Gross Monthly Salary/ Fee (Rs.)"
+    ]}
         validationRules={{
   "Employee ID": (val) => /^M\d{4}$/.test(val),
   "First Name": (val) => !!val,
   "Last Name": (val) => !!val,
   "Email ID": (val) => /\S+@\S+\.\S+/.test(val),
   "Department": (val) => {
-      const allowedDepartments = [
-        "Core Programs",
-        "Admin & Internal Controls",
-        "System Adoption",
-        "Partnerships",
-        "Finance",
-        "People",
-        "MarCom",
-        "Technology",
-        "Data & Impact",
-        "Medhavi",
-        "Admin",
-        "Management",
-      ];
-      return allowedDepartments.includes(val?.trim());
-    },
+  const allowedDepartments = [
+    "Core Programs",
+    "Admin & Internal Controls",
+    "System Adoption",
+    "Partnerships",
+    "Finance",
+    "People",
+    "MarCom",
+    "Technology",
+    "Data & Impact",
+    "Medhavi",
+    "Admin",
+    "Management",
+  ];
+  return allowedDepartments.includes(val?.trim());
+},
 
       "Title": (val) => {
       const allowedTitles = [
@@ -563,6 +577,7 @@ const refreshEmployees = async () => {
           setShowUploadExcelInput(false);
         }}
         onClose={() => setShowUploadExcelInput(false)}
+        title="Upload Employee Data"
       />
   )}
 
