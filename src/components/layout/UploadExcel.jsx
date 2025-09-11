@@ -220,39 +220,52 @@ const UploadExcel = ({
   };
 
   const handleUpload = async () => {
-    if (!uploadApi) return;
-    setIsUploading(true);
-    setUploadError(null);
+  if (!uploadApi) return;
+  setIsUploading(true);
+  setUploadError(null);
 
-    try {
-      const response = await api.post(uploadApi, { data: validRows });
+  try {
+    const response = await api.post(uploadApi, { data: validRows });
 
-      if (response.data.success) {
-        toaster.success(response.data.message || "Data uploaded successfully!", {
-          position: "bottom-center"
-        });
-        setUploadSuccess(true);
-        setShowForm(false);
-        refreshData && refreshData();
-      } else {
-        const errorMsg = response.data.error || "Upload failed";
-        setUploadError(errorMsg);
-        toaster.error(errorMsg, { position: "bottom-center" });
+    const isSuccess =
+      response.data?.success === true ||
+      response.data?.status === "success" ||
+      response.status === 200;
+
+    if (isSuccess) {
+      toaster.success(response.data?.message || "Data uploaded successfully!", {
+        position: "bottom-center"
+      });
+      setUploadSuccess(true);
+      setUploadError(null);
+      setShowForm(false);
+    if (refreshData) {
+        await refreshData();
       }
-    } catch (err) {
-      console.error(err);
-      let errorMsg = "Failed to upload data";
-      if (err.response && err.response.data && err.response.data.error) {
-        errorMsg = err.response.data.error;
-      } else if (err.message) {
-        errorMsg = err.message;
-      }
+    handleClose()
+    } else {
+      const errorMsg =
+        response.data?.error || response.data?.message || "Upload failed";
       setUploadError(errorMsg);
       toaster.error(errorMsg, { position: "bottom-center" });
-    } finally {
-      setIsUploading(false);
     }
-  };
+  } catch (err) {
+    console.error(err);
+    let errorMsg = "Failed to upload data";
+    if (err.response?.data?.error) {
+      errorMsg = err.response.data.error;
+    } else if (err.response?.data?.message) {
+      errorMsg = err.response.data.message;
+    } else if (err.message) {
+      errorMsg = err.message;
+    }
+    setUploadError(errorMsg);
+    toaster.error(errorMsg, { position: "bottom-center" });
+  } finally {
+    setIsUploading(false);
+  }
+};
+
 
   const uploadNewData = () => {
     reset();
@@ -320,9 +333,9 @@ const UploadExcel = ({
                                 <td
                                   key={cIdx}
                                   style={{
-                                    backgroundColor: row.errors[col] ? "#f8d7da" : "inherit",
-                                    color: row.errors[col] ? "#721c24" : "inherit",
-                                    fontWeight: row.errors[col] ? "bold" : "normal",
+                                    backgroundColor: row.errors[col] ? "#fff0f0" : "inherit",
+                                    color: row.errors[col] ? "#c9302c" : "inherit",
+                                    fontWeight: "normal",
                                   }}
                                   title={row.errors[col] || row[colMapping[col]]}
                                 >
@@ -337,7 +350,7 @@ const UploadExcel = ({
                   </div>
                 ) : !uploadError && (
                   <p className="text-success text-center">
-                    {validRows.length} rows are valid and ready to upload.
+                    {validRows?.length} rows are valid and ready to upload.
                   </p>
                 )}
               </div>

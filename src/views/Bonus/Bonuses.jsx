@@ -704,23 +704,27 @@ function Bonuses(props) {
         return !isNaN(parseFloat(val)) || "Compentency must be numeric";
       },
       "Average": (val, row) => {
-        const kra = parseFloat(row["KRA"]) || 0;
-        const competency = parseFloat(row["Compentency"]) || 0;
-        
-        // If both KRA and Compentency are empty, allow empty Average
-        if ((!row["kra"] || row["kra"] === "") && (!row["compentency"] || row["compentency"] === "")) {
-          if (!val || val === "") return true;
-          return "Average should be empty when KRA and Compentency are empty";
-        }
-        
-        const expected = (kra + competency) / 2;
-        return parseFloat(val) === expected || `Average must be the average of KRA and Compentency (${expected})`;
-      },
+  const kra = parseFloat(row["kra"]) || 0;
+  const competency = parseFloat(row["compentency"]) || 0;
+
+  // If both KRA and Compentency are empty, allow empty Average
+  if ((!row["kra"] || row["kra"] === "") && (!row["compentency"] || row["compentency"] === "")) {
+    if (!val || val === "") return true;
+    return "Average should be empty when KRA and Compentency are empty";
+  }
+
+  const expected = (kra + competency) / 2;
+
+  // Use toFixed(2) to avoid floating point mismatch
+  return parseFloat(val).toFixed(2) === expected.toFixed(2) 
+    || `Average must be the average of KRA and Compentency (${expected})`;
+},
+
       "Normalized Ratings": (val) => !isNaN(parseFloat(val)) || "Normalized Ratings must be numeric",
       "Bonus": (val) => !isNaN(parseFloat(val)) || "Bonus must be numeric",
       "Weighted Bonus": (val) => !isNaN(parseFloat(val)) || "Weighted Bonus must be numeric"
     }}
-    uploadApi="/api/bonuses/upload_excel"
+    uploadApi="/api/bonuses/upload_bonus_data"
     refreshData={() => fetchData(paginationPageIndex, paginationPageSize, [], isSearchEnable, false)}
     onClose={() => setShowUploadExcelInput(false)}
     title="Upload Bonus Excel"

@@ -350,7 +350,7 @@ const Historics = (props) => {
         uploadApi="/api/historical_data/upload_excel"
         onValidData={(valid) => console.log("Valid rows:", valid)}
         onInvalidData={(invalid) => console.log("Invalid rows:", invalid)}
-        refreshData={() => fetchData()}
+        refreshData={() => fetchData(paginationPageIndex, paginationPageSize, [])}
         onClose={() => setShowUploadExcelInput(false)}
         title="Upload Historical Data"
         />
