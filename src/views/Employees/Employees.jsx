@@ -9,19 +9,11 @@ import { setAlert } from "../../store/reducers/Notifications/actions";
 
 import EmployeesGrid from "./EmployeeComponents/EmployeesGrid";
 import SearchBar from "../../components/layout/SearchBar";
-import { searchEmployees, LoadSearchPicklist, downloadTableExcel,syncEmployeesWithZoho } from "./EmployeeComponents/EmployeeActions";
+import {LoadSearchPicklist, downloadTableExcel,syncEmployeesWithZoho } from "./EmployeeComponents/EmployeeActions";
 import EmployeeForm from "./EmployeeComponents/EmployeeForm";  
 import toaster from 'react-hot-toast'
-import { Dropdown, Modal, Button } from 'react-bootstrap';
+import { Dropdown } from 'react-bootstrap';
 import UploadExcel from "src/components/layout/UploadExcel";
-
-
-const tabPickerOptions = [
-  { title: "My Data", key: "my_data" },
-  { title: "My Area", key: "my_area" },
-  { title: "My State", key: "my_state" },
-  { title: "All Medha", key: "all_medha" },
-];
 
 const Styled = styled.div`
   .MuiSwitch-root {
@@ -44,18 +36,14 @@ const Employees = (props) => {
   const [loading, setLoading] = useState(false);
   const [students, setStudents] = useState([]);
   const [studentsAggregate, setStudentsAggregate] = useState(0);
-  const [layout, setLayout] = useState("list");
-  const [activeTab, setActiveTab] = useState(tabPickerOptions[0]);
-  const [activeStatus, setActiveStatus] = useState("All");
+  const [layout] = useState("list");
   const pageSize = parseInt(localStorage.getItem("tablePageSize")) || 25;
   const isAdmin = localStorage.getItem("admin");
   const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
   const [paginationPageIndex, setPaginationPageIndex] = useState(0);
-  const [defaultSearchOptions, setDefaultSearchOptions] = useState([]);
+  const [defaultSearchOptions] = useState([]);
   const [modalShow, setModalShow] = useState(false);
   const [showUploadExcelInput, setShowUploadExcelInput] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [lastRefreshed, setLastRefreshed] = useState(null);
 
   
   // Search related state
@@ -182,10 +170,6 @@ const Employees = (props) => {
     return searchPickList;
   };
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    setSelectedFile(file);
-  };
 
   const search = async (SearchProps) => {
     try {
@@ -214,35 +198,6 @@ const Employees = (props) => {
     setPaginationPageIndex(0);
   };
 
-  const handleUploadFile = async () => {
-    if (!selectedFile) {
-      toaster.error("No file selected!", { position: "bottom-center" });
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("file", selectedFile);
-
-    try {
-      nProgress.start();
-      const response = await api.post("/api/employees/upload_excel", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      if (response.status === 200) {
-        toaster.success("File uploaded successfully!", { position: "bottom-center" });
-        // Refresh data after upload
-        fetchData(0, paginationPageSize, []);
-      } else {
-        toaster.error("File upload failed!", { position: "bottom-center" });
-      }
-    } catch (error) {
-      toaster.error("File upload failed!", { position: "bottom-center" });
-    } finally {
-      nProgress.done();
-      setShowUploadExcelInput(false);
-      setSelectedFile(null);
-    }
-  };
 
   const ToastOnSuccess = () => {
     toaster.success("Employee created successfully!", { position: "bottom-center" });
@@ -274,7 +229,6 @@ const refreshEmployees = async () => {
     // Fetch updated employee data
     await fetchData(paginationPageIndex, paginationPageSize, []);
 
-    setLastRefreshed(new Date());
 
   } catch (error) {
     console.error("Error syncing employees:", error);
@@ -285,7 +239,7 @@ const refreshEmployees = async () => {
   }
 };
 
-
+console.log(isAdmin)
 
   return (
     <>
@@ -303,7 +257,7 @@ const refreshEmployees = async () => {
             storeValue={(e) => setSearchParams(prev => ({...prev, value: e}))}
           />
         </div>
-        {isAdmin === "true" && (
+        {isAdmin && (
           <div className="col-2 d-flex justify-content-end mr-2 mt-4">
             <Dropdown className="d-inline">
               <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="bulk_action_button_sec mr-3">

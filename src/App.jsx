@@ -2,10 +2,9 @@ import { connect } from "react-redux";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { useToasts } from "react-toast-notifications";
-import { Switch, Route, useHistory, Redirect } from "react-router-dom";
+import { Switch, Route, useHistory, Redirect, useLocation } from "react-router-dom";
 import ReactTooltip from 'react-tooltip';
 import { Toaster } from 'react-hot-toast';
-
 
 // Layout Components
 import Sidebar from "./components/layout/Sidebar";
@@ -48,33 +47,31 @@ const App = (props) => {
   const { addToast, removeAllToasts } = useToasts();
   const toggleMenu = () => setIsOpen(!isOpen);
   const history = useHistory();
-  const token = localStorage.getItem("token");
+  const location = useLocation();
 
-const logout = async (callback = () => {}) => {
-  try {
-    await api.post("/api/users/logout", {}, { withCredentials: true });
+  const logout = (callback = () => {}) => {
+    try {
+      // Remove token from localStorage
+      localStorage.removeItem("token");
+      localStorage.removeItem("lastPath");
 
-    // Clear context state
-    setUser(null);
+      // Clear context/user state
+      setUser(null);
 
-    // Redirect
-    history.push("/");
+      // Redirect to homepage
+      history.push("/");
 
-    callback();
-  } catch (err) {
-    console.error("Logout failed:", err);
-  }
-};
+      callback();
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
+  };
 
   //add Sentry Plugin for error handling
   if (process.env.NODE_ENV === "production") {
     Sentry.init({
       dsn: "https://86b276c15e5842c48353b938934f69f3@o1107979.ingest.sentry.io/6136338",
       integrations: [new Integrations.BrowserTracing()],
-
-      // Set tracesSampleRate to 1.0 to capture 100%
-      // of transactions for performance monitoring.
-      // We recommend adjusting this value in production
       tracesSampleRate: 1.0,
     });
   }
@@ -87,18 +84,36 @@ const logout = async (callback = () => {}) => {
     }
   }, [props.alert]);
 
+  // Fetch user if token exists
+  useEffect(() => {
+    const token = localStorage.getItem("token");
 
-
-useEffect(() => {
-  api.get('/api/users/me', { withCredentials: true })
-    .then(res => {
-      setUser(res.data);
-    })
-    .catch(() => {
+    if (!token) {
       setUser(null);
-    });
-}, []);
+      return;
+    }
 
+    api
+      .get("/api/users/me", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        setUser(res.data);
+      })
+      .catch(() => {
+        setUser(null);
+      });
+  }, []);
+
+  // Track last visited route
+// App.js
+useEffect(() => {
+  if (user) {
+    localStorage.setItem("lastPath", location.pathname);
+  }
+}, [location, user]);
 
   return (
     <AuthContext.Provider

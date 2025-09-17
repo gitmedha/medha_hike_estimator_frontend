@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import AuthContext from "../context/AuthContext";  // ⬅️ import context
+import AuthContext from "../context/AuthContext";
 import styled from "styled-components";
 import { Form, Button } from "react-bootstrap";
 import api from "../apis";
@@ -26,47 +26,54 @@ const Login = () => {
   const [error, setError] = useState("");
   const navigate = useHistory();
 
-  const { setUser } = useContext(AuthContext);  // ⬅️ use AuthContext
+  const { setUser } = useContext(AuthContext);
 
   const handleLogin = async (event) => {
-    event.preventDefault();
+  event.preventDefault();
 
-    try {
-      const response = await api.post(
-        "/api/users/login_user",
-        { username, password },
-        { withCredentials: true } // ⬅️ important for session cookies
-      );
+  try {
+    const response = await api.post("/api/users/login_user", {
+      username,
+      password,
+    });
 
-      toast.success("Successfully logged in! Redirecting...", {
+    const { token, user } = response.data;
+
+    console.log(user)
+    localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem("admin", user?.isadmin);
+
+    setUser(user);
+
+    toast.success("Successfully logged in! Redirecting...", {
+      position: "bottom-right",
+      style: { marginRight: 80 },
+    });
+
+   const lastPath = localStorage.getItem("lastPath") || "/employees_details";
+   setTimeout(() => navigate.push(lastPath), 2000);
+
+  } catch (err) {
+    if (err.response?.status === 401) {
+      setError("Incorrect username or password");
+      setShowPassword(true);
+      setTimeout(() => setError(""), 4000);
+    } else if (err.response?.status === 500) {
+      toast.error("Internal Server Error! Try again later.", {
         position: "bottom-right",
         style: { marginRight: 80 },
       });
-
-      // ✅ Save user to context
-      setUser(response?.data?.user);
-      localStorage.setItem("admin", response?.data?.user?.isAdmin);
-
-      setTimeout(() => navigate.push("/employees_details"), 3000);
-    } catch (err) {
-      if (err.response?.status === 401) {
-        setError("Incorrect username or password");
-        setShowPassword(true);
-        setTimeout(() => setError(""), 4000);
-      } else if (err.response?.status === 500) {
-        toast.error("Internal Server Error! Try again later.", {
-          position: "bottom-right",
-          style: { marginRight: 80 },
-        });
-      } else {
-        toast.error("Unexpected error!", {
-          position: "bottom-right",
-          style: { marginRight: 80 },
-        });
-      }
-      console.error(err);
+    } else {
+      toast.error("Unexpected error!", {
+        position: "bottom-right",
+        style: { marginRight: 80 },
+      });
     }
-  };
+    console.error(err);
+  }
+};
+
 
   return (
     <Styled>

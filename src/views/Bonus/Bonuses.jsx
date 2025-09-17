@@ -586,7 +586,7 @@ function Bonuses(props) {
                                       </Dropdown.Menu>
                                       </Dropdown>
         </div>}
-        {isAdmin === "true" && <div className="col-auto">
+        {isAdmin && <div className="col-auto">
         <button
             className="btn btn-primary add_button_sec mt-4"
             onClick={() => setModalShow(true)}
