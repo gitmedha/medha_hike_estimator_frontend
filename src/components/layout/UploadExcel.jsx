@@ -69,11 +69,11 @@ const Styled = styled.div`
 `;
 
 const UploadExcel = ({
-  expectedColumns,
-  validationRules,
+  // expectedColumns,
+  // validationRules,
   uploadApi,
-  onValidData,
-  onInvalidData,
+  // onValidData,
+  // onInvalidData,
   refreshData,
   onClose,
   title,
@@ -81,12 +81,7 @@ const UploadExcel = ({
 }) => {
   const [fileName, setFileName] = useState("");
   const [parsedData, setParsedData] = useState([]);
-  const [normalizedData, setNormalizedData] = useState([]);
-  const [invalidRows, setInvalidRows] = useState([]);
   const [validRows, setValidRows] = useState([]);
-  const [isValidated, setIsValidated] = useState(false);
-  const [headerErrors, setHeaderErrors] = useState([]);
-  const [showPreview, setShowPreview] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState(null);
   const [uploadSuccess, setUploadSuccess] = useState(false);
@@ -98,13 +93,7 @@ const UploadExcel = ({
   const reset = () => {
     setFileName("");
     setParsedData([]);
-    setNormalizedData([]);
-    setInvalidRows([]);
     setValidRows([]);
-    setIsValidated(false);
-    setHeaderErrors([]);
-    setShowPreview(false);
-    setIsUploading(false);
     setUploadError(null);
     setUploadSuccess(false);
     setShowForm(true);
@@ -135,50 +124,59 @@ const UploadExcel = ({
     try {
       const data = await file.arrayBuffer();
       const workbook = XLSX.read(data);
-      const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+      console.log(workbook,"workbook")
+      const worksheet = workbook.Sheets[workbook.SheetNames[1]];
+      console.log(worksheet,"worksheet")
       const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: "", raw: false });
+      console.log(jsonData,"jsonData")
+//loop for mapping live excel data for historical data
+let review_cycle = 'Apr 2018 - Sep 2018'
 
-      if (!jsonData.length) {
-        setHeaderErrors(["Excel file is empty!"]);
-        setShowSpinner(false);
-        return;
+const results = [];
+
+      for(let i=2;i<jsonData.length;i++){
+        const row = jsonData[i];
+    const cellValue = row["__EMPTY"];
+    let newObj = {}
+
+
+
+          if (cellValue && typeof cellValue === "string" && cellValue.startsWith("Apr")) {
+                review_cycle = cellValue.trim();
+                console.log("Review Cycle:", review_cycle);
+                const parts = review_cycle.split("-");
+                newObj.start_month = parts[0].trim().startsWith("Apr") ? `April ${parts[0].trim().split(' ')[1]}` : parts[0].trim();
+                newObj.ending_month = parts[1].trim().startsWith("Sept") || parts[1].trim().startsWith("September") ? `Sep ${parts[1].trim().split(' ')[1]}` :`Mar ${parts[1].trim().split(' ')[1]}`;
+               console.log(newObj,"newObj")
+          }
+
+      results.push({
+      employee: row["__EMPTY"] || "",
+      reviewer: row["__EMPTY_1"] || "",
+      kra: row["__EMPTY_2"] ? parseFloat(row["__EMPTY_2"]) : null,
+      competency: row["__EMPTY_3"] ? parseFloat(row["__EMPTY_3"]) : null,
+      final_score: row["__EMPTY_4"] ? parseFloat(row["__EMPTY_4"]) : null,
+      start_month: newObj.start_month || "",
+      ending_month: newObj.ending_month || ""
+    });
+
+
       }
+      console.log(results,"results")
+      console.log("count", results.length)
 
-      const fileHeaders = Object.keys(jsonData[0]);
-      const missingColumns = expectedColumns.filter((col) => !fileHeaders.includes(col));
-      if (missingColumns.length > 0) {
-        setHeaderErrors(missingColumns);
-        setShowSpinner(false);
-        return;
-      }
+      // Directly set as valid rows (skip validation)
+      // const normalized = jsonData.map((row) => {
+      //   const normalizedRow = Object.keys(colMapping).reduce((acc, key) => {
+      //     let value = row[key] || "";
+      //     acc[colMapping[key]] = value;
+      //     return acc;
+      //   }, {});
+      //   return normalizedRow;
+      // });
 
-      const normalized = jsonData.map((row) => {
-        const normalizedRow = Object.keys(colMapping).reduce((acc, key) => {
-          let value = row[key] || "";
-
-        //   if (key === "Date of Joining" && value) {
-        //     const dateStr = value.toString();
-        //     if (dateStr.includes('/')) {
-        //       const [month, day, year] = dateStr.split('/');
-        //       const fullYear = year.length === 2 ? `20${year}` : year;
-        //       const dateObj = new Date(`${fullYear}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
-        //       if (!isNaN(dateObj.getTime())) {
-        //         value = dateObj.toISOString().split('T')[0];
-        //       }
-        //     } else if (!isNaN(Date.parse(dateStr))) {
-        //       const dateObj = new Date(dateStr);
-        //       value = dateObj.toISOString().split('T')[0];
-        //     }
-        //   }
-
-          acc[colMapping[key]] = value;
-          return acc;
-        }, {});
-        return normalizedRow;
-      });
-
-      setParsedData(normalized);
-      setHeaderErrors([]);
+      setParsedData(results);
+      setValidRows(results);
     } catch (error) {
       setUploadError(error.message || "Error processing file");
     } finally {
@@ -186,86 +184,52 @@ const UploadExcel = ({
     }
   };
 
-  const runValidations = () => {
-    const valid = [];
-    const invalid = [];
-
-    parsedData.forEach((row, idx) => {
-      const errors = {};
-      expectedColumns.forEach((col) => {
-        const key = colMapping[col];
-        const val = row[key];
-
-        if (validationRules[col]) {
-        const validationResult = validationRules[col](val, row)          
-        if (validationResult !== true) {
-            errors[col] = validationResult || `${col} is invalid`;
-          }
-        }
-      });
-
-      if (Object.keys(errors).length)
-        invalid.push({ ...row, errors, rowNumber: idx + 2 });
-      else valid.push(row);
-    });
-
-    setNormalizedData(parsedData);
-    setValidRows(valid);
-    setInvalidRows(invalid);
-    setIsValidated(true);
-    setShowPreview(true);
-
-    onValidData && onValidData(valid);
-    onInvalidData && onInvalidData(invalid);
-  };
-
   const handleUpload = async () => {
-  if (!uploadApi) return;
-  setIsUploading(true);
-  setUploadError(null);
+    if (!uploadApi) return;
+    setIsUploading(true);
+    setUploadError(null);
 
-  try {
-    const response = await api.post(uploadApi, { data: validRows });
+    try {
+      const response = await api.post(uploadApi, { data: validRows });
 
-    const isSuccess =
-      response.data?.success === true ||
-      response.data?.status === "success" ||
-      response.status === 200;
+      const isSuccess =
+        response.data?.success === true ||
+        response.data?.status === "success" ||
+        response.status === 200;
 
-    if (isSuccess) {
-      toaster.success(response.data?.message || "Data uploaded successfully!", {
-        position: "bottom-center"
-      });
-      setUploadSuccess(true);
-      setUploadError(null);
-      setShowForm(false);
-    if (refreshData) {
-        await refreshData();
+      if (isSuccess) {
+        toaster.success(response.data?.message || "Data uploaded successfully!", {
+          position: "bottom-center"
+        });
+        setUploadSuccess(true);
+        setUploadError(null);
+        setShowForm(false);
+        if (refreshData) {
+          await refreshData();
+        }
+        handleClose();
+      } else {
+        const errorMsg =
+          response.data?.error || response.data?.message || "Upload failed";
+        setUploadError(errorMsg);
+        toaster.error(errorMsg, { position: "bottom-center" });
       }
-    handleClose()
-    } else {
-      const errorMsg =
-        response.data?.error || response.data?.message || "Upload failed";
+    } catch (err) {
+      console.error(err);
+      let errorMsg = "Failed to upload data";
+      if (err.response?.data?.error) {
+        errorMsg = err.response.data.error;
+      } else if (err.response?.data?.message) {
+        errorMsg = err.response.data.message;
+      } else if (err.message) {
+        errorMsg = err.message;
+      }
       setUploadError(errorMsg);
       toaster.error(errorMsg, { position: "bottom-center" });
+    } finally {
+      setIsUploading(false);
     }
-  } catch (err) {
-    console.error(err);
-    let errorMsg = "Failed to upload data";
-    if (err.response?.data?.error) {
-      errorMsg = err.response.data.error;
-    } else if (err.response?.data?.message) {
-      errorMsg = err.response.data.message;
-    } else if (err.message) {
-      errorMsg = err.message;
-    }
-    setUploadError(errorMsg);
-    toaster.error(errorMsg, { position: "bottom-center" });
-  } finally {
-    setIsUploading(false);
-  }
-};
-
+  };
 
   const uploadNewData = () => {
     reset();
@@ -287,7 +251,7 @@ const UploadExcel = ({
               <div className="bg-white d-flex align-items-center justify-content-center" style={{ height: "40vh" }}>
                 <Spinner animation="border" variant="success" />
               </div>
-            ) : !showPreview ? (
+            ) : (
               <div className="uploader-container">
                 <div className="imageUploader">
                   <p className="upload-helper-text">Click Here To Upload</p>
@@ -305,85 +269,17 @@ const UploadExcel = ({
                 <label className="text--primary latto-bold text-center">Upload File</label>
                 {fileName && <div className={`mt-3 ${uploadError ? 'text-danger' : 'text-success'}`}>{fileName}</div>}
               </div>
-            ) : (
-              <div>
-                {isUploading ? (
-                  <div className="text-center p-4">
-                    <Spinner animation="border" variant="success" />
-                    <p className="mt-2">Uploading data...</p>
-                  </div>
-                ) : invalidRows.length ? (
-                  <div style={{ maxHeight: "50vh", overflow: "hidden", position: "relative" }}>
-                    {/* Table wrapper with vertical scroll */}
-                    <div style={{ overflow: "auto", maxHeight: "calc(50vh - 20px)" }}>
-                      <Table striped bordered hover className="text-nowrap mb-0">
-                        <thead>
-                          <tr>
-                            <th>Row #</th>
-                            {expectedColumns.map((col, idx) => (
-                              <th key={idx}>{col}</th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {invalidRows.map((row, idx) => (
-                            <tr key={idx}>
-                              <td>{row.rowNumber}</td>
-                              {expectedColumns.map((col, cIdx) => (
-                                <td
-                                  key={cIdx}
-                                  style={{
-                                    backgroundColor: row.errors[col] ? "#fff0f0" : "inherit",
-                                    color: row.errors[col] ? "#c9302c" : "inherit",
-                                    fontWeight: "normal",
-                                  }}
-                                  title={row.errors[col] || row[colMapping[col]]}
-                                >
-                                  {row.errors[col] || row[colMapping[col]]}
-                                </td>
-                              ))}
-                            </tr>
-                          ))}
-                        </tbody>
-                      </Table>
-                    </div>
-                  </div>
-                ) : !uploadError && (
-                  <p className="text-success text-center">
-                    {validRows?.length} rows are valid and ready to upload.
-                  </p>
-                )}
-              </div>
             )}
 
-            {headerErrors.length > 0 && (
-              <p className="mb-0" style={{color:'red'}}>
-                Missing headers: {headerErrors.join(", ")}
-              </p>
-            )}
-
-            {/* Footer Buttons */}
             <div className="row mb-4 mt-4">
               <div className="col-md-12 d-flex justify-content-center">
                 <Button variant="danger" onClick={handleClose} disabled={isUploading} className="px-4 mx-4">
                   Close
                 </Button>
 
-                {!showPreview && invalidRows.length === 0 && (
-                  <Button variant="primary" onClick={runValidations} disabled={headerErrors.length > 0 || fileName.length === 0} className="px-4 mx-4">
-                    Next
-                  </Button>
-                )}
-
-                {showPreview && invalidRows.length === 0 && !isUploading && !uploadError && (
+                {validRows.length > 0 && !isUploading && !uploadError && (
                   <Button variant="primary" onClick={handleUpload} className="px-4 mx-4">
                     Upload
-                  </Button>
-                )}
-
-                {showPreview && (invalidRows.length > 0 || uploadError) && !isUploading && (
-                  <Button variant="secondary" onClick={reset} className="px-4 mx-4">
-                    Re-upload File
                   </Button>
                 )}
 
@@ -395,7 +291,6 @@ const UploadExcel = ({
                 )}
               </div>
             </div>
-
           </Modal.Body>
         ) : (
           <Modal.Body style={{ height: "15rem" }}>
