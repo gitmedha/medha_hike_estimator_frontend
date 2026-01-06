@@ -250,13 +250,9 @@ function Bonuses(props) {
       },[])
 
       const onRowClick = (row)=>{
-
+        localStorage.setItem('bonusCycle', row.review_cycle);
         history.push({
-          pathname:`/bonus/${row.employee_id}`,
-          state:{
-            review_cycle:row.review_cycle
-          }
-
+          pathname:`/bonus/${row.employee_id}`
         });
 
       }
