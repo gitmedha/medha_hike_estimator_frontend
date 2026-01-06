@@ -52,8 +52,7 @@ function Bonus() {
   const {id} = useParams();
   const [isLoading,setIsLoading] = useState(true);
   const [isAdmin] = useState(localStorage.getItem('admin'));
-  const location = useLocation();
-  const { review_cycle } = location.state || { review_cycle: null };
+  const review_cycle = localStorage.getItem('bonusCycle');
 
 useEffect(()=>{
   async function componentMount(){
@@ -170,10 +169,10 @@ const handleCloseDeleteAlert = ()=>{
 
 const handleSelect = (event) => {
   setSelectedCycle(event.value);
+  localStorage.setItem('bonusCycle', event.value);
 
   // setSelectedCycle(event.value);
 };
-console.log("bonusData", bonusData);
   return (
     <Styled>
      {isLoading ?<div className="spinner">
