@@ -282,7 +282,7 @@ function Bonuses(props) {
         }
         else {
          
-         await calculateBulkNormalizeRating(await localStorage.getItem('review_cycle'));
+         await calculateBulkNormalizeRating(localStorage.getItem('review_cycle'));
         }
         const data = await fetchAllBonuses(paginationPageIndex, pageSize);
         setBonusData(data?.data);
@@ -398,7 +398,7 @@ function Bonuses(props) {
         
           
         
-          const calculateBulkIncrement = async ()=>{
+          const calculateBulkBonus = async ()=>{
             setShowConfirmationModal(true);
             try{
               setIsBulkLoading(true);
@@ -407,7 +407,7 @@ function Bonuses(props) {
 
               }
               else {
-                await bulkBonus(await localStorage.getItem('review_cycle'));
+                await bulkBonus(localStorage.getItem('review_cycle'));
               }
               const data = await fetchAllBonuses(paginationPageIndex, pageSize);
               setBonusData(data.data);
@@ -419,7 +419,7 @@ function Bonuses(props) {
         console.error(e);
           }finally {
             setIsBulkLoading(false);
-            window.location.reload();
+            // window.location.reload();
           }
            
         }
@@ -431,7 +431,7 @@ function Bonuses(props) {
               await WeightedBonus(reviewCycle);
             }
             else {
-              await WeightedBonus(await localStorage.getItem('review_cycle'));
+              await WeightedBonus(localStorage.getItem('review_cycle'));
             }
             const data = await fetchAllBonuses(paginationPageIndex, pageSize);
             setBonusData(data.data);
@@ -472,9 +472,7 @@ function Bonuses(props) {
             await fetchAllBonusesByReviewCycle(paginationPageSize,paginationPageIndex,'employee_id','asc',reviewCycle);
           }
         }
-
         fetchByReview();
-
       },[reviewCycle])
 
       const handleBulkOperations = async(lastClicked) => {
@@ -484,7 +482,7 @@ function Bonuses(props) {
             setShowConfirmationModal(false);
             break;
           case "BulkBonus":
-            calculateBulkIncrement(reviewCycle || localStorage.getItem('review_cycle'));
+            calculateBulkBonus(reviewCycle || localStorage.getItem('review_cycle'));
             setShowConfirmationModal(false);
             break;
           case "BulkWeightedBonus":
@@ -657,28 +655,22 @@ function Bonuses(props) {
   <UploadExcel
     expectedColumns={[
       "Review Cycle",
-      "Employee ID",
-      "Full Name",
-      "Manager",
-      "KRA",
-      "Compentency",
-      "Average",
-      "Normalized Ratings",
-      "Bonus",
-      "Weighted Bonus"
+      "Employee",
+      "Reviewer",
+      "KRA vs Goals",
+      "Competency",
+      "Final Score",
     ]}
-    colMapping={{
-      "Review Cycle": "review_cycle",
-      "Employee ID": "employee_id",
-      "Full Name": "full_name",
-      "Manager": "manager",
-      "KRA": "kra",
-      "Compentency": "compentency",
-      "Average": "average",
-      "Normalized Ratings": "normalized_ratings",
-      "Bonus": "bonus",
-      "Weighted Bonus": "weighted_bonus"
-    }}
+    colMapping={
+      {
+  "Review Cycle": "review_cycle",
+  "Employee": "employee",
+  "Reviewer": "manager",
+  "KRA vs Goals": "kra",
+  "Competency": "competency",
+  "Final Score": "average",
+}
+    }
     validationRules={{
       "Review Cycle": (val) => {
         const pattern = /^April\s\d{4}-Sep\s\d{4}$/;
@@ -691,34 +683,14 @@ function Bonuses(props) {
         if (val?.trim() === row["Full Name"]?.trim()) return "Manager name cannot be same as employee name";
         return true;
       },
-      "KRA": (val) => {
-        if (val === "" || val === null || val === undefined) return true; // Allow empty
+      "KRA vs Goals": (val) => {
+        if (val === "" || val === null || val === undefined) return true;
         return !isNaN(parseFloat(val)) || "KRA must be numeric";
       },
-      "Compentency": (val) => {
-        if (val === "" || val === null || val === undefined) return true; // Allow empty
+      "Competency": (val) => {
+        if (val === "" || val === null || val === undefined) return true;
         return !isNaN(parseFloat(val)) || "Compentency must be numeric";
-      },
-      "Average": (val, row) => {
-  const kra = parseFloat(row["kra"]) || 0;
-  const competency = parseFloat(row["compentency"]) || 0;
-
-  // If both KRA and Compentency are empty, allow empty Average
-  if ((!row["kra"] || row["kra"] === "") && (!row["compentency"] || row["compentency"] === "")) {
-    if (!val || val === "") return true;
-    return "Average should be empty when KRA and Compentency are empty";
-  }
-
-  const expected = (kra + competency) / 2;
-
-  // Use toFixed(2) to avoid floating point mismatch
-  return parseFloat(val).toFixed(2) === expected.toFixed(2) 
-    || `Average must be the average of KRA and Compentency (${expected})`;
-},
-
-      "Normalized Ratings": (val) => !isNaN(parseFloat(val)) || "Normalized Ratings must be numeric",
-      "Bonus": (val) => !isNaN(parseFloat(val)) || "Bonus must be numeric",
-      "Weighted Bonus": (val) => !isNaN(parseFloat(val)) || "Weighted Bonus must be numeric"
+      }
     }}
     uploadApi="/api/bonuses/upload_bonus_data"
     refreshData={() => fetchData(paginationPageIndex, paginationPageSize, [], isSearchEnable, false)}

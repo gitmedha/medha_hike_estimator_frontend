@@ -153,29 +153,23 @@ const UploadExcel = ({
       }
 
       const normalized = jsonData.map((row) => {
-        const normalizedRow = Object.keys(colMapping).reduce((acc, key) => {
-          let value = row[key] || "";
+  const [employee_id, ...nameParts] = row.Employee?.split(" ") || [];
+  const [manager_id, ...managerNameParts] = row.Reviewer?.split(" ") || [];
+  const full_name = nameParts.join(" ");
+  const manager_name = managerNameParts.join(" ");
 
-        //   if (key === "Date of Joining" && value) {
-        //     const dateStr = value.toString();
-        //     if (dateStr.includes('/')) {
-        //       const [month, day, year] = dateStr.split('/');
-        //       const fullYear = year.length === 2 ? `20${year}` : year;
-        //       const dateObj = new Date(`${fullYear}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
-        //       if (!isNaN(dateObj.getTime())) {
-        //         value = dateObj.toISOString().split('T')[0];
-        //       }
-        //     } else if (!isNaN(Date.parse(dateStr))) {
-        //       const dateObj = new Date(dateStr);
-        //       value = dateObj.toISOString().split('T')[0];
-        //     }
-        //   }
+  return {
+    review_cycle: row["Review Cycle"] || "",
+    employee_id: employee_id || "",
+    full_name: full_name || "",
+    manager:manager_name || "",
+    manager_employee_id: manager_id || "",
+    kra: row["KRA vs Goals"] || "",
+    competency: row["Competency"] || "",
+    average: row["Final Score"] || "",
+  };
+});
 
-          acc[colMapping[key]] = value;
-          return acc;
-        }, {});
-        return normalizedRow;
-      });
 
       setParsedData(normalized);
       setHeaderErrors([]);
