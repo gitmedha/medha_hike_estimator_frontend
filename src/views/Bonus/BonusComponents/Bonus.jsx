@@ -53,6 +53,7 @@ function Bonus() {
   const [isLoading,setIsLoading] = useState(true);
   const [isAdmin] = useState(localStorage.getItem('admin'));
   const review_cycle = localStorage.getItem('bonusCycle');
+  const [refreshKey, setRefreshKey] = useState(0);
 
 useEffect(()=>{
   async function componentMount(){
@@ -62,7 +63,7 @@ useEffect(()=>{
     setIsLoading(false);
   }
   componentMount();
-}, [])
+}, [refreshKey])
 
 useEffect(()=>{
   async function getIncrementData(){
@@ -100,16 +101,11 @@ const handleDelete = async()=>{
 
 const handleNormalizedRating = async ()=>{
   try{
+    setIsLoading(true);
     await getNormalizedRating(bonusData.employee_id, bonusData.review_cycle,bonusData.average,bonusData.manager);
-    await toaster.success('Normalized rating calculated successfully!',{ position: "bottom-center" });
-    setTimeout(() => {
-      setIsLoading(true);
-      setTimeout(() => {
-        window.location.href = "/bonus/" + bonusData.employee_id;
-      }, 3000);
-      
-
-    }, 1000);    
+    toaster.success('Normalized rating calculated successfully!',{ position: "bottom-center" });
+    setRefreshKey(prev => prev + 1);
+    setIsLoading(false);
   }catch(error){
     setIsLoading(false);
     toaster.error('Unable to calculate rating, check the data again',{ position: "bottom-center" })
@@ -119,14 +115,11 @@ const handleNormalizedRating = async ()=>{
 
 const handleBonus = async ()=>{
   try{
+    setIsLoading(true);
     await getBonus(bonusData.employee_id,bonusData.review_cycle,bonusData.normalized_ratings);
     toaster.success('bonus calculated successfully!',{ position: "bottom-center" })
-    setTimeout(() => {
-      setIsLoading(true);
-      setTimeout(() => {
-        window.location.href = "/bonus/" + bonusData.employee_id;
-      }, 3000);
-    }, 1000);
+    setRefreshKey(prev => prev + 1);
+    setIsLoading(false);
 
     }catch(error){
       setIsLoading(false);
@@ -137,14 +130,11 @@ const handleBonus = async ()=>{
 
 const handleWeightedBonus = async ()=>{
   try{
+    setIsLoading(true);
     await calculateWeightedBonus(bonusData.employee_id, bonusData.review_cycle);
     toaster.success('Weighted bonus calculated successfully!',{ position: "bottom-center" })
-    setTimeout(() => {
-      setIsLoading(true);
-      setTimeout(() => {
-        window.location.href = "/bonus/" + bonusData.employee_id;
-      }, 3000);
-    }, 1000);
+    setRefreshKey(prev => prev + 1);
+    setIsLoading(false);
   }catch(error){
     setIsLoading(false);
     toaster.error('Unable to calculate weighted bonus, check the data again',{ position: "bottom-center" })
